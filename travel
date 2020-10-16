@@ -1,0 +1,256 @@
+
+
+
+=== find_campsite_check ===
+Survival Check vs. Terrain:
++ Forest (DC 6)
+    ~ difficulty = 6
++ Coastal (DC 8)
+    ~ difficulty = 8
++ Desert (DC 8)
+    ~ difficulty = 8
++ Grassland (DC 8)
+    ~ difficulty = 8
++ Hills (DC 8)
+    ~ difficulty = 6
++ Subterranean (DC 10)
+    ~ difficulty = 10
++ Swamp (DC 12)
+    ~ difficulty = 12
++ Mountain/ Ice Steppe (DC 14)
+    ~ difficulty = 14
++ [Edit Survival ({DisplayBonus(stat_survival_bonus)})] -> edit_survival -> find_campsite_check
+
+- 
+~ roll = d20()
+~ bonus = stat_survival_bonus
+~ result = roll + bonus
+
+{result >= difficulty:
+    Success! You find a campsite. -> display_result_target(difficulty) ->
+- else:
+    Failure. No proper campsite found. -> display_result_target(difficulty) ->
+}
+
+- ->->
+
+
+=== disturbance_while_camping_check ===
+-> yes_no_test("How likely are you to be disturbed? Adjust based on population and how much you aced the Survival check.", -> yes, -> no, -> yes)
+
+= yes
+You are disturbed by <>
+
+~ roll = d100()
+~ bonus = 0
+
+{
+    - roll <= 20: a loud noise. -> display_result ->
+    - roll <= 35: an animal (indifferent). -> display_result ->
+    - roll <= 50: an animal (hostile). -> display_result ->
+        Go to the 'creatures' table.
+    - roll <= 60: a disturbing dream/vision. -> display_result ->
+    - roll <= 80: an NPC (curious). -> display_result ->
+    - roll <= 85: a bandit/thief. -> display_result ->
+    - roll <= 90: a monster. -> display_result ->
+        Roll for 'monster by terrain'.
+        -> monster_by_terrain_table ->
+    - roll == 91: a natural distaster. -> display_result ->
+    - else: storm/weather change. -> display_result ->
+}
+
+->->
+
+= no
+No.
+->->
+
+= maybe
+Maybe.
+->->
+
+
+=== unmarked_settlement_check ===
+~ chances = d4() - 1
+~ total = 0
+~ count = 0
+
+Chances: {chances}
+
+{chances <= 0:
+    No unmarked settlements.
+    ->->
+}
+
+Population Density
++ Low
+    ~ difficulty = 5
++ Medium
+   ~ difficulty = 10
++ High
+    ~ difficulty = 20
+
+- (try)
+
+~ roll = d100()
+{roll}🎲/{difficulty}%<>
+
+{roll <= difficulty:
+    ~ total++
+}
+
+~ count++
+{count < chances:
+    <>, <>
+    -> try
+}
+<> rolled.
+You will come across {total} settlements.
+
+{total <= 0: ->-> }
+
+~ count = 0
+
+- (add_settlement)
+~ count++
+-> unmarked_settlement_table ->
+
+{count < total:
+    -> add_settlement
+}
+
+- 
+->->
+
+
+=== unmarked_settlement_table ===
+{shuffle:
+    - {~Large Camp|Caravan} ({P(25):abandoned|pop:{d20()}})
+    - Cottage (pop:{d10()})
+    - Large Encampment (pop:{RANDOM(50,100)})
+    - Hamlet (pop:{RANDOM(50,150)})
+    - Work Crew (pop:{RANDOM(50,200)})
+    - Stationed Garrison (pop:{RANDOM(100,300)})
+    - Fort (pop:{RANDOM(200,400)})
+    - Village (pop:{RANDOM(300,1000)})
+    - Encamped Army (pop:{RANDOM(1000,3000)})
+    - Refugee Encampment (pop:{RANDOM(500,5000)})
+}
+
+- ->->
+
+
+=== wilderness_encounter ===
+
+Based on population density, make this many checks for the day:
+Low: 2/day, 1/night.
+Medium: 4/day, 2/night.
+High: 6/day, 3/night.
+
++ [Check]
+
+- 
+~ roll = d100()
+~ bonus = 0
+~ result = roll
+
+{result > 25:
+    No encounter.
+    -> display_result_target("25%") ->->
+}
+
+You have an encounter!
+    
+-> display_result_target("25%") ->
+
++ Use Wilderness Enounter Table
+    -> wilderness_encounter_table ->->
++ Use Story Element Interaction Table
+    -> story_element_interaction_table ->->
+
+
+=== wilderness_encounter_table ===
+TODO: wilderness_encounter_table
+->->
+
+=== story_element_interaction_table ===
+TODO: story_element_interaction_table
+->->
+
+
+=== weather ===
+Terrain:
++ Colder (Mountains, Ice Steppes)
+    ~ bonus = -5
++ Normal (Forests, Plains)
+    ~ bonus = 0
++ Warmer (Deserts)
+    ~ bonus = 5
+
+- 
+~ roll = d20()
+~ result = roll + bonus
+
+Season:
++ Summer
+    {
+        - result <= 1:
+            Unseasonably Cold
+        - result <= 4:
+            Rainy
+        - result <= 8:
+            Overcast
+        - result <= 11:
+            Clear, Warm
+        - result <= 18:
+            Clear, Hot
+        - else:
+            Very Hot
+    }
++ Autumn
+    {
+        - result <= 1:
+            Sleet/Blizzard
+        - result <= 4:
+            Rainy
+        - result <= 8:
+            Light Rain
+        - result <= 11:
+            Overcast
+        - result <= 18:
+            Clear Skies
+        - else:
+            Hot
+    }
++ Winter
+    {
+        - result <= 1:
+            Heavy Snow
+        - result <= 4:
+            Snowstorm
+        - result <= 8:
+            Rain
+        - result <= 11:
+            Overcast
+        - result <= 18:
+            Clear Skies
+        - else:
+            Unseasonably Warm
+    }
++ Spring
+    {
+        - result <= 1:
+            Sleet/Blizzard
+        - result <= 4:
+            Rain
+        - result <= 8:
+            Overcast
+        - result <= 11:
+            Clear Skies
+        - result <= 18:
+            Warm
+        - else:
+            Hot
+    }
+
+- -> display_result ->->

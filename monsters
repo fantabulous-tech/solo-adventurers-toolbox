@@ -1,0 +1,45 @@
+=== create_creature ===
+{shuffle:
+    - Monster!
+    - Bear
+    - Cat
+    - Dire Wolf
+    - Dog
+    - Draft Horse
+    - Eagle
+    - Elephant
+    - Elk
+    - Flying Snake
+    - Ape
+    - Giant Ape
+    - Giant Badger
+    - Giant Boar
+    - Giant Eagle
+    - Giant Elk
+    - Giant Fire Beetle
+    - Giant Frog
+    - Giant Lizard
+    - Giant Owl
+    - Giant Rat
+    - Giant Spider
+    - Goat
+    - Hawk
+    - Mastiff
+    - Mule
+    - Owl
+    - Riding Horse
+    - Panther
+    - Poisonous Snake
+    - Pony
+    - Rat
+    - Raven
+    - Swarm of Insects
+    - Swarm of rats
+    - Swarm of ravens
+    - Vulture
+    - Weasel
+    - Wolf
+}
+->->
+
+

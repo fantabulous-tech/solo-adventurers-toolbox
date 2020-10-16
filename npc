@@ -1,0 +1,204 @@
+
+=== create_npc ===
+{GetRace()} {GetClassOrProfession()} ({~Male|Female}, {GetDisposition()}, {GetAlignment()})
+- ->->
+
+
+=== function GetRace() ===
+~ roll = d100
+{
+    - roll <= 80: ~ return "Human"
+    - roll <= 87: ~ return "Halfling"
+    - roll <= 92: ~ return "Dwarf"
+    - else: ~return GetOtherRace()
+}
+
+=== function GetOtherRace() ===
+~ roll = d20
+{
+    - roll <= 3: ~ return "Elf"
+    - roll <= 6: ~ return "Half Elf"
+    - roll <= 8: ~ return "Gnome"
+    - roll <= 10: ~ return "Orc"
+    - roll <= 11: ~ return "Half Orc"
+    - roll <= 12: ~ return "Goblin"
+    - roll <= 13: ~ return "Drow"
+    - roll <= 14: ~ return "Tabaxi"
+    - roll <= 15: ~ return "Kenku"
+    - roll <= 16: ~ return "Tiefling"
+    - roll <= 17: ~ return "Aasimar"
+    - roll <= 18: ~ return "Dragonborn"
+    - roll <= 19: ~ return "Goliath"
+    - else: ~ return "Aarakocra"
+}
+
+
+=== function GetAlignment() ===
+~ roll = d100
+
+{
+    - roll <= 15: ~ return "Lawful Good"
+    - roll <= 20: ~ return "Neutral Good"
+    - roll <= 25: ~ return "Chaotic Good"
+    - roll <= 30: ~ return "Lawful Neutral"
+    - roll <= 50: ~ return "True Neutral"
+    - roll <= 53: ~ return "Chaotic Neutral"
+    - roll <= 70: ~ return "Lawful Evil"
+    - roll <= 90: ~ return "Neutral Evil"
+    - else: ~ return "Chaotic Evil"
+    
+}
+
+
+=== function GetClassOrProfession() ===
+~ roll = d100
+{
+    - roll <= 25: ~ return "Commoner (unemployed)"
+    - roll <= 90: ~ return "{~Tradesperson|Merchant|Artisan|{GetProfession()}}"
+    - else: ~ return "{GetClass()} {GetLevel()}"
+}
+
+
+=== function GetProfession() ===
+~ roll = d100
+{
+    - roll <= 2:  ~ return "Farmer"
+    - roll <= 4:  ~ return "Artist"
+    - roll <= 6:  ~ return "Herbalist"
+    - roll <= 8:  ~ return "Horse trainer"
+    - roll <= 10: ~ return "Blacksmith"
+    - roll <= 12: ~ return "Finesmith"
+    - roll <= 14: ~ return "Locksmith"
+    - roll <= 16: ~ return "Jeweller"
+    - roll <= 18: ~ return "Entertainer"
+    - roll <= 20: ~ return "Teacher"
+    - roll <= 22: ~ return "Armourer"
+    - roll <= 24: ~ return "Cook"
+    - roll <= 26: ~ return "Tailor"
+    - roll <= 28: ~ return "Ropemaker"
+    - roll <= 30: ~ return "Fletcher"
+    - roll <= 32: ~ return "Cooper"
+    - roll <= 34: ~ return "Cartwright"
+    - roll <= 36: ~ return "Carpenter"
+    - roll <= 38: ~ return "{~Gravedigger|Undertaker}"
+    - roll <= 40: ~ return "Winemaker"
+    - roll <= 42: ~ return "Ferryman"
+    - roll <= 44: ~ return "Boatbuilder"
+    - roll <= 46: ~ return "Ship’s Captain"
+    - roll <= 48: ~ return "Fortune Teller"
+    - roll <= 50: ~ return "Handmaiden"
+    - roll <= 52: ~ return "Miller"
+    - roll <= 54: ~ return "Executioner"
+    - roll <= 56: ~ return "Restauranteur"
+    - roll <= 58: ~ return "{~Priest|Cultist}"
+    - roll <= 60: ~ return "Engineer"
+    - roll <= 62: ~ return "Scribe"
+    - roll <= 64: ~ return "Soldier"
+    - roll <= 66: ~ return "Banker"
+    - roll <= 68: ~ return "Apothecary"
+    - roll <= 70: ~ return "Woodcutter"
+    - roll <= 72: ~ return "Tax Collector"
+    - roll <= 74: ~ return "Prostitute"
+    - roll <= 76: ~ return "Fishmonger"
+    - roll <= 78: ~ return "Butcher"
+    - roll <= 80: ~ return "Fruiterer"
+    - roll <= 82: ~ return "Conman"
+    - roll <= 84: ~ return "Petty thief"
+    - roll <= 86: ~ return "Healer"
+    - roll <= 88: ~ return "Butler"
+    - roll <= 90: ~ return "Clerk"
+    - roll <= 92: ~ return "Baker"
+    - roll <= 94: ~ return "Cheesemaker"
+    - roll <= 96: ~ return "Innkeeper"
+    - roll <= 98: ~ return "Dung Shoveller"
+    - else: ~ return "Courier"
+}
+
+=== function GetClass() ===
+~ return "{~Barbarian|Bard|Cleric|Druid|Fighter|Monk|Paladin|Ranger|Rogue|Sorcerer|Warlock|Wizard}"
+
+=== function GetLevel() ===
+~ roll = d20
+{
+    - roll <= 14:
+        ~ roll = d20
+        {
+            - roll <= 6: ~ return 1
+            - roll <= 11: ~ return 2
+            - roll <= 15: ~ return 3
+            - roll <= 18: ~ return 4
+            - else: ~ return 5
+        }
+    - roll <= 18:
+        ~ roll = d20
+        {
+            - roll <= 3: ~ return 5
+            - roll <= 6: ~ return 6
+            - roll <= 8: ~ return 7
+            - roll <= 10: ~ return 8
+            - roll <= 12: ~ return 9
+            - roll <= 14: ~ return 10
+            - roll <= 16: ~ return 11
+            - roll <= 17: ~ return 12
+            - roll <= 18: ~ return 13
+            - roll <= 19: ~ return 14
+            - else: ~ return 15
+        }
+    - else:
+        ~ roll = d20
+        {
+            - roll <= 6: ~ return 16
+            - roll <= 11: ~ return 17
+            - roll <= 15: ~ return 18
+            - roll <= 18: ~ return 19
+            - else: ~ return 20
+        }
+}
+
+
+=== function GetDisposition() ===
+{shuffle:
+    - ~ return "Shy"
+    - ~ return "{~Aloof|Superior}"
+    - ~ return "{~Foolish|Idiotic}"
+    - ~ return "{~Cocky|Arrogant}"
+    - ~ return "Envious"
+    - ~ return "Grumpy"
+    - ~ return "Mischevious ({~good|evil})"
+    - ~ return "{~Playful|Joking}"
+    - ~ return "Insane"
+    - ~ return "{~Abrupt|Unpredictable}"
+    - ~ return "{~Melancholic|Airy}"
+    - ~ return "Romantic"
+    - ~ return "Frustrated"
+    - ~ return "Stressed"
+    - ~ return "Weird"
+    - ~ return "{~Serene|Peaceful}"
+    - ~ return "{~Cagey|Mysterious}"
+    - ~ return "Distracted"
+    - ~ return "Sad"
+    - ~ return "Single-Minded"
+    - ~ return "Angry"
+    - ~ return "Blase"
+    - ~ return "Joyous"
+    - ~ return "Vengeful"
+    - ~ return "Malicious"
+    - ~ return "Afraid"
+    - ~ return "Disgusted"
+    - ~ return "Resignation"
+    - ~ return "Nostalgic"
+    - ~ return "Envious"
+    - ~ return "Determined"
+    - ~ return "Pity"
+    - ~ return "Disdain"
+    - ~ return "Hopelessness"
+    - ~ return "Amused"
+    - ~ return "Reckless"
+    - ~ return "Lonely"
+    - ~ return "Frivolous"
+    - ~ return "Disoriented"
+}
+
+
+
+

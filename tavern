@@ -1,0 +1,68 @@
+
+
+=== create_tavern ===
+
+~ temp rumours = 0
+~ roll = d10
+{
+    - roll <= 1: ~ rumours = 0
+    - roll <= 3: ~ rumours = 1
+    - roll <= 6: ~ rumours = 2
+    - roll <= 8: ~ rumours = 3
+    - else: ~ rumours = 4
+}
+
+Name: {GetTavernName()}
+Rooms: {~None|1|2|3|4|5|6|8|10|20}
+Quality: {~Atrocious|Poor|Poor|Average|Average|Average|Good|Good|Excellent|Outstanding}
+Innkeep: {~Male Gnome|Female Halfling|Male Dwarf|Tiefling|Human Male|Human Female|Male Halfling|Female Gnome|Orc/Half-Orc|Player's Choice}
+Service: {~Unfriendly|Neutral|Neutral|Civil|Civil|Cordial|Cordial|Warm & Welcoming|Warm & Welcoming|Treated like a monarch!}
+Rumours: {rumours}
+
+{rumours <= 0: ->->}
+~ count = 0
+- (next)
+~ count++
+<br/>Rumour \#{count}: 
+-> create_rumour ->
+{count < rumours: -> next}
+
+- ->->
+
+=== create_rumour ===
+Who/What: <>
+{shuffle:
+    - -> create_npc ->
+    - -> create_creature ->
+    - -> create_place ->
+}
+
+Situations: 
+<> -> create_situation ->
+<>, <> -> create_situation ->
+<>, <> -> create_situation ->
+{~<>, <> -> create_situation ->|}
+
+
+Where: <>
+{shuffle:
+    - In this settlement/area
+    - Just outside settlement
+    - {d4()} miles away in a -> create_structure ->
+    - In the nearby forest
+    - In the nearby mountains
+    - In the nearby swamp
+    - In/beside the nearby body of water
+    - In the next village
+    - In the next large town
+    - In the captial of the realm
+    - In the next realm
+}
+
+- ->->
+
+
+
+=== function GetTavernName() ===
+~return "{~The Guilded|The Frog and|The Hammer and|The Golden|The Black|Eye of the|The Sword and|The Filthy|The Evil|The Good|The Stroppy|The Greasy|The Naughty|The Queen and|The Leper and|The Dog and|The Sweaty|The Blessed|The Cunning|The Knight's} {~Anvil|Eye|Rogue|Assassin|Dagger|Spadger|Quipper|King|Wizard|Toad|Bullock|Bollock|Buttock|Cuckold|Sabre|Strumpet|Nonce|Scoundrel|Knave|Cock}"
+

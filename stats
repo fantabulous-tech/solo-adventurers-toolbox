@@ -1,0 +1,26 @@
+
+
+=== edit_stats ===
+<b> Edit Stats </b> #CLEAR
++ [Survival = {stat_survival_bonus}]
+    -> edit_survival -> edit_stats
++ [Back] -> main_menu
+- ->->
+
+
+=== edit_survival ===
+Survival = {stat_survival_bonus}
+
++ [Add 1]
+    ~ stat_survival_bonus++
++ [Subtract 1]
+    ~ stat_survival_bonus--
++ [Add 5]
+    ~ stat_survival_bonus += 5
++ [Subtract 5]
+    ~ stat_survival_bonus -= 5
++ [Back] ->->
+
+- -> edit_survival ->->
+
+
