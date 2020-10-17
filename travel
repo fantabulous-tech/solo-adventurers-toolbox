@@ -147,7 +147,10 @@ Low: 2/day, 1/night.
 Medium: 4/day, 2/night.
 High: 6/day, 3/night.
 
+- (check)
+
 + [Check]
++ [Back] ->->
 
 - 
 ~ roll = d100()
@@ -156,7 +159,7 @@ High: 6/day, 3/night.
 
 {result > 25:
     No encounter.
-    -> display_result_target("25%") ->->
+    -> display_result_target("25%") -> check
 }
 
 You have an encounter!
@@ -164,14 +167,10 @@ You have an encounter!
 -> display_result_target("25%") ->
 
 + Use Wilderness Enounter Table
-    -> wilderness_encounter_table ->->
+    -> wilderness_encounter_table -> check
 + Use Story Element Interaction Table
-    -> story_element_interaction_table ->->
+    -> story_element_interaction_table -> check
 
-
-=== wilderness_encounter_table ===
-TODO: wilderness_encounter_table
-->->
 
 === story_element_interaction_table ===
 TODO: story_element_interaction_table

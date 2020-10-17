@@ -83,13 +83,12 @@ VAR stat_survival_bonus = 0
 
 === wilderness_menu ===
 
-+ Weather
++ Weather Check
     -> weather ->
     ~again = -> weather
 
 + Wilderness Encounter Check
-    -> wilderness_encounter ->
-    ~again = -> wilderness_encounter
+    -> wilderness_encounter ->->
 
 + Wilderness Encounter Table
     -> wilderness_encounter_table ->

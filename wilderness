@@ -34,12 +34,18 @@
 
 === function GetWaterway() ===
 ~ roll = d100()
-TODO: create_waterway
+TODO: GetWaterway()
 ~ return "waterway"
 ->->
 
 === function GetLake() ===
+TODO: GetLake()
 ~ return "lake"
+
+
+=== wilderness_encounter_table ===
+TODO: wilderness_encounter_table
+->->
 
 === create_place ===
 TODO: create_place
@@ -50,4 +56,3 @@ Place
 === monster_by_terrain_table ===
 TODO: monster_by_terrain_table
 - ->->
-
