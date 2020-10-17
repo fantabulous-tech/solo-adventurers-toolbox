@@ -5,7 +5,7 @@
 
 
 === function GetRace() ===
-~ roll = d100
+~ roll = d100()
 {
     - roll <= 80: ~ return "Human"
     - roll <= 87: ~ return "Halfling"
@@ -14,7 +14,7 @@
 }
 
 === function GetOtherRace() ===
-~ roll = d20
+~ roll = d20()
 {
     - roll <= 3: ~ return "Elf"
     - roll <= 6: ~ return "Half Elf"
@@ -34,7 +34,7 @@
 
 
 === function GetAlignment() ===
-~ roll = d100
+~ roll = d100()
 
 {
     - roll <= 15: ~ return "Lawful Good"
@@ -51,7 +51,7 @@
 
 
 === function GetClassOrProfession() ===
-~ roll = d100
+~ roll = d100()
 {
     - roll <= 25: ~ return "Commoner (unemployed)"
     - roll <= 90: ~ return "{~Tradesperson|Merchant|Artisan|{GetProfession()}}"
@@ -60,7 +60,7 @@
 
 
 === function GetProfession() ===
-~ roll = d100
+~ roll = d100()
 {
     - roll <= 2:  ~ return "Farmer"
     - roll <= 4:  ~ return "Artist"
@@ -118,10 +118,10 @@
 ~ return "{~Barbarian|Bard|Cleric|Druid|Fighter|Monk|Paladin|Ranger|Rogue|Sorcerer|Warlock|Wizard}"
 
 === function GetLevel() ===
-~ roll = d20
+~ roll = d20()
 {
     - roll <= 14:
-        ~ roll = d20
+        ~ roll = d20()
         {
             - roll <= 6: ~ return 1
             - roll <= 11: ~ return 2
@@ -130,7 +130,7 @@
             - else: ~ return 5
         }
     - roll <= 18:
-        ~ roll = d20
+        ~ roll = d20()
         {
             - roll <= 3: ~ return 5
             - roll <= 6: ~ return 6
@@ -145,7 +145,7 @@
             - else: ~ return 15
         }
     - else:
-        ~ roll = d20
+        ~ roll = d20()
         {
             - roll <= 6: ~ return 16
             - roll <= 11: ~ return 17

@@ -17,6 +17,7 @@ VAR result = 0
 VAR chances = 0
 VAR total = 0
 VAR count = 0
+VAR again = -> main_menu
 
 VAR stat_survival_bonus = 0
 
@@ -32,73 +33,98 @@ VAR stat_survival_bonus = 0
 === main_menu ===
 <b>Main Menu</b> #CLEAR
 
-+ [Edit Stats Menu]
-    -> edit_stats ->
 
-+ Roll Dice [Menu]
-    -> roll_dice_menu ->
++ <b>[Edit Stats Menu]</b>
+    -> edit_stats -> main_menu
+
++ <b>Roll Dice [Menu]</b>
+    -> roll_dice_menu -> main_menu
+    
++ <b>Wilderness/Travel Menu</b>
+    -> wilderness_menu -> main_menu
+    
++ <b>Create Menu</b>
+    -> create_menu -> main_menu
 
 + Generic Skill Check
     -> skill_check ->
+    ~again = -> skill_check
 
 + Yes/No Question
     -> yes_no_question ->
+    ~again = -> yes_no_question
 
-+ Weather
-    -> weather ->
+- (sub_menu)
++ [Again] -> again -> sub_menu
++ [Back] -> main_menu
 
-+ Wilderness Encounter Check
-    -> wilderness_encounter ->
-
-+ Wilderness Encounter Table
-    -> wilderness_encounter_table ->
-
-+ Unmarked Settlement Check
-    -> unmarked_settlement_check ->
-
-+ Unmarked Settlement Table
-    -> unmarked_settlement_table ->
-    
-+ Find Campsite Check
-    -> find_campsite_check ->
-
-+ Disturbances While Camping Check
-    -> disturbance_while_camping_check ->
-    
+=== create_menu ===
 + Create Tavern
     -> create_tavern ->
+    ~again = -> create_tavern
 
 + Create Creature
     -> create_creature ->
+    ~again = -> create_creature
 
 + Create Structure
     -> create_structure ->
-
-
-
-+ Unfinished
-    -> unfinished ->
-
--
-+ [Main Menu] -> main_menu
-
-    
-=== unfinished ===
+    ~again = -> create_structure
 
 + Story Element Interaction Table
     -> story_element_interaction_table ->
+    ~again = -> story_element_interaction_table
+
++ [Back] -> main_menu
+
+- (sub_menu)
++ [Again] -> again -> sub_menu
++ [Back] -> create_menu
+
+=== wilderness_menu ===
+
++ Weather
+    -> weather ->
+    ~again = -> weather
+
++ Wilderness Encounter Check
+    -> wilderness_encounter ->
+    ~again = -> wilderness_encounter
 
 + Wilderness Encounter Table
     -> wilderness_encounter_table ->
+    ~again = -> wilderness_encounter_table
+
++ Unmarked Settlement Check
+    -> unmarked_settlement_check ->
+    ~again = -> unmarked_settlement_check
+
++ Unmarked Settlement Table
+    -> unmarked_settlement_table ->
+    ~again = -> unmarked_settlement_table
+    
++ Find Campsite Check
+    -> find_campsite_check ->
+    ~again = -> find_campsite_check
+
++ Disturbances While Camping Check
+    -> disturbance_while_camping_check ->
+    ~again = -> disturbance_while_camping_check
+
+
++ Wilderness Encounter Table
+    -> wilderness_encounter_table ->
+    ~again = -> wilderness_encounter_table
 
 + Monster by Terrain Table
     -> monster_by_terrain_table ->
+    ~again = -> monster_by_terrain_table
 
-+ Back
-    -> main_menu
-    
--
-+ [Unfinished Menu] -> unfinished
++ [Back] -> main_menu
+
+- (sub_menu)
++ [Again] -> again -> sub_menu
++ [Back] -> wilderness_menu
 
 
 

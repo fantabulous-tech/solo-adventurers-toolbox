@@ -3,7 +3,7 @@
 === create_tavern ===
 
 ~ temp rumours = 0
-~ roll = d10
+~ roll = d10()
 {
     - roll <= 1: ~ rumours = 0
     - roll <= 3: ~ rumours = 1

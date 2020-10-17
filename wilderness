@@ -8,62 +8,38 @@
     - roll <= 16: Manor House ({inhabited|deserted})
     - roll <= 20: Monastery ({P(90):inhabited|deserted})
     - roll <= 24: {~Shrine|Temple} ({humanoid inhabitants|deserted})
-    - roll <= 28: Watchtower ({~inhabited with {~humans|non-humans}|deserted})
-    - roll <= 32: Farm House ({P(80):inhabited{P{5}: and under attack!|}|deserted}) 
-    - roll <= 36: Fence (Q/A roll/nature roll to determien purpose)
+    - roll <= 28: Watchtower ({~{~monster-|}inhabited|deserted})
+    - roll <= 32: Farm House ({P(80):inhabited{P(5): and under attack!}|deserted}) 
+    - roll <= 36: Fence (Q/A roll/nature roll to determine purpose)
     - roll <= 40: Windmill
-    - roll <= 44: Watermill (<> -> create_waterway -> 
-        <>)
-    - roll <= 48: Old Well {P(50):({~hidden cave|tunnel at bottom})}
+    - roll <= 44: Watermill ({GetWaterway()})
+    - roll <= 48: Old Well {P(50):({~hidden cave|tunnel at bottom}{P(30): with clue})|{P(30):(clue)}}
+    - roll <= 52: Hermit {~Hut|Cave} ({P(70):inhabited|deserted}{P(40): with clue})
+    - roll <= 56: Lone {~Tavern|Inn} ({P(90):inhabited|abandoned}, Q/A to discern more)
+    - roll <= 60: {~Hunting Cabin|Fishing Hut on {{GetWaterway()}|{GetLake()}}} ({P(25):inhabited|empty}, Q/A to determine if it has supplies)
+    - roll <= 64: {Hideout|Bunker} (DC 16 to notice, advantage if in familiar terrain)
+    - roll <= 68: Waypoint ({P(75):friendly|neutral}, stopoff for couriers/horse trader, Q/A to discern more)
+    - roll <= 72: Training Camp (Q/A to discern more)
+    - roll <= 76: {~Small|Small|Medium|Large} Bridge (over {GetWaterway()})
+    - roll <= 80: Medium Bridge (over {GetWaterway()})
+    - roll <= 84: Large Bridge (over {GetWaterway()})
+    - roll <= 88: Large {~Castle|Keep} ({P(20):monster-}inhabited)
+    - roll <= 92: Ruins ({P(10):deadly encounter|{P(50):hard encounter|normalencounter}}{P(60): with clue})
+    - roll <= 96: {~Burial Mounds|Barrows} (What lies beneath? Q/A to discern more.)
     - else: Wizard Tower (inhabited, {P(60):friendly|hostile})
 }
 
 ->->
 
-5-8 Cemetery / Tomb 30% haunted / undead
-9-12 Small castle / keep 30% deserted (with possible monster inhabitants)
-13-16 Manor House 50% inhabited
-17-20 Monastery 90% inhabited
-21-24 Shrine / Temple 50% humanoid inhabitants
-25-28 Watchtower 50% inhabitated, 50% humans
-29-32 Farm House 80% inhabited, 5% under attack currently
-33-36 Fence Q/A roll / nature roll to determine its purpose
-37-40 Windmill
-41-44 Watermill Roll on Waterway Table
-45-48 Old well 50% hidden cave / tunnel at bottom. 30% clue
-49-52 Hermit Hut / Cave 70% inhabited, 40% clue
-53-56 Lone tavern / inn 90% inhabited. Q/A to discern more
-57-60 Roll d4. 1-2: Hunting
-cabin. 3-4: Fishing Hut.
-25% inhabited. Might contain basic supplies. Q/A
-roll to determine. If fishing hut, (roll d4) roll on 1-2:
-Waterway Table, 3-4: Lake Table.
-61-64 Hideout / Bunker DC 16 perception check to notice. If you are in
-familiar / favoured terrain, make at advantage.
-65-68 Waypoint. Stopoff for
-couriers / horse trader Q/A to discern more. 75% friendly or neutral.
-69-72 Training Camp Q/A to discern more
-73-76
-Bridge. (Roll d4) 1-2:
-Small, 3: Medium, 4:
-Large
-Roll on Waterways Table
-77-80 Medium Bridge Roll on Waterways Table
-81-84 Large Bridge Roll on Waterways Table
-85-88 Large Castle / Keep 80% inhabited (if uninhabited, then something else
-will have moved in).
-89-92 Ruins 50% hard encounter. 10% deadly encounter. Clue
-60%.
-93-96 Burial Mounds /
-Barrows What lies beneath?
-97-
-100 Wizard Tower Definitely inhabited. 60% friendly.
-72
 
-=== create_waterway ===
+=== function GetWaterway() ===
 ~ roll = d100()
-
+TODO: create_waterway
+~ return "waterway"
 ->->
+
+=== function GetLake() ===
+~ return "lake"
 
 === create_place ===
 TODO: create_place

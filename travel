@@ -5,14 +5,14 @@
 Survival Check vs. Terrain:
 + Forest (DC 6)
     ~ difficulty = 6
++ Hills (DC 6)
+    ~ difficulty = 6
 + Coastal (DC 8)
     ~ difficulty = 8
 + Desert (DC 8)
     ~ difficulty = 8
 + Grassland (DC 8)
     ~ difficulty = 8
-+ Hills (DC 8)
-    ~ difficulty = 6
 + Subterranean (DC 10)
     ~ difficulty = 10
 + Swamp (DC 12)
@@ -194,44 +194,28 @@ Terrain:
 Season:
 + Summer
     {
-        - result <= 1:
-            Unseasonably Cold
-        - result <= 4:
-            Rainy
-        - result <= 8:
-            Overcast
-        - result <= 11:
-            Clear, Warm
-        - result <= 18:
-            Clear, Hot
-        - else:
-            Very Hot
+        - result <= 1: Unseasonably Cold
+        - result <= 4: Rainy
+        - result <= 8: Overcast
+        - result <= 11: Clear, Warm
+        - result <= 18: Clear, Hot
+        - else: Very Hot
     }
 + Autumn
     {
-        - result <= 1:
-            Sleet/Blizzard
-        - result <= 4:
-            Rainy
-        - result <= 8:
-            Light Rain
-        - result <= 11:
-            Overcast
-        - result <= 18:
-            Clear Skies
-        - else:
-            Hot
+        - result <= 1: Sleet/Blizzard
+        - result <= 4: Rainy
+        - result <= 8: Light Rain
+        - result <= 11: Overcast
+        - result <= 18: Clear Skies
+        - else: Hot
     }
 + Winter
     {
-        - result <= 1:
-            Heavy Snow
-        - result <= 4:
-            Snowstorm
-        - result <= 8:
-            Rain
-        - result <= 11:
-            Overcast
+        - result <= 1: Heavy Snow
+        - result <= 4: Snowstorm
+        - result <= 8: Rain
+        - result <= 11: Overcast
         - result <= 18:
             Clear Skies
         - else:
