@@ -44,7 +44,76 @@ TODO: GetLake()
 
 
 === wilderness_encounter_table ===
-TODO: wilderness_encounter_table
+~ roll = d100()
+
+{
+    - roll <= 4: Small dungeon or crypt found. Purpose and history unknown. If entering, go to Chapter 8: Random Dungeon Generation.
+    - roll <= 5: Ready-made camp found, or cosy cave, that could potentially be used as shelter for the night, or a base while exploring. Inhabited?
+    - roll <= 6: A small creek, babbling pleasantly. Or a large crack, bubbling pungently.
+    - roll <= 7: A storm on the horizon, lightning dancing underneath dark grey clouds.
+    - roll <= 8: A sinkhole has opened up nearby.
+    - roll <= 9: Abandoned, empty town.
+    - roll <= 15: NPC met, who gives PC information about possible quest. Go to Chapter 7 and generate a quest, which you may or may not choose to accept.
+    - roll <= 16: Abandoned campsite found. Use Q/A rolls to find out more.
+    - roll <= 17: A tree with what looks like Druid markings.
+    - roll <= 18: You find survivors of some sort of attack, and they have a tale to tell...
+    - roll <= 19: Plundered barrow / burial mound. But did they get everything? And what still waits there? (50% mostly empty)
+    - roll <= 20: On the road, a dropped item. A backpack, a purse with interesting contents / a hat with a note tucked inside / an engraved ring… could be anything. Use Q/A roll to find out details.
+    - roll <= 21: Interesting traveller. This character has obviously seen some things...
+    - roll <= 22: Cemetery. Some of the graves have been looted, and most of the tombstones are so old that the names have worn off.
+    - roll <= 23: Prisoner(s) being escorted in a heavily-armoured cart.
+    - roll <= 24: Interesting geological feature. Use Q/A mechanic to find out what.
+    - roll <= 25: You find a discarded backpack with some intriguing contents.
+    - roll <= 26: An odd noise is coming from some distance ahead...
+    - roll <= 27: Strange lights in the nearby hills are attracting your attention.
+    - roll <= 28: You stumble across an orchard, filled with ripe and delicious fruit. The owner is nowhere in sight.
+    - roll <= 29: Bounty hunters, searching for a fugitive. “You seen anyone?” (Who they are working for is unclear)
+    - roll <= 30: Sudden and abrupt change in weather
+    - roll <= 31: Abandoned mine, dwarven or otherwise.
+    - roll <= 32: You hear howling in the distance. It could be wolves, but the sound is strange somehow...
+    - roll <= 33: Debris from a recent, large battle. Who fought here, and who won? How recent was this?
+    - roll <= 34: Humanoid corpse. 25% yoiu find a clue (see Clue table in Chapter 9).
+    - roll <= 35: A bird (or some other creature – roll Creature Table Chapter 14) begins talking to you, in fluent Common! And not just mindless parroting...
+    - roll <= 36: A royal/noble personage and their entourage passes in an opulent carriage.
+    - roll <= 37: A flock of birds (vultures? ravens?) circles over a point somewhere overhead
+    - roll <= 38: You find an old, ruined monument. Is it to a god, a famous local figure, or something else?
+    - roll <= 39: A traveller with information/warning about a situation in the next settlement.
+    - roll <= 40: Unmarked settlement: town/village/hamlet. Human?
+    - roll <= 41: You reach a bridge over a small river. The bridge is washed out. Travellers are waiting here, unsure what to do.
+    - roll <= 42: You find an injured beast
+    - roll <= 43: A farmer invites you into his house for a meal, and possibly some of his home brew ale/mead as well
+    - roll <= 44: Overturned/broken-down cart. Is it attended?
+    - roll <= 50: Monster ambush. Level-appropriate easy encounter. Go to Chapter 16.
+    - roll <= 51: An animal wanders across your path. It glances up at you but doesn’t seem particularly bothered by your presence.
+    - roll <= 52: Trapped creature (humanoid? monster? What type of trap?)
+    - roll <= 55: An abandoned/ruined structure of some kind, which may or may not have a subterranean component.
+    - roll <= 56: An old hermit. What’s he babbling about?
+    - roll <= 57: A creepy and unsettling token/sign.
+    - roll <= 58: Traveling merchant
+    - roll <= 59: A traveling adventurer who is impressed and wants to join your party.
+    - roll <= 65: Monster Encounter: Level-appropriate medium encounter. Go to Chapter 16.
+    - roll <= 66: A traveller, resting by the side of the road, begins pointing and laughing uproariously at you. Is she mad?
+    - roll <= 67: Heavily-guarded transport passes.
+    - roll <= 68: Travelling sage/archivist
+    - roll <= 69: Bandits (human or otherwise) demand a toll from you.
+    - roll <= 75: Monster: Level appropriate hard encounter.
+    - roll <= 76: A starving family begging for food or gold
+    - roll <= 77: A tribe who owns the land demands a tribute from you for passage (and in return will escort you through – whether you like it or not).
+    - roll <= 78: A travelling troupe of performers (80% Friendly)
+    - roll <= 79: A travelling merchant, but his wares are not the ordinary. Indeed, much of it is illegal in some way. Is he a smuggler? A drug dealer? A heist thief?
+    - roll <= 80: Hunters/travellers/adventurers. Camped up and relaxing.
+    - roll <= 81: You see a low rocky hill, where faces have been carved into the rocks, along with the shapes of various beasts. It is artfully done, and seems to tell some sort of story.
+    - roll <= 82: You see a track leading away from the road and into the forest/hills. Who knows where it leads...
+    - roll <= 83: Bandits waylay you and demand all your money
+    - roll <= 84: On a lonely stretch of road, you see a lone cabin, but cannot tell if it is inhabited or not.
+    - roll <= 85: A long-forgotten battlefield. How many died here?
+    - roll <= 86: A tower, visible off the road some distance.
+    - roll <= 87: Patrol from the nearest settlement
+    - roll <= 88: Unmarked settlement
+    - roll <= 89: The road disappears and the place looks nothing like on the map.
+    - roll <= 94: NPC appears with quest. (Use Chapter 7).
+    - roll <= 100: Monster! Level-appropriate {~hard|hard|hard|<i>deadly</i>} encounter.
+}
 ->->
 
 === create_place ===
@@ -56,3 +125,4 @@ Place
 === monster_by_terrain_table ===
 TODO: monster_by_terrain_table
 - ->->
+

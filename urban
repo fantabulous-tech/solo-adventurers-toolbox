@@ -1,0 +1,84 @@
+=== urban_encounter_table ===
+~ roll = d100()
+
+{
+    - roll <= 1: You witness a crime and they have a chance to stop the criminal. If you do, you win the favor of the local constabulary. If you try to but fail, the guard gives you an opportunity to help track down the criminal. If you do nothing, you must convince the guard you are not an accomplice.
+    - roll <= 2: Stampede of pigs
+    - roll <= 3: A cry rings out through the town. “An army is massing outside the gates!” Are they human, orc, mind flayer? You had better go and find out, or flee right now!
+    - roll <= 4: A mysterious hooded beggar conspicuously ducks into an alley as they walk by - they appeared to have a disfigurement. Perhaps they were just trying to hide from people.
+    - roll <= 5: A guided tour proceeds past, as the guide drops a particularly tasty snippet of local knowledge which the PC was unaware of.
+    - roll <= 6: A shady figure beckons from an alley. They have wondrous items for sale, they say.
+    - roll <= 7: Two old ladies, witches of some sort by the look of them, beg you to take a creature off their hands. (Roll Creature Table, Chapter 14). “It never shuts up!” they tell you. “Please, we’ll pay you! We just want to be rid of the damnded thing!” The creature is the trapped soul of a former adventurer...
+    - roll <= 8: Two men are arguing about something. One turns to a PC and says, "You look like a reasonable man. What do you think?" Could be literally anything at all, and could result in combat, a job, or just more arguing.
+    - roll <= 9: Quest board with rewards for deeds done. Someone has rats in their cellar, missing townsperson in the woods neaby, simple things (or complex!) that give you little things to do that keep you exploring the city, making contacts, and earning gold/interesting items. Use Chapter 14 tables or Q/A rolls to generate.
+    - roll <= 10: A card shark/con artist is busking in the street, a large crowd gathers.
+    - roll <= 11: Two local thugs are strong arming a merchant for gold. You can help the merchant, but doing so annoys the local gang. Variation: The merchant is a thief, and the thugs are trying to recover their stolen money.
+    - roll <= 12: You notice a group of villagers attempting to put out a nearby house fire. This looks like it could easily spread to neighbouring houses, possibly affecting the whole town.
+    - roll <= 13: A peddler attempts to sell you a trinket or minor magic item.
+    - roll <= 14: A giant rat crawls out of a storm drain and gets into a fight with a dog.
+    - roll <= 15: Minor earthquake shakes things up and in the ensuing panic looters take advantage. Does the party join them, or stop them?
+    - roll <= 16: Merchant asking for help stopping local children with slingshots.
+    - roll <= 17: A young urchin is in an alley, cornered by either thugs or stray dogs.
+    - roll <= 18: Street is having a block party tomorrow and need help setting up.
+    - roll <= 19: Someone sentenced to death: You happen across the hanging/beheading scene before it concludes, what do you do?
+    - roll <= 25: Monster: Level appropriate easy encounter.
+    - roll <= 26: A con man is selling jewels and rare components that you might need.
+    - roll <= 27: A chamber pot is emptied from above. Make a DC 13 dex save to avoid. If unsuccessful, you disadvantage all charisma and stealth related rolls until you have a bath and change clothes. (Optional: make a con save vs filth fever).
+    - roll <= 28: A scrap of paper is pressed into your hand by a young man, who looks at you desperately before turning and running away. You turn over the note and read it. “Please help, he’s coming for us all!”
+    - roll <= 29: A member of the local guard asks you what your business is in town.
+    - roll <= 30: “Stop, thief!” You feel your arms being grabbed. The local guard apprehend you, accusing you of stealing jewels belonging to a noble/royal. Searching your clothes, and/or bag, they successfully turn up the jewels in question. You, however, have never seen them before.
+    - roll <= 31: A lady / young man on a balcony blows you a kiss and then runs away.
+    - roll <= 32: A beggar crouches in a dark corner, clearly diseased.
+    - roll <= 33: Someone mistakes you for a mercenary, famous performer, or an old friend. They have face blindness. 2% of the population have it.
+    - roll <= 34: A bard strikes up a song and starts following you around.
+    - roll <= 35: A beggar notices the group and offers to guide them around in exchange for coin.
+    - roll <= 36: Bar fight bursts out into the street and may involve the PC.
+    - roll <= 37: Propositioned. Person of the night propositions a player. But they may not be all they seem...
+    - roll <= 38: A drunkard sees you and mistakes them for friends or enemies or perhaps throws up on you.
+    - roll <= 39: A person who claims to be a fan of the PC begins to follow them around
+    - roll <= 40: Snake Oil Salesman has gathered a crowd, and has actors in the group to fool people into buying worthless potions. Bonus: they're not worthless, but definitely not as advertised. A healing potion that's really gaseous form? Make Q/A rolls to determine results.
+    - roll <= 41: Group of smugglers coming out of a sewer grate with a crate of goods.
+    - roll <= 42: An old female fortune teller beckons to you from her tent.
+    - roll <= 43: A man tumbles out a tavern window. He’s fully dressed in nobleman’s garb. A female half-orc jumps out after him, letting out a warcry as he gets up and runs for his life screaming for help. Do you help her and run him down or do you get in her way? Possible: No matter who you help they both begin attacking you!
+    - roll <= 44: A street dog runs past with a human hand in its mouth - wearing a large, very obvious jeweled ring. Dog chase or find out what happened to the owner of the ring (and hand).
+    - roll <= 45: Someone's horse is spooked and charges through the streets. whether it’s dragging a wagon or just a rider, it is panicked and needs to be stopped.
+    - roll <= 46: You find a map, discarded, on the street, or just a fragment of one, which arouses your curiosity. It shows a ruin, and there is a sketch of an artifact. Magical? Perhaps a local mage could help you decode this...
+    - roll <= 47: A drunk just wakes up nearby. “Wha… where am I?! My… my weapons! My belongings! They’re gone!”
+    - roll <= 48: You stop to listen to a talented storyteller relate a story about a famous adventurer and his beast companion. Part of the story is unresolved, however, and gets you thinking...
+    - roll <= 49: You feel a thwack in the side of your head, and turn to see that a bunch of drunk young nobles are pelting passers by with rotten vegetables, laughing as they do so!
+    - roll <= 55: Monster: Level appropriate medium encounter.
+    - roll <= 56: Your sharp eye spots a pickpocket deftly relieve a noblewoman of an expensive
+    - roll <= 28: necklace.
+    - roll <= 57: A wizard is carrying a bagful of potions when suddenly the bag rips (perhaps it catches on a nail sticking out of a building, or it catches on a passing cart) and several potions drop out and smash on the ground, exploding with various dramatic effects.
+    - roll <= 58: A jeweller emerges from his shop, screaming that he’s been robbed by dwarves. A nearby dwarf asks him for proof, but all he has to say is, “Of course it’s dwarves, they lust after gems constantly!”
+    - roll <= 59: A female priest is castigating a businesswoman who has set up her wares before the temple (of Lathander, perhaps? Any good-aligned god). Except this business is no ordinary business - a female slaver is parading her wares, selling slaves to whoever’s buying.
+    - roll <= 62: Something occurs, or you find something, that requires a (roll d10) 1: acrobatics / dex check or save, 2: strength or athletics check, 3: stealth check, 4: con check or save, 5: int check, 6: investigation check, 7: arcana check, 8: history check, 9: nature check, 10: religion check. Use Q/A rolls or Story Element Interaction tables (chapter 14) to find out what.
+    - roll <= 65: Something occurs, or you find something, that requires a (roll d10), 1: animal handling check, 2: insight check, 3: survival check, 4: medicine check 5: perception check, 6: persuasion check, 7: performance check, 8: deception check, 9: inimidation check, 10: charisma check. Use Q/A roll or Story Element Interaction tables (chapter 14) to find out what.
+    - roll <= 69: NPC met, who gives PC information about possible quest. Go to Chapter 7 and generate a quest, which you may or may not accept.
+    - roll <= 75: Monster: Level-appropriate hard encounter. Monster on the loose, marauding through the streets.
+    - roll <= 76: You are stopped by the local guard who want to congratulate you on your recent successful quest. How do they know?
+    - roll <= 77: PC hears a rumour about a job that a local priest might have. Apparently, or so the rumour goes, something is going on in the sacred catacombs beneath the streets.
+    - roll <= 78: You pass a house which is all boarded up, the gates locked. A passerby informs you that this is the house of a local nobleman who hasn’t been seen in years.
+    - roll <= 79: You see a dice game going on in an alley off the street you are walking down.
+    - roll <= 80: A cleric stands atop a box on the roadside, spouting vitriol and nasty rumours about the town’s leader or leaders. The cleric has attracted quite a crowd.
+    - roll <= 81: A group of protestors has set up outside the Town Hall, protesting the new road which is planned to run right through the middle of their settlement, some distance out of town.
+    - roll <= 82: A merchant asks you to mind his cart for him while he chases a thief who has stolen merchandise from it. He then leaves, and doesn’t return for a very long time...
+    - roll <= 83: A street urchin appears, promising divine favour if the PC comes and volunteers an hour of service at a nearby temple.
+    - roll <= 84: A shopkeeper is attacking a wasp nest outside of his shop with a broom. He dislodges it and it crashes to the ground, engulfing him in a Swarm of Insects!
+    - roll <= 85: Two half-orcs are engaged in a full-on brawl outside a nearby tavern. Apparently one thinks the other cheated at dice.
+    - roll <= 86: Religious pilgrims making their way quietly through the streets are being mocked and jeered by a group of elven teenagers
+    - roll <= 87: A tattered cloak blows up the street. Catching hold of it, you find a note in one of its pockets.
+    - roll <= 88: Someone has released a hallucinogenic substance into the air, and people are in various states of intoxication.
+    - roll <= 89: A distraught mother cannot find her child and is convinced it has been kidnapped. She is moving from person to person, begging for help.
+    - roll <= 90: A sudden gust of wind whips through the town, sending stalls toppling over, hats flying, stacks of parchment fluttering down the street. Perhaps the PC discovers something as a result.
+    - roll <= 91: A dwarf, armed with greataxe, is threatening a cowering halfling, who is shaking with fear. The dwarf is living with rage, but has just been disarmed by the town guard. What’s the situation here? Has the halfling wronged him in some way?
+    - roll <= 92: An overturned cart ahead is causing gridlock - the street is jammed with traffic.
+    - roll <= 93: “Ay oop luv, looking for a good time?” A prostitute (any sex or race) begins soliciting you earnestly.
+    - roll <= 94: Suddenly, out of the blue, you see a mage of some sort simply appear in the middle of the street/alley.
+    - roll <= 99: NPC appears with quest (see Chapter 7)
+    - roll <= 100: Monster: Level appropriate deadly encounter.
+}
+
+->->
+
+

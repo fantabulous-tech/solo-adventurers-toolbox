@@ -1,0 +1,122 @@
+=== create_quest ===
+~ roll = d100()
+
+Source: <>
+
+~ roll = d100()
+{
+    - roll <= 3:   Notice board
+    - roll <= 6:   NPC
+    - roll <= 9:   Tavern rumour
+    - roll <= 13:  Stumble into situation
+    - roll <= 16:  Guild affiliate
+    - roll <= 19:  Fellow adventurer
+    - roll <= 22:  Mysterious scroll with info on it
+    - roll <= 25:  Hidden piece of paper inside a basic reward / purchase a pc makes
+    - roll <= 28:  Treasure map
+    - roll <= 31:  Found journal - Owner missing
+    - roll <= 34:  Partial map
+    - roll <= 37:  Inheritance - be it a place, an item, or a title.
+    - roll <= 40:  Geas or Quest Spell
+    - roll <= 43:  Unholy visions
+    - roll <= 46:  A lost map or letter found
+    - roll <= 49:  Sent on mission by friend or relative
+    - roll <= 52:  A dream
+    - roll <= 55:  Local temple gives you the quest
+    - roll <= 58:  Rumour picked up at guard station
+    - roll <= 61:  Merchant’s Guild / merchants
+    - roll <= 64:  Noble family entrusts you
+    - roll <= 67:  Event sparks a memory
+    - roll <= 70:  Divine inspiration
+    - roll <= 73:  Overheard conversation
+    - roll <= 76:  Passing traveller
+    - roll <= 79:  Entrusted with delivering a parcel. Something compels you to peek inside!
+    - roll <= 83:  Herald makes proclamation in market square
+    - roll <= 87:  Orders from higher command, guild or society (from afar perhaps)
+    - roll <= 90:  Note on dead creature
+    - roll <= 93:  You awake with a map tattooed on you!
+    - roll <= 97:  Natural disaster reveals something
+    - roll <= 100: A friend has died as a result of this situation, you must avenge!
+}
+<> <br/> <>
+{
+    - roll <= 4:
+        Problem: Unjust killing <br/> <>
+        Quest: Revenge
+    - roll <= 8:
+        Problem: Crime committed, chriminal disappeared <br/> <>
+        Quest: Apprehend/Bounty Hunt
+    - roll <= 12:
+        Problem: Item lost <br/> <>
+        Quest: Retrieval
+    - roll <= 16:
+        Problem: Tyrant(s) threaten town/business/population (monster/humanoid) <br/> <>
+        Quest: Repel/Sabotage/Deceive/Sabotage/Extort/Entrap
+    - roll <= 20:
+        Problem: Environmental disturbance/Strange weather/Infestation/Plague <br/> <>
+        Quest: Investigate/Solve
+    - roll <= 24:
+        Problem: Magical choas/Curse <br/> <>
+        Quest: Investigate/List curse/Destroy magic
+    - roll <= 28:
+        Problem: Kidnapping/Hostage situation <br/> <>
+        Quest: Rescue/Recover
+    - roll <= 32:
+        Problem: Adventurer left some time ago, but is lost <br/> <>
+        Quest: Rescue
+    - roll <= 36:
+        Problem: Something is rumoured, but undiscovered (Artefact, legendary place) <br/> <>
+        Quest: Explore/Discover
+    - roll <= 40:
+        Problem: Riches rumoured within secure, guarded place <br/> <>
+        Quest: Loot
+    - roll <= 44:
+        Problem: Invasion <br/> <>
+        Quest: Repel/Divert
+    - roll <= 48:
+        Problem: Person suspected of something <br/> <>
+        Quest: Spy/Gather information
+    - roll <= 52:
+        Problem: Important item/message/person needs transporting <br/> <>
+        Quest: Transport/smuggle/escort
+    - roll <= 56:
+        Problem: Nefarious/dangerous item being transported <br/> <>
+        Quest: Waylay/Hijack
+    - roll <= 60:
+        Problem: Dangerous item exposed/up for grabs <br/> <>
+        Quest: Find/Destroy
+    - roll <= 64:
+        Problem: Corrupt noble <br/> <>
+        Quest: Investigate/Implicate/Incriminate/Expose
+    - roll <= 68:
+        Problem: Commodity shortage (goods, workforce) <br/> <>
+        Quest: Transport supplies
+    - roll <= 72:
+        Problem: Mystery unresolved <br/> <>
+        Quest: Resarch/Explore/Decode
+    - roll <= 76:
+        Problem: Adventurer thrown into life-threatening situation (enviornmental or otherwise) <br/> <>
+        Quest: Survive
+    - roll <= 80:
+        Problem: Worthy creature's life threatned (humanoid/animal/monster) <br/> <>
+        Quest: Protect, eliminate threat
+    - roll <= 84:
+        Problem: Execution of innocent party planned <br/> <>
+        Quest: Prevent
+    - roll <= 88:
+        Problem: Siege (anything from a small party of goblins surrounding a farmhouse to an army of Imperial Blades surrounding a city!) <br/> <>
+        Quest: Break
+    - roll <= 92:
+        Problem: Huge battle about to erupt <br/> <>
+        Quest: Negotiate/Prepare/Mediate/Participate
+    - roll <= 96:
+        Problem: Spritually beneficial place rumoured <br/> <>
+        Quest: Visit/Gain boon
+    - else:
+        Problem: Foolish individual committed innocent blunder <br/> <>
+        Quest: PC hired to conceal evidene/Return item/Placate
+}
+
+Now decide WHAT, WHY, WHEN, WHERE, HOW, and WHO. Use Q/A rolls to get answers.
+
+->->

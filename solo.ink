@@ -1,11 +1,14 @@
+INCLUDE clue
+INCLUDE dungeon
+INCLUDE monsters
+INCLUDE npc
+INCLUDE quests
 INCLUDE situations
 INCLUDE stats
-INCLUDE travel
-INCLUDE monsters
 INCLUDE tavern
-INCLUDE npc
+INCLUDE travel
+INCLUDE urban
 INCLUDE wilderness
-
 
 
 
@@ -40,6 +43,9 @@ VAR stat_survival_bonus = 0
 + <b>Roll Dice [Menu]</b>
     -> roll_dice_menu -> main_menu
     
++ <b>Dungeon Menu</b>
+    -> dungeon_menu -> main_menu
+    
 + <b>Wilderness/Travel Menu</b>
     -> wilderness_menu -> main_menu
     
@@ -63,6 +69,14 @@ VAR stat_survival_bonus = 0
     -> create_tavern ->
     ~again = -> create_tavern
 
++ Create Clue
+    -> create_clue ->
+    ~again = -> create_clue
+
++ Create Quest
+    -> create_quest ->
+    ~again = -> create_quest
+
 + Create Creature
     -> create_creature ->
     ~again = -> create_creature
@@ -76,6 +90,20 @@ VAR stat_survival_bonus = 0
     ~again = -> story_element_interaction_table
 
 + [Back] -> main_menu
+
+- (sub_menu)
++ [Again] -> again -> sub_menu
++ [Back] -> create_menu
+
+
+=== dungeon_menu ===
+
+You can also use the <a href="https://watabou.itch.io/one-page-dungeon">One Page Dungeon Generator</a>
+
++ Dungeon Enounter Table
+    -> dungeon_encounter_table ->
+    ~ again = -> dungeon_encounter_table
+
 
 - (sub_menu)
 + [Again] -> again -> sub_menu
