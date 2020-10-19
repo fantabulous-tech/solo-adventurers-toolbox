@@ -98,7 +98,8 @@ VAR stat_survival_bonus = 0
 
 === dungeon_menu ===
 
-You can also use the <a href="https://watabou.itch.io/one-page-dungeon">One Page Dungeon Generator</a>
+You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon">One Page Dungeon Generator</a>
+https:\/\/watabou.itch.io/one-page-dungeon
 
 + Dungeon Enounter Table
     -> dungeon_encounter_table ->
