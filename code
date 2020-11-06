@@ -1,0 +1,230 @@
+
+=== base_menu ===
+
++ <b>[Settings]</b>
+    -> edit_settings -> main_menu
+
++ <b>Roll Dice</b>
+    -> roll_dice_menu -> main_menu
+
++ <b>Create</b>
+    -> create_menu -> main_menu
+
++ Generic Skill Check
+    -> skill_check ->
+    ~again = -> skill_check
+
++ Yes/No Question
+    -> yes_no_question ->
+    ~again = -> yes_no_question
+
+
+
+- (sub_menu)
++ [Again] -> again -> sub_menu
++ [Back] -> main_menu
+
+
+=== main_menu ===
+<b>Main Menu</b> #CLEAR
+
+~ back_menu = main_menu
+
+<- base_menu
+
++ [Travel] -> travel_menu -> main_menu
+
+
+=== roll_dice_menu ===
++ 1d4[] Result: {d4()}🎲
++ 1d6[] Result: {d6()}🎲
++ 1d8[] Result: {d8()}🎲
++ 1d10[] Result: {d10()}🎲
++ 1d12[] Result: {d12()}🎲
++ 1d20[] Result: {d20()}🎲
++ 1d100[] Result: {d100()}🎲
++ [Back] -> main_menu
+
+- -> roll_dice_menu
+
+
+
+
+=== yes_no_question ===
+-> yes_no_test("Given all circumstances, how likely is the occurrence?", -> yes, -> no, -> maybe)
+
+= yes
+->->
+
+= no
+->->
+
+= maybe
+
+There is some other condition that needs to be fulfilled for the thing to happen (or not happen, as the case may be), perhaps an appropriate ability check to overcome a relevant obstacle or achieve a stated goal. Or, it could be that other yes/no/maybe questions need to be asked in order to determine what the condition is. Another way of getting answers to a maybe is to make a roll or two on the Situations table in Chapter 15. That might add the necessary detail. Or, if you get a maybe roll, you can just decide whether it’s yes or no yourself.
+
+->->
+
+
+=== yes_no_test(question, -> yes, -> no, -> maybe) ===
+{question}
+
++ Impossible (-6)
+    ~ bonus = -6
++ Highly Unlikely (-4)
+    ~ bonus = -4
++ Unlikely (-2)
+    ~ bonus = -2
++ Possible (0)
+    ~ bonus = 0
++ Likely (+2)
+    ~ bonus = 2
++ Highly Likely (+4)
+    ~ bonus = 4
++ A Certainty (+6)
+    ~ bonus = 6
+    
+- 
++ [Roll 1d20]
+
+- Rolling 1d20...
+~ roll = d20()
+~ result = roll + bonus
+
+{
+- result <= 6:
+    Answer: No. {DisplayResult()} < 6
+    -> no
+- result <= 12:
+    Answer: Maybe. 6 < {DisplayResult()} <= 12
+    -> maybe
+- else:
+    Answer: Yes. {DisplayResult()} > 12
+    -> yes
+}
+
+=== skill_check ===
+Skill:
++ -5
+    ~ bonus = -5
++ -4
+    ~ bonus = -4
++ -3
+    ~ bonus = -3
++ -2
+    ~ bonus = -2
++ -1
+    ~ bonus = -1
++ 0
+    ~ bonus = 0
++ \+1
+    ~ bonus = 1
++ \+2
+    ~ bonus = 2
++ \+3
+    ~ bonus = 3
++ \+4
+    ~ bonus = 4
++ \+5
+    ~ bonus = 5
+
+- 
+Difficulty:
+
++ Very Easy (5)
+    ~ difficulty = 5
++ Easy (10)
+    ~ difficulty = 10
++ Moderate (15)
+    ~ difficulty = 15
++ Hard (20)
+    ~ difficulty = 20
++ Very Hard (25)
+    ~ difficulty = 25
++ Nearly Impossible (30)
+    ~ difficulty = 30
+
+-
+
+~ roll = d20()
+~ result = roll + bonus
+
+{DisplayD20Result(difficulty)}
+->->
+
+
+=== function DisplayResult() ===
+{bonus == 0:
+    ~ return "{roll}🎲"
+- else:
+    ~ return "{roll}🎲{DisplayBonus(bonus)} = {result}"
+}
+
+
+=== function DisplayD20Result(target) ===
+{
+    - roll == 20:
+        ~ return "Critical Success!! {DisplayResultTarget(target)}"
+    - roll == 1:
+        ~ return "Critical Failure!! {DisplayResultTarget(target)}"
+    - result > target:
+        ~ return "Success! {DisplayResultTarget(target)}"
+    - else:
+        ~ return "Failure. {DisplayResultTarget(target)}"
+}
+
+
+
+=== function DisplayResultTarget(target) ===
+~ return DisplayResult() + "/" + target
+
+
+=== function DisplayBonus(b) ===
+{b >= 0:
+    ~ return "+{b}"
+- else:
+    ~ return b
+}
+
+=== function P(target) ===
+~ return d100() <= target
+
+=== function d4 ===
+~ return RANDOM(1,4)
+
+=== function d6 ===
+~ return RANDOM(1,6)
+
+=== function d8 ===
+~ return RANDOM(1,8)
+
+=== function d10 ===
+~ return RANDOM(1,10)
+
+=== function d12 ===
+~ return RANDOM(1,12)
+
+=== function d20 ===
+~ return RANDOM(1,20)
+
+=== function d100 ===
+~ return RANDOM(1,100)
+
+
+
+=== function log(text) ===
+<i>~~ {text} ~~</i>
+
+=== function logError(text) ===
+<i>!!! {text} !!!</i>
+
+
+
+
+
+
+
+
+
+
+

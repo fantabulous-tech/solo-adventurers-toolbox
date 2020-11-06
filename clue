@@ -101,7 +101,7 @@
     - roll <= 97: A bag of feathers. A successful nature check (DC 12) reveals them to be from a harpy.
     - roll <= 98: You find a parchment containing what looks like a recipe for a particular kind of potion.
     - roll <= 99: A pouch of spell components
-    - roll <= 100: Magic item! Relevant to quest. Roll once on table (d4) 1-2: A, 3-4: B
+    - roll <= 100: Magic item! Relevant to quest. Roll once on Table {~A|B}
 }
 
 

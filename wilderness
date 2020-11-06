@@ -1,3 +1,117 @@
+
+
+=== wilderness_menu ===
+
+~ back_menu = -> wilderness_menu
+
+
+<b>{DisplayTerrain()} Menu</b> ({DisplayWeatherSummary()}) #CLEAR
+
+<- base_travel_menu
+
++ [Roll Weather (Currently {DisplayWeather()})]
+    -> weather -> wilderness_menu
+
++ Roll for Encounter ({DisplayTerrain()})
+    -> wilderness_encounter_check ->->
+
++ Roll for Unmarked Settlement
+    -> unmarked_settlement_check ->
+    ~again = -> unmarked_settlement_check
+    
++ Camp for the Night
+    -> camping_menu -> wilderness_menu
+
++ [Back] -> main_menu
+
+- (sub_menu)
++ [Again] -> again -> sub_menu
++ [Back] -> wilderness_menu
+
+
+=== camping_menu ===
+
+{terrain == unknown_terrain: -> edit_terrain ->}
+
+~ back_menu = -> camping_menu
+
+<b> {DisplayTerrain()} Camping Menu</b> ({DisplayWeatherSummary()})
+    
++ Find Campsite Check
+    -> find_campsite_check -> camping_menu
+    ~again = -> find_campsite_check
+
++ Disturbances While Camping Check
+    -> disturbance_while_camping_check -> camping_menu
+    ~again = -> disturbance_while_camping_check
+
++ [Back]
+
+- ->->
+
+=== weather ===
+-> roll_weather ->
+The weather in {DisplayTerrain()} is now "{current_weather}".
+->->
+
+
+=== roll_weather ===
+{terrain == unknown_terrain || terrain == dungeon || terrain == urban:-> edit_terrain ->}
+{season == unknown_season: -> edit_season ->}
+
+
+{terrain:
+    - mountain: ~ bonus = -5
+    - desert: ~ bonus = 5
+    - else: ~ bonus = 0
+}
+
+~ roll = d20()
+~ result = roll + bonus
+
+{season:
+    - summer:
+        {
+            - result <= 1: ~ current_weather = "Unseasonably Cold"
+            - result <= 4: ~ current_weather = "Rainy"
+            - result <= 8: ~ current_weather = "Overcast"
+            - result <= 11: ~ current_weather = "Clear, Warm"
+            - result <= 18: ~ current_weather = "Clear, Hot"
+            - else: ~ current_weather = "Very Hot"
+        }
+    - autumn:
+        {
+            - result <= 1: ~ current_weather = "Sleet/Blizzard"
+            - result <= 4: ~ current_weather = "Rainy"
+            - result <= 8: ~ current_weather = "Light Rain"
+            - result <= 11: ~ current_weather = "Overcast"
+            - result <= 18: ~ current_weather = "Clear"
+            - else: ~ current_weather = "Hot"
+        }
+    - winter:
+        {
+            - result <= 1: ~ current_weather = "Heavy Snow"
+            - result <= 4: ~ current_weather = "Snowstorm"
+            - result <= 8: ~ current_weather = "Rain"
+            - result <= 11: ~ current_weather = "Overcast"
+            - result <= 18: ~ current_weather = "Clear"
+            - else: ~ current_weather = "Unseasonably Warm"
+        }
+    - spring:
+        {
+            - result <= 1: ~ current_weather = "Sleet/Blizzard"
+            - result <= 4: ~ current_weather = "Rain"
+            - result <= 8: ~ current_weather = "Overcast"
+            - result <= 11: ~ current_weather = "Clear"
+            - result <= 18: ~ current_weather = "Warm"
+            - else: ~ current_weather = "Hot"
+        }
+}
+-
+->->
+
+
+
 === create_structure ===
 ~ roll = d100()
 
@@ -43,6 +157,175 @@ TODO: GetLake()
 ~ return "lake"
 
 
+=== unmarked_settlement_check ===
+{population == pop_unknown: -> edit_population ->}
+
+~ roll = d4()
+~ chances = roll - 1
+~ total = 0
+~ count = 0
+
+1d4-1 Chances: {chances} ({roll}🎲-1)
+
+
+{chances <= 0:
+    No unmarked settlements.
+    ->->
+}
+
+{population:
+    - pop_low: ~difficulty = 5
+    - pop_medium: ~ difficulty = 10
+    - pop_high: ~ difficulty = 20
+    - else:
+        ~ logError("Unknown population found: {population}.")
+}
+
+Based on {DisplayPopulation()} Population Density, each d100 check has a {difficulty}% chance.
+
+- (try)
+
+~ roll = d100()
+~ bonus = 0
+{DisplayResultTarget("{difficulty}%")}
+
+{roll <= difficulty:
+    ~ total++
+}
+
+~ count++
+{count < chances:
+    <>, <>
+    -> try
+}
+<> rolled.
+
+{total <= 0:
+    No unmarked settlements.
+    ->->
+- else:
+    You will come across {total} settlement{total > 1:s}.
+}
+
+~ count = 0
+
+- (add_settlement)
+~ count++
+-> unmarked_settlement_table ->
+
+{count < total:
+    -> add_settlement
+}
+
+- 
+->->
+
+
+=== unmarked_settlement_table ===
+{shuffle:
+    - {~Large Camp|Caravan} ({P(25):abandoned|pop:{d20()}})
+    - Cottage (pop:{d10()})
+    - Large Encampment (pop:{RANDOM(50,100)})
+    - Hamlet (pop:{RANDOM(50,150)})
+    - Work Crew (pop:{RANDOM(50,200)})
+    - Stationed Garrison (pop:{RANDOM(100,300)})
+    - Fort (pop:{RANDOM(200,400)})
+    - Village (pop:{RANDOM(300,1000)})
+    - Encamped Army (pop:{RANDOM(1000,3000)})
+    - Refugee Encampment (pop:{RANDOM(500,5000)})
+}
+
+- ->->
+
+
+=== wilderness_encounter_check ===
+{population == pop_unknown: -> edit_population ->}
+
+~ total = GetWildernessEncounterCheckCount()
+
+Based on {DisplayPopulation()} population and traveling during the {DisplayTime()}, we will check {total} times.
+~ count = 0
+~ temp encounterCount = 0
+
+- (check_again)
+~ count++
+
+Check {count}/{total}
+
+- 
+~ roll = d100()
+~ bonus = 0
+~ result = roll
+
+{result <= 25:
+    ~ encounterCount++
+}
+
+{DisplayResultTarget("25%")}
+
+- {count < total: -> check_again}
+
+Encounters: {encounterCount}
+
+~ total = encounterCount
+~ count = 0
+
+{count < total:
+    ~count++
+    -> encounter ->
+}
+
++ [Encounter Complete]
+Encounter checks complete.
+
+-> back_menu
+
+
+= no_encounter
+
+No encounter.
+
+{DisplayResultTarget("25%")}
+
+->->
+
+
+= encounter
+You have an encounter!
+
+
++ Use Wilderness Enounter Table
+    -> wilderness_encounter_table ->->
++ Use Story Element Interaction Table
+    -> story_element_interaction_table ->->
+
+
+
+=== function GetWildernessEncounterCheckCount() ===
+~ temp checkCount = 0
+
+{population:
+    - pop_low: ~ checkCount = 1
+    - pop_medium: ~ checkCount = 2
+    - pop_high: ~ checkCount = 3
+    - else:
+        ~logError("Unrecognized population. Assuming 'medium'.")
+        ~ checkCount = 2
+}
+
+{time == day:
+    ~ checkCount = checkCount * 2
+}
+
+~ return checkCount
+
+
+=== create_place ===
+TODO: create_place
+Place
+- ->->
+
+
 === wilderness_encounter_table ===
 ~ roll = d100()
 
@@ -57,7 +340,7 @@ TODO: GetLake()
     - roll <= 16: Abandoned campsite found. Use Q/A rolls to find out more.
     - roll <= 17: A tree with what looks like Druid markings.
     - roll <= 18: You find survivors of some sort of attack, and they have a tale to tell...
-    - roll <= 19: Plundered barrow / burial mound. But did they get everything? And what still waits there? (50% mostly empty)
+    - roll <= 19: Plundered barrow / burial mound. But did they get everything? And what still waits there? ({P(50):mostly empty|occupied})
     - roll <= 20: On the road, a dropped item. A backpack, a purse with interesting contents / a hat with a note tucked inside / an engraved ring… could be anything. Use Q/A roll to find out details.
     - roll <= 21: Interesting traveller. This character has obviously seen some things...
     - roll <= 22: Cemetery. Some of the graves have been looted, and most of the tombstones are so old that the names have worn off.
@@ -72,7 +355,7 @@ TODO: GetLake()
     - roll <= 31: Abandoned mine, dwarven or otherwise.
     - roll <= 32: You hear howling in the distance. It could be wolves, but the sound is strange somehow...
     - roll <= 33: Debris from a recent, large battle. Who fought here, and who won? How recent was this?
-    - roll <= 34: Humanoid corpse. 25% yoiu find a clue (see Clue table in Chapter 9).
+    - roll <= 34: Humanoid corpse. {P(25): You find a clue. (see Clue table in Chapter 9).}
     - roll <= 35: A bird (or some other creature – roll Creature Table Chapter 14) begins talking to you, in fluent Common! And not just mindless parroting...
     - roll <= 36: A royal/noble personage and their entourage passes in an opulent carriage.
     - roll <= 37: A flock of birds (vultures? ravens?) circles over a point somewhere overhead
@@ -99,7 +382,7 @@ TODO: GetLake()
     - roll <= 75: Monster: Level appropriate hard encounter.
     - roll <= 76: A starving family begging for food or gold
     - roll <= 77: A tribe who owns the land demands a tribute from you for passage (and in return will escort you through – whether you like it or not).
-    - roll <= 78: A travelling troupe of performers (80% Friendly)
+    - roll <= 78: A travelling troupe of performers ({P(80):Friendly|Unfriendly})
     - roll <= 79: A travelling merchant, but his wares are not the ordinary. Indeed, much of it is illegal in some way. Is he a smuggler? A drug dealer? A heist thief?
     - roll <= 80: Hunters/travellers/adventurers. Camped up and relaxing.
     - roll <= 81: You see a low rocky hill, where faces have been carved into the rocks, along with the shapes of various beasts. It is artfully done, and seems to tell some sort of story.
@@ -114,15 +397,6 @@ TODO: GetLake()
     - roll <= 94: NPC appears with quest. (Use Chapter 7).
     - roll <= 100: Monster! Level-appropriate {~hard|hard|hard|<i>deadly</i>} encounter.
 }
-->->
 
-=== create_place ===
-TODO: create_place
-Place
-- ->->
-
-
-=== monster_by_terrain_table ===
-TODO: monster_by_terrain_table
-- ->->
-
++ [Encounter Complete] ->->
++ [Cancel] -> back_menu

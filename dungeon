@@ -1,3 +1,525 @@
+
+
+=== dungeon_menu ===
+~ back_menu = -> dungeon_menu
+
+<b>{DisplayTerrain()} Terrain Menu</b>
+
+You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target="_blank">One Page Dungeon Generator</a>
+
++ Enter Dungeon
+    -> random_dungeon -> dungeon_menu
+
++ Camp for the Night
+    -> camping_menu -> dungeon_menu
+
++ Dungeon Enounter Table
+    -> dungeon_encounter_table ->
+    ~ again = -> dungeon_encounter_table
+
+
+- (sub_menu)
++ [Again] -> again -> sub_menu
++ [Back] -> create_menu
+
+
+=== random_dungeon ===
+~ dungeon_room_found = 0
+~ dungeon_size = dng_unknown
+~ dungeon_type = dtype_unknown
+~ dungeon_rooms = 0
+~ dungeon_stairs = 0
+~ dungeon_traps = 0
+~ dungeon_clues = 0
+~ dungeon_passages = 0
+~ dungeon_doors = 0
+~ dungeon_secret_doors = 0
+
+-> edit_dungeon_size ->
+-> edit_dungeon_type ->
+
+{dungeon_size == dng_unknown || dungeon_type == dtype_unknown: -> dungeon_menu}
+
+{shuffle:
+    - ~ dungeon_passages++
+    - ~ dungeon_rooms++
+}
+
+-> menu
+
+
+= menu
+
++ {dungeon_clues}[Look at Clue (x{dungeon_clues})]
+    ~ dungeon_clues--
+    -> create_clue -> menu
++ {dungeon_traps}[Look at Trap (x{dungeon_traps})]
+    ~ dungeon_traps--
+    -> create_trap -> menu
++ {dungeon_doors}[Look at Door (x{dungeon_doors})]
+    ~ dungeon_doors--
+    -> create_dungeon_door -> menu
++ {dungeon_secret_doors}[Look at Secret Door (x{dungeon_secret_doors})]
+    ~ dungeon_secret_doors--
+    -> create_secret_door -> menu
++ {dungeon_stairs}[Take Stairs (x{dungeon_stairs})]
+    ~ dungeon_stairs--
+    -> enter_stairs -> menu
++ {dungeon_passages}[Take Passage (x{dungeon_passages})]
+    ~ dungeon_passages--
+    -> enter_passage
++ {dungeon_room_found < dungeon_room_total && dungeon_rooms}[Enter Room (x{dungeon_rooms})]
+    ~ dungeon_rooms--
+    -> enter_room
++ Yes/No Question
+    -> yes_no_question -> menu
++ [Exit Dungeon]
+
+- ->->
+
+= enter_passage
+{DisplayDungeonSummary()} - Passage
+
+
+Passage Description:<br><>
+{shuffle:
+    - Passage continues {d4()*10} ft.
+        ~ dungeon_passages++
+    - Passage goes 15 ft and ends at door.
+        ~ dungeon_doors++
+    - Passage goes 30 ft and ends in stairs.
+        ~ dungeon_stairs++
+    - Passage turns left 90 degrees.
+        ~ dungeon_passages++
+    - Passage turns right 90 degrees.
+        ~ dungeon_passages++
+    - Passage dead ends. Return to last feature you want to explore.<>
+        ~ test = P(40)
+        {test:
+            Secret door. Notice DC(investigation) d10+7. If found, go to Secret Door choice.
+            ~ dungeon_secret_doors++
+        }
+    - Passage continues {d4()*10} ft and comes to a four way intersection.
+        ~ dungeon_passages += 3
+    - Passage continues {d4()*10} ft and comes to a T-junction.
+        ~ dungeon_passages += 2
+    - Passage continues {d6()*10} ft and then you see a side passage leading off to the left.
+        ~ dungeon_passages += 2
+    - Passage continues {d6()*10} ft and then you see a side passage leading off to the right.
+        ~ dungeon_passages += 2
+    - Passage ends in an open entrance to a room.
+        ~ dungeon_rooms++
+    - Door in right wall.
+        ~ dungeon_doors++
+        ~ dungeon_passages++
+    - Door in left wall.
+        ~ dungeon_doors++
+        ~ dungeon_passages++
+    - Secret door on passage wall (player’s choice which wall). Roll perception DC 15. If successful, go to Secret Door. If not, roll again on Passage Table, continuing along (as your PCs didn’t notice.)
+        ~ dungeon_secret_doors++
+    - Passage narrows {d6()/2*10} ft. (minimum width 5 ft)
+        ~ dungeon_passages++
+    - Passage widens {d6()/2*10} ft. (minimum width 10 ft)
+    - Opening to the left, stairs.
+        ~ dungeon_passages++
+        ~ dungeon_stairs++
+    - Opening to the right, stairs.
+        ~ dungeon_passages++
+        ~ dungeon_stairs++
+    - ~ test = P(50)
+        {test:
+            ~ dungeon_passages++
+        - else:
+            ~ dungeon_rooms++
+        }
+        Opening in the floor, straight drop down {d10()*10} ft to a {test:Passage|Room}.
+        ~ dungeon_passages++
+    - -> create_architecture ->
+        ~ dungeon_passages++
+}
+
+~ roll = d100()
+~ total = roll + bonus
+
+Passage Contents ({DisplayResult()}):<br><>
+
+{
+    - total <= 69: Empty
+    - total <= 80: Empty apart from rubble. <>
+        ~ test = P(10)
+        {test:
+            Clue. Perception check DC 10 to find.
+            ~ dungeon_clues++
+        }
+    - total <= 84: Empty apart from corpse. <>
+        ~ test = P(20)
+        {test:
+            Clue on body.
+            ~ dungeon_clues++
+        }
+    - total <= 88: Empty apart from multiple corpses. <>
+        ~ test = P(40)
+        {test:
+            Clue on a body.
+            ~ dungeon_clues++
+        }
+    - total <= 90: Empty apart from enemies. 1 level-appropriate easy encounter. Loot 15%, Clue 15%
+    - total <= 92: Empty apart from enemies. 1 level-appropriate medium encounter. Loot 25%, Clue 25%
+    - total <= 94: Empty apart from enemies. 1 level-appropriate hard encounter. Loot 50%, clue 50%
+    - total <= 98: Trap! Use 'Look at Trap'
+        ~ dungeon_traps++
+    - else: Loot 60%. Roll DMG individual treasure: Challenge 0-4 table. Add 30 to roll. How did this loot get here?
+}
+
+~ bonus = 0
+
+-> menu
+
+= enter_room
+~ dungeon_room_found++
+
+{dungeon_room_found >= dungeon_room_total:
+    ~ dungeon_rooms = 0
+    All rooms explored.
+    -> menu
+}
+
+{DisplayDungeonSummary()} - Room \#{dungeon_room_found}
+
+
+Room Description:<br><>
+
+~ roll = d20()
+~ temp exits = 1
+
+{
+    - roll <= 2:
+        ~ exits = d6()
+        Rectangular, dimensions {d4()*10} ft x {d4()*10} ft. {exits} exits (including the one you entered by)
+    - roll <= 4:
+        ~ exits = d4()
+        Square, {(d4()+1)*10} ft. on all sides, {exits} exits.
+    - roll <= 6:
+        ~ exits = d6()
+        Square {(d6()+1)*10} ft. on all sides, {exits} exits
+    - roll <= 8:
+        ~ exits = d8()
+        Square, {(d8+1)*10} ft. on all sides, {exits} exits
+    - roll <= 10:
+        ~ exits = d6()
+        Rectangle, {(d4()+1)*10} ft x {(d8+1)*10} ft, {exits} exits
+    - roll <= 12:
+        ~ exits = d6()
+        Rectangle, {(d6()+1)*10} ft x {(d6()+2)*10} ft, {exits} exits
+    - roll <= 14:
+        ~ exits = d4()
+        Circular, {d4()*10} ft diameter, {exits} exits
+    - roll <= 15:
+        ~ exits = d4()
+        Triangular, {d6()*10} ft down one side, other sides whatever shape fits best, {exits} exits
+    - roll <= 16:
+        ~ exits = d4() - 2
+        {exits < 1:
+            ~ exits = 1
+        }
+        Pentagonal, {d4()*10} ft. across, {exits} exits
+    - roll <= 17:
+        ~ exits = d4() - 1
+        {exits < 1:
+            ~ exits = 1
+        }
+        Hexagonal, {d6()*10} ft. across, {exits} exits
+    - roll <= 18:
+        ~ exits = d4() - 1
+        {exits < 1:
+            ~ exits = 1
+        }
+        Octagonal, {d6()*10} ft. across, {exits} exits
+    - roll <= 19:
+        ~ exits = d4() - 2
+        {exits < 1:
+            ~ exits = 1
+        }
+        Trapezoidal, {d6()*10} ft roughly on each side.
+    - roll <= 20:
+        Rough cave, {d12()*10} ft width (approx)
+}
+
+
+~ roll = d100()
+~ result = roll + bonus
+
+Room Contents: ({DisplayResult()}):<br><>
+
+{
+    - result <= 4 : Level appropriate Deadly Encounter (see Chapter 16). Loot 45%, Clue 75%. Roll DMG Loot table appropriate to encounter.
+    - result <= 8 : Remnants / proof of the boss or BBEG. It looks as though they have been up to mischief in this room.
+    - result <= 12: Low level minions of the BBEG in this room. Level appropriate easy encounter.
+    - result <= 20: Dungeon Hazard. 1: sinkhole, 2: fungus, 3: trap, 4: collapsing masonry or other natural hazard, 5: wandering monster, medium difficulty, 6: Player’s choice.
+    - result <= 32: Level appropriate Hard Encounter (see Chapter 16). Clue, Loot, Random, SD all 30%.
+    - result <= 36: NPC in room investigating. Roll again to find out what they are investigating.
+    - result <= 40: A previously triggered trap is in this room, with a level appropriate Hard Encounter enemy caught in it / victim to it. Enemy alive, 30%. Loot 10%.
+    - result <= 52: Level appropriate Easy Encounter (see Chapter 16) Loot 20%, SD 10%, Clue 30%
+    - result <= 56: Obstacle of some sort (e.g. rubble, crevasse, sinkhole, underground stream, wild magic field). Athletics or acrobatics check might be required to pass it, or it might be impassable. (Alterntively, roll on Obstacles Table, DMG p.297)
+    - result <= 67: Level appropriate Medium Encounter (see Chapter 16) Loot 30%, SD 20%, Clue 30%
+    - result <= 71: NPC (enemy or ally of the PC) near death (1d4 levels less than you, minimum Level 1), unconscious, Level appropriate Hard Encounter. Enemy or enemies reduced to 50% hp. Loot 50%. A battle has obviously gone on here - the NPC has fought a powerful creature, and lost, but has damaged it somewhat.
+    - result <= 74: Two level appropriate ([d4] 1-2: Easy, 3-4: Medium) creatures are engaged in battle with each other. You stumble in just as battle starts. How do you react? Hide and wait until a victor emerges? What are they fighting over? Since they are otherwise engaged, you have advantage on stealth checks to creep up. (DC is the creature’s passive perception)
+    - result <= 76: Deserted but for some strange runes and symbols on the floor. Magical? Perhaps.
+    - result <= 80: Strong NPC (2d4 levels higher than your PC) has just defeated a Level Appropriate Deadly Encounter. Roll d4 to determine attitude. 1-2: They tell you to begone, they stake claim to this dungeon and all within it. Will fight if challenged. However, also will agree to split zup and going seperate ways, perhaps 3-4: Will team up with you for the remainder of this dungeon, and split the loot, and then will depart. (CR of all encounters from here on increases by 1d4). Random, SD, Trap all 30% Roll on NPC table, skipping professions and going straight to classes. NPC level is determined above.
+    - result <= 84: Empty. Mission relevant loot chance 30%.
+    - result <= 88: Level appropriate Easy Encounter (see Chapter 16). Clue, NPC, Boon all 30%
+    - result <= 92: Accursed or blessed relic, guarded by level appropriate deadly encounter. Q/A rolls to determine nature of relic.
+    - else: BOSS / BBEG / Significant NPC Encounter! (Use the details of your story so far, Q/A tables, or Story Element Interaction Tables to determine what). Loot 90%. Roll d20. 1-14: Roll 1d4 times on Individual Treasure Table. 15-20: Roll once on Hoard Table. (DMG pp. 136-139.)
+}
+
+~ dungeon_passages += exits - 1
+
+~ bonus = 0
+
+-> menu
+
+
+= enter_stairs
+~roll = d20()
+
+{
+    - roll <= 8:
+        ~ test = P(50)
+        {test:
+            ~ dungeon_rooms++
+        - else:
+            ~ dungeon_passages++
+        }
+        Down one level to a {test:Room|Passage}.
+    - roll <= 9 : Down one level to a Room (+15 to Content roll)
+        ~ bonus = 15
+        ~ dungeon_rooms++
+    - roll <= 10: Down one level to a Room (+30 to Content roll)
+        ~ bonus = 30
+        ~ dungeon_rooms++
+    - roll <= 11: Down one level to a Passage
+        ~dungeon_passages++
+    - roll <= 12: Down one level to a Passage (+15 to Content roll)
+        ~ bonus = 15
+        ~dungeon_passages++
+    - roll <= 13: Down one level to a Passage (+30 to Content roll)
+        ~ bonus = 30
+        ~dungeon_passages++
+    - roll <= 14: 
+        ~ test = P(50)
+        {test:
+            ~ dungeon_rooms++
+        - else:
+            ~ dungeon_passages++
+        }
+        Down two levels to a {test:Room|Passage}
+    - roll <= 15: Up one level to a Room (+15 to Content roll)
+        ~ bonus = 15
+        ~ dungeon_rooms++
+    - roll <= 16: Up one level to a Room (+30 to Content roll)
+        ~ bonus = 30
+        ~ dungeon_rooms++
+    - roll <= 17: Up one level to a Passage
+    - roll <= 18: Up one level to a Passage (+15 to Content roll)
+        ~ bonus = 15
+        ~dungeon_passages++
+    - roll <= 19: Up one level to a Passage (+30 to Content roll)
+        ~ bonus = 30
+        ~dungeon_passages++
+    - roll <= 20:
+        ~ test = P(50)
+        {test:
+            ~ dungeon_rooms++
+        - else:
+            ~ dungeon_passages++
+        }
+        Up two levels to a {test:Room|Passage}
+}
+
+->->
+
+=== create_secret_door ===
+{shuffle:
+    - Secret door opens into a room (+40 to Content roll)
+        ~ bonus = 40
+        ~ dungeon_rooms++
+    - Secret door opens onto passage (+40 to Content roll)
+        ~ bonus = 40
+        ~ dungeon_passages++
+    - ~ test = P(50)
+    Trapped secret door. Roll on trap table, then on {test:Passage|Room} (+50 to Content roll)
+        ~ bonus = 50
+        { test:
+            ~ dungeon_passages++
+        - else:
+            ~ dungeon_rooms++
+        }
+}
+->->
+
+
+=== create_trap ===
+~ roll = d100()
+
+{
+    - roll <= 6: Poison darts, Notice: 11, Save DC: 10, Damage: (PC level -3) d6 (min 1d6)
+    - roll <= 12: Collapsing Roof, Notice: 11, Save DC: 10, Damage: (PC level -2) d6 (min 1d6)
+    - roll <= 19: Simple Pit, Notice: 11, Save DC: 11, Damage: (PC level -1) d6 (min 1d6)
+    - roll <= 26: Hidden pit, Notice: 11, Save DC: 12, Damage: (PC level -1) d6 (min 1d6)
+    - roll <= 32: Locking pit, Notice: 11, Save DC: 12, Damage: (PC level) d6
+    - roll <= 38: Spiked pit, Notice: 12, Save DC: 13, Damage: (PC level) d6
+    - roll <= 44: Rolling sphere, Notice: 12, Save DC: 14, Damage: (PC level) d6
+    - roll <= 50: Scything blade, Notice: 13, Save DC: 14, Damage: (PC level + 1) d6
+    - roll <= 56: Glyph trap (1d6: fire / cold / force / lightning) Appropriate attack spell, Notice: 14, Save DC: 15, Damage: (PC level + 1) d6
+    - roll <= 63: Magic missile spell, Notice: 14, Save DC: 15, Damage: (PC level + 1) d6
+    - roll <= 69: Poison gas released / Acid Spray, Notice: 15, Save DC: 16, Damage: (PC level + 1) d6
+    - roll <= 76: Room fills with water, Notice: 15, Save DC: 16, Damage: (PC level + 2) d6
+    - roll <= 82: Walls begin closing, Notice: 16, Save DC: 17, Damage: (PC level + 2) d6
+    - roll <= 88: Spears come out of floor, Notice: 17, Save DC: 18, Damage: (PC level + 2) d6
+    - roll <= 93: Spiked grate drops, Notice: 17, Save DC: 19, Damage: (PC level x 1.5 rounded up) d6
+    - roll <= 100: Trapdoor (snakes / acid below?), Notice: 18, Save DC: 20, Damage: (PC level x 2) d6
+}
+->->
+
+
+=== create_architecture ===
+~ roll = d20()
+
+{shuffle:
+    - Statue
+    - Series of alcoves
+    - Fountain
+    - {d4()} Pools
+    - Hole in floor
+    - Underground terrarium
+    - Pillars along each side. Anything hiding there?
+    - Catacombs
+    - Puzzle of some sort (int check required)
+    - Sacrificial plinth
+    - Temple / shrine
+    - Guard post
+    - Trapdoor with ladder
+    - Underground stream
+    - Natural cavern
+    - Ventilation shaft
+    - Crystal growth
+    - Campsite, abandoned
+    - Portal. Takes you to another, random part of the dungeon
+    - Edible Fungi / Moss Farm
+}
+
+->->
+
+=== create_dungeon_door ===
+~ roll = d100()
+
+{
+    - roll <= 20:
+        ~ dungeon_destination = SetRandomDestination()
+        Standard wooden door, braced with metal, unlocked. Opens into {dungeon_destination}.
+    - roll <= 25: Iron bars (portcullis) with lever to the side. You can see through to the roome. Pulling the lever will raise the portcullis if unlocked. It is currently {~locked|unlocked}. DC 14 thieves’ tools check to unlock, DC 19 strength check to wrench open. Is the lever trapped? Use Q/A and investigation rolls.
+    - roll <= 30:
+        ~ dungeon_destination = SetRandomDestination()
+        Empty doorway. Perhaps a magic glyph trap, triggering an attack spell (Fire Bolt or other). Make a Q/A roll with the modifier Unlikely (-2) to determine. Beyond doorway is a {dungeon_destination}.
+    - roll <= 35:
+        Wooden door, locked. DC 15 thieves’ tools check, or it will have to be smashed. (or other valid method, such as Knock spell). Door has AC 12 and 20 hp. Opens into a room.
+        ~ dungeon_rooms++
+    - roll <= 40:
+        ~ dungeon_destination = SetRandomDestinationNoStairs()
+        Iron door, locked. DC 14 thieves’ tools check (or other valid method, such as Knock spell, or smashing it down). Opens into {dungeon_destination}.
+    - roll <= 45:
+        ~ dungeon_destination = SetRandomDestination()
+        Locked and trapped stone door. DC 15 perception to find trap. If trap disarmed / avoided / triggered, the door opens into {dungeon_destination}.
+        ~ dungeon_traps++
+    - roll <= 50:
+        ~ test = P(50)
+        {test:
+            ~ dungeon_passages++
+        - else:
+            ~ dungeon_rooms++
+        }
+        Secret door. Does your PC know it’s there? Through to {test:hidden passage|hidden chamber}.
+    - roll <= 55:
+        Entrance, then 10 ft through to an adjacent passageway. Empty archway, no door.
+        ~ dungeon_passages++
+    - roll <= 60:
+        ~ dungeon_destination = SetRandomDestinationNoStairs()
+        Locked stone door, secured with a puzzle. A DC 14 intelligence check will enable the puzzle to be solved and the door unlocked. Opens into {dungeon_destination}.
+    - roll <= 75:
+        ~ dungeon_destination = SetRandomDestinationNoStairs()
+        ~ test = d6() == 1
+        {test:
+            ~ dungeon_traps++
+        }
+        {~Locked|Unlocked} {test:trapped|untrapped} {~wooden|stone|iron} door. Opens into a {dungeon_destination}.
+    - roll <= 80:
+        ~ dungeon_destination = SetRandomDestinationNoStairs()
+        Trapped door. DC 15 perception to find trap. If trap disarmed / avoided / triggered, door opens into {dungeon_destination}.
+        ~ dungeon_traps++
+    - roll <= 85:
+        Locked door, can only be opened with a key which is on the body of a humanoid monster somewhere in this dungeon. There is a reason they do not want anyone to enter.
+        ~dungeon_rooms++
+    - roll <= 90:
+        Door composed of elemental energy, such as fire or lightning. You can move through it, but you will take 3d8 damage of whatever type it is composed of.
+        ~dungeon_rooms++
+    - roll <= 95:
+        Heavy stone door, requires athletics check to open (DC 16). -1 hp for every 2 failed strength checks. Opens into room.
+        ~dungeon_rooms++
+    - else:
+        Door is smashed and hanging off its hinges (why?). Leads into a room.
+        ~dungeon_rooms++
+}
+->->
+
+=== roll_dungeon_rooms ===
+
+{dungeon_size == dng_unknown: -> edit_dungeon_size ->}
+
+{dungeon_size:
+    - dng_tiny:
+        ~ dungeon_room_total = d4()+2
+    - dng_small:
+        ~ dungeon_room_total = d6()+4
+    - dng_medium:
+        ~ dungeon_room_total = d4()+d4()+d4()+6
+    - dng_large:
+        ~ dungeon_room_total = d6()+d6()+d6()+d6()+d6()+12
+    - dng_huge:
+        ~ dungeon_room_total = d6()+d6()+d6()+d6()+d6()+d6()+d6()+d6()+d6()+d6()+24
+    - dng_limitless:
+        ~ dungeon_room_total = (d6()+d6()+d6()+d6()+d6()+d6()+d6()+d6()+d6()+d6()+24)*100
+}
+->->
+
+
+=== function SetRandomDestination() ===
+~ roll = d4()
+
+{
+    - roll <= 1:
+        ~ dungeon_passages++
+        ~ return Passage
+    - roll <= 2:
+        ~ dungeon_stairs++
+        ~ return Stairs
+    - else:
+        ~ dungeon_rooms++
+        ~ return Room
+}
+
+=== function SetRandomDestinationNoStairs() ===
+~ roll = d4()
+
+{
+    - roll <= 1:
+        ~ dungeon_passages++
+        ~ return Passage
+    - else:
+        ~ dungeon_rooms++
+        ~ return Room
+}
+
+
 === dungeon_encounter_table ===
 ~ roll = d100()
 {

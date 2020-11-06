@@ -1,0 +1,398 @@
+
+
+=== edit_settings ===
+<b> Edit Settings </b> #CLEAR
++ [Survival ({stat_survival_bonus})] -> edit_survival ->
++ [Level ({stat_level})] -> edit_level ->
++ [Party Size ({stat_party_size})] -> edit_party_size ->
++ [Terrain ({DisplayTerrain()})] -> edit_terrain ->
++ [Season ({DisplaySeason()})] -> edit_season ->
++ [Time ({DisplayTime()})] -> edit_time ->
++ [Population Density ({DisplayPopulation()})] -> edit_population ->
++ [Dungeon Size ({DisplayDungeonSize()}] -> edit_dungeon_size ->
++ [Dungeon Type ({DisplayDungeonType()}] -> edit_dungeon_type ->
++ [Back] ->->
+
+- -> edit_settings
+
+=== edit_terrain ===
+Current Terrain: {DisplayTerrain()}
+What terrain are you entering?
+
++ [Random]
+    {shuffle:
+        - ~ terrain = aquatic
+        - ~ terrain = coastal
+        - ~ terrain = desert
+        - ~ terrain = dungeon
+        - ~ terrain = forest
+        - ~ terrain = grass
+        - ~ terrain = hill
+        - ~ terrain = mountain
+        - ~ terrain = swamp
+        - ~ terrain = urban
+    }
+
++ [Aquatic Wilderness]
+    ~ terrain = aquatic
+
++ [Coastal Wilderness]
+    ~ terrain = coastal
+
++ [Desert Wilderness]
+    ~ terrain = desert
+
++ [Dungeon/Underdark]
+    ~ terrain = dungeon
+
++ [Forest Wilderness]
+    ~ terrain = forest
+
++ [Grassland Wilderness]
+    ~ terrain = grass
+
++ [Hill Wilderness]
+    ~ terrain = hill
+
++ [Mountain/Ice Steppes]
+    ~ terrain = mountain
+
++ [Swamp Wilderness]
+    ~ terrain = swamp
+
++ [Town/City]
+    ~ terrain = urban
+
+
++ [Back]
+
+- 
+
+{inWilderness(): -> roll_weather ->}
+
+Terrain is now {DisplayTerrain()}
+
+{season != unknown_season:
+    <> in {DisplaySeason()} ({DisplayWeather()})
+}
+
+->->
+
+=== function DisplayTerrain() ===
+{terrain:
+    - unknown_terrain: ~ return "Unknown Terrain"
+    - aquatic: ~ return "Aquatic"
+    - coastal: ~ return "Coastal Wilderness"
+    - desert: ~ return "Desert Wilderness"
+    - dungeon: ~ return "Dungeon/Underdark"
+    - forest: ~ return "Forest Wilderness"
+    - grass: ~ return "Grassland Wilderness"
+    - hill: ~ return "Hill Wilderness"
+    - mountain: ~ return "Mountain/Ice Steppes"
+    - swamp: ~ return "Swamp Wilderness"
+    - urban: ~ return "Town/City"
+    - else: ~ return "Invalid Setting"
+}
+
+=== function DisplayWeather() ===
+~ return current_weather
+
+
+=== function DisplayWeatherSummary() ===
+{
+    - season == unknown_season:
+        ~ return "Unknown Weather/Season/Time"
+    - season == unknown_season:
+        ~ return DisplayTime()
+    - else:
+        ~ return "{DisplayWeather()} {DisplaySeason()} {DisplayTime()}"
+}
+
+
+=== function inWilderness() ===
+~ return terrain != unknown_terrain && terrain != urban && terrain != dungeon
+
+
+=== edit_season ===
+Current Season: {DisplaySeason()}
+What season is it?
+
++ [Random]
+    {shuffle:
+        - ~ season = summer
+        - ~ season = autumn
+        - ~ season = winter
+        - ~ season = spring
+    }
++ [Summer]
+    ~ season = summer
++ [Autumn]
+    ~ season = autumn
++ [Winter]
+    ~ season = winter
++ [Spring]
+    ~ season = spring
++ [Back] ->->
+
+-
+-> roll_weather ->
+Current Season: {DisplaySeason()}
+->->
+
+
+=== function DisplaySeason() ===
+{season:
+    - unknown_season: ~ return "Unknown Season"
+    - summer: ~ return "Summer"
+    - autumn: ~ return "Autumn"
+    - winter: ~ return "Winter"
+    - spring: ~ return "Spring"
+    - else: ~ return "Invalid Setting"
+}
+
+=== edit_time ===
+Current Time: {DisplayTime()}
+What time is it?
+
++ [Random]
+    {shuffle:
+        - ~ time = day
+        - ~ time = night
+    }
++ [Day]
+    ~ time = day
++ [Night]
+    ~ time = night
++ [Back] ->->
+
+- Current Time: {DisplayTime()}
+->->
+
+=== function DisplayTime() ===
+{time:
+    - day: ~ return "Day"
+    - night: ~ return "Night"
+    - else: ~ return "Invalid Setting"
+}
+
+
+=== edit_population ===
+Current Population Density: {DisplayPopulation()}
+How dense is the population in {DisplayTerrain()}?
+
++ [Random]
+    {shuffle:
+        - ~ population = pop_low
+        - ~ population = pop_medium
+        - ~ population = pop_high
+    }
++ [Low]
+    ~ population = pop_low
++ [Medium]
+    ~ population = pop_medium
++ [High]
+    ~ population = pop_high
++ [Back] ->->
+
+- Current Population Density: {DisplayPopulation()}
+->->
+
+
+=== function DisplayPopulation() ===
+{population:
+    - pop_unknown: ~ return "Unknown Population Density"
+    - pop_low: ~ return "Low"
+    - pop_medium: ~ return "Medium"
+    - pop_high: ~ return "High"
+    - else: ~ return "Invalid Setting"
+}
+
+=== edit_survival ===
+Survival = {stat_survival_bonus}
+
++ [Add 1]
+    ~ stat_survival_bonus++
++ [Subtract 1]
+    ~ stat_survival_bonus--
++ [Add 5]
+    ~ stat_survival_bonus += 5
++ [Subtract 5]
+    ~ stat_survival_bonus -= 5
++ [Back] ->->
+
+- -> edit_survival
+
+
+=== edit_level ===
+Level = {stat_level}
+
++ {stat_level < 20}[Add 1]
+    ~ stat_level++
++ {stat_level > 1}[Subtract 1]
+    ~ stat_level--
++ {stat_level < 20}[Add 5]
+    ~ stat_level += 5
++ {stat_level > 1}[Subtract 5]
+    ~ stat_level -= 5
++ [Back] ->->
+
+- 
+
+{stat_level > 20:
+    ~ stat_level = 20
+}
+
+{stat_level < 1:
+    ~ stat_level = 1
+}
+
+-> edit_level
+
+
+=== edit_party_size ===
+Party Size = {stat_party_size}
+
++ {stat_party_size < 2}[Add 1]
+    ~ stat_party_size++
++ {stat_party_size > 1}[Subtract 1]
+    ~ stat_party_size--
++ [Back] ->->
+
+- 
+
+{stat_party_size > 2:
+    ~ stat_party_size = 2
+}
+
+{stat_party_size < 1:
+    ~ stat_party_size = 1
+}
+
+-> edit_party_size
+
+
+
+
+
+
+
+
+
+=== edit_dungeon_size ===
+Dungeon Size: {DisplayDungeonSize()}
+What size is the dungeon?
+
++ [Random]
+    {shuffle:
+        - ~ dungeon_size = dng_tiny
+        - ~ dungeon_size = dng_small
+        - ~ dungeon_size = dng_medium
+        - ~ dungeon_size = dng_large
+        - ~ dungeon_size = dng_huge
+        - ~ dungeon_size = dng_limitless
+    }
+
++ [Tiny (1d4+2 rooms)]
+    ~ dungeon_size = dng_tiny
++ [Small (1d6+4 rooms)]
+    ~ dungeon_size = dng_small
++ [Medium (4d4+6 rooms)]
+    ~ dungeon_size = dng_medium
++ [Large (5d6+23 rooms)]
+    ~ dungeon_size = dng_large
++ [Huge (10d6+24 rooms)]
+    ~ dungeon_size = dng_huge
++ [Limitless]
+    ~ dungeon_size = dng_limitless
++ [Back] ->->
+
+-
+-> roll_dungeon_rooms ->
+Dungeon Size: {DisplayDungeonSize()}
+->->
+
+
+=== function DisplayDungeonSize() ===
+{dungeon_size:
+    - dng_unknown: ~ return "Unknown"
+    - dng_tiny: ~ return "Tiny"
+    - dng_small: ~ return "Small"
+    - dng_medium: ~ return "Medium"
+    - dng_large: ~ return "Large"
+    - dng_huge: ~ return "Huge"
+    - dng_limitless: ~ return "Limitless"
+    - else: ~logError("Unknown dungeon size {dungeon_size}.")
+}
+
+
+
+
+=== edit_dungeon_type ===
+Dungeon Type: {DisplayDungeonType()}
+What type of dungeon is this?
+
++ [Random]
+    {shuffle:
+        - ~ dungeon_type = dtype_lair
+        - ~ dungeon_type = dtype_tomb
+        - ~ dungeon_type = dtype_stronghold
+        - ~ dungeon_type = dtype_temple
+        - ~ dungeon_type = dtype_cave
+        - ~ dungeon_type = dtype_maze
+        - ~ dungeon_type = dtype_mine
+        - ~ dungeon_type = dtype_planar
+        - ~ dungeon_type = dtype_hq
+        - ~ dungeon_type = dtype_trap
+    }
+
++ [Lair]
+    ~ dungeon_type = dtype_lair
++ [Tomb/Crypt]
+    ~ dungeon_type = dtype_tomb
++ [Abandoned Stronghold]
+    ~ dungeon_type = dtype_stronghold
++ [Temple or Shrine]
+    ~ dungeon_type = dtype_temple
++ [Natural Caves]
+    ~ dungeon_type = dtype_cave
++ [Maze]
+    ~ dungeon_type = dtype_maze
++ [Mine]
+    ~ dungeon_type = dtype_mine
++ [Planar Gate]
+    ~ dungeon_type = dtype_planar
++ [Guild/Cult Headquarters]
+    ~ dungeon_type = dtype_hq
++ [Death Trap]
+    ~ dungeon_type = dtype_trap
++ [Back] ->->
+
+-
+-> roll_dungeon_rooms ->
+Dungeon Type: {DisplayDungeonType()}
+->->
+
+
+=== function DisplayDungeonType() ===
+{dungeon_type:
+    - dtype_unknown: ~ return "Unknown"
+    - dtype_lair: ~return "Lair"
+    - dtype_tomb: ~return "Tomb/Crypt"
+    - dtype_stronghold: ~return "Abandoned Stronghold"
+    - dtype_temple: ~return "Temple or Shrine"
+    - dtype_cave: ~return "Natural Caves"
+    - dtype_maze: ~return "Maze"
+    - dtype_mine: ~return "Mine"
+    - dtype_planar: ~return "Planar Gate"
+    - dtype_hq: ~return "Guild/Cult Headquarters"
+    - dtype_trap: ~return "Death Trap"
+    - else: ~logError("Unknown dungeon type {dungeon_type}.")
+}
+
+
+
+=== function DisplayDungeonSummary() ===
+~ return "{DisplayDungeonSize()} {DisplayDungeonType()}"
+
+
+
