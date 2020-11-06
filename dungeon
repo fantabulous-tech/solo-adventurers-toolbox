@@ -139,34 +139,34 @@ Passage Description:<br><>
 }
 
 ~ roll = d100()
-~ total = roll + bonus
+~ result = roll + bonus
 
 Passage Contents ({DisplayResult()}):<br><>
 
 {
-    - total <= 69: Empty
-    - total <= 80: Empty apart from rubble. <>
+    - result <= 69: Empty
+    - result <= 80: Empty apart from rubble. <>
         ~ test = P(10)
         {test:
             Clue. Perception check DC 10 to find.
             ~ dungeon_clues++
         }
-    - total <= 84: Empty apart from corpse. <>
+    - result <= 84: Empty apart from corpse. <>
         ~ test = P(20)
         {test:
             Clue on body.
             ~ dungeon_clues++
         }
-    - total <= 88: Empty apart from multiple corpses. <>
+    - result <= 88: Empty apart from multiple corpses. <>
         ~ test = P(40)
         {test:
             Clue on a body.
             ~ dungeon_clues++
         }
-    - total <= 90: Empty apart from enemies. 1 level-appropriate easy encounter. Loot 15%, Clue 15%
-    - total <= 92: Empty apart from enemies. 1 level-appropriate medium encounter. Loot 25%, Clue 25%
-    - total <= 94: Empty apart from enemies. 1 level-appropriate hard encounter. Loot 50%, clue 50%
-    - total <= 98: Trap! Use 'Look at Trap'
+    - result <= 90: Empty apart from enemies. 1 level-appropriate easy encounter. Loot 15%, Clue 15%
+    - result <= 92: Empty apart from enemies. 1 level-appropriate medium encounter. Loot 25%, Clue 25%
+    - result <= 94: Empty apart from enemies. 1 level-appropriate hard encounter. Loot 50%, clue 50%
+    - result <= 98: Trap! Use 'Look at Trap'
         ~ dungeon_traps++
     - else: Loot 60%. Roll DMG individual treasure: Challenge 0-4 table. Add 30 to roll. How did this loot get here?
 }
