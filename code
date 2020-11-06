@@ -1,39 +1,4 @@
 
-=== base_menu ===
-
-+ <b>[Settings]</b>
-    -> edit_settings -> main_menu
-
-+ <b>Roll Dice</b>
-    -> roll_dice_menu -> main_menu
-
-+ <b>Create</b>
-    -> create_menu -> main_menu
-
-+ Generic Skill Check
-    -> skill_check ->
-    ~again = -> skill_check
-
-+ Yes/No Question
-    -> yes_no_question ->
-    ~again = -> yes_no_question
-
-
-
-- (sub_menu)
-+ [Again] -> again -> sub_menu
-+ [Back] -> main_menu
-
-
-=== main_menu ===
-<b>Main Menu</b> #CLEAR
-
-~ back_menu = main_menu
-
-<- base_menu
-
-+ [Travel] -> travel_menu -> main_menu
-
 
 === roll_dice_menu ===
 + 1d4[] Result: {d4()}🎲

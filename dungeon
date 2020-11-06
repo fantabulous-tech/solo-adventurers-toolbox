@@ -7,15 +7,15 @@
 
 You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target="_blank">One Page Dungeon Generator</a>
 
-+ Enter Dungeon
++ [Enter Dungeon]
     -> random_dungeon -> dungeon_menu
 
-+ Camp for the Night
-    -> camping_menu -> dungeon_menu
-
-+ Dungeon Enounter Table
++ [Dungeon Enounter Table]
     -> dungeon_encounter_table ->
     ~ again = -> dungeon_encounter_table
+
++ [Exit]
+    -> main_menu
 
 
 - (sub_menu)
@@ -64,20 +64,26 @@ You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target
     -> create_secret_door -> menu
 + {dungeon_stairs}[Take Stairs (x{dungeon_stairs})]
     ~ dungeon_stairs--
-    -> enter_stairs -> menu
+    -> create_dungeon_stairs -> menu
 + {dungeon_passages}[Take Passage (x{dungeon_passages})]
     ~ dungeon_passages--
-    -> enter_passage
+    -> create_dungeon_passage -> menu
 + {dungeon_room_found < dungeon_room_total && dungeon_rooms}[Enter Room (x{dungeon_rooms})]
     ~ dungeon_rooms--
-    -> enter_room
+    -> create_dungeon_room -> menu
+
++ Camp for the Night
+    -> camping_menu -> menu
+
 + Yes/No Question
     -> yes_no_question -> menu
+
 + [Exit Dungeon]
+    -> back_menu
 
 - ->->
 
-= enter_passage
+=== create_dungeon_passage ===
 {DisplayDungeonSummary()} - Passage
 
 
@@ -173,16 +179,10 @@ Passage Contents ({DisplayResult()}):<br><>
 
 ~ bonus = 0
 
--> menu
+->->
 
-= enter_room
+=== create_dungeon_room ===
 ~ dungeon_room_found++
-
-{dungeon_room_found >= dungeon_room_total:
-    ~ dungeon_rooms = 0
-    All rooms explored.
-    -> menu
-}
 
 {DisplayDungeonSummary()} - Room \#{dungeon_room_found}
 
@@ -273,13 +273,12 @@ Room Contents: ({DisplayResult()}):<br><>
 }
 
 ~ dungeon_passages += exits - 1
-
 ~ bonus = 0
 
--> menu
+->->
 
 
-= enter_stairs
+=== create_dungeon_stairs ===
 ~roll = d20()
 
 {

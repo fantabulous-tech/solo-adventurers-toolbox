@@ -9,8 +9,8 @@
 + [Season ({DisplaySeason()})] -> edit_season ->
 + [Time ({DisplayTime()})] -> edit_time ->
 + [Population Density ({DisplayPopulation()})] -> edit_population ->
-+ [Dungeon Size ({DisplayDungeonSize()}] -> edit_dungeon_size ->
-+ [Dungeon Type ({DisplayDungeonType()}] -> edit_dungeon_type ->
++ [Dungeon Size ({DisplayDungeonSize()})] -> edit_dungeon_size ->
++ [Dungeon Type ({DisplayDungeonType()})] -> edit_dungeon_type ->
 + [Back] ->->
 
 - -> edit_settings

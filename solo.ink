@@ -61,3 +61,109 @@ LIST dungeon_destination = Passage, Room, Stairs
 
 -> main_menu
 
+
+=== main_menu ===
+<b>Main Menu</b> #CLEAR
+
+~ back_menu = main_menu
+
+<- base_menu
+
++ [Travel] -> travel_menu -> main_menu
++ [Enter Dungeon] -> random_dungeon -> main_menu
+
+
+=== base_menu ===
+
++ <b>[Settings]</b>
+    -> edit_settings -> main_menu
+
++ <b>Roll Dice</b>
+    -> roll_dice_menu -> main_menu
+
++ <b>Create</b>
+    -> create_menu -> main_menu
+
++ Generic Skill Check
+    -> skill_check ->
+    ~again = -> skill_check
+
++ Yes/No Question
+    -> yes_no_question ->
+    ~again = -> yes_no_question
+
+
+
+- (sub_menu)
++ [Again] -> again -> sub_menu
++ [Back] -> main_menu
+
+
+
+
+=== create_menu ===
++ Create Tavern
+    -> create_tavern ->
+    ~again = -> create_tavern
+
++ Create Clue
+    -> create_clue ->
+    ~again = -> create_clue
+
++ Create Quest
+    -> create_quest ->
+    ~again = -> create_quest
+
++ Create Creature
+    -> create_creature ->
+    ~again = -> create_creature
+
++ Create Monster
+    -> monster_by_terrain_table ->
+    ~again = -> monster_by_terrain_table
+
++ Create Structure
+    -> create_structure ->
+    ~again = -> create_structure
+
++ Create Unmarked Settlement
+    -> unmarked_settlement_table ->
+    ~again = -> unmarked_settlement_table
+
++ Create Wilderness Encounter
+    -> wilderness_encounter_table ->
+    ~again = -> wilderness_encounter_table
+
++ Create Story Event
+    -> story_element_interaction_table ->
+    ~again = -> story_element_interaction_table
+
++ Create Dungeon Room
+    -> create_dungeon_room ->
+    ~ again = -> create_dungeon_room
+
++ Create Dungeon Passage
+    -> create_dungeon_passage ->
+    ~ again = -> create_dungeon_passage
+
++ Create Dungeon Stairs
+    -> create_dungeon_stairs ->
+    ~ again = -> create_dungeon_stairs
+
++ Create Dungeon Door
+    -> create_dungeon_door ->
+    ~ again = -> create_dungeon_door
+
++ Create Secret Dungeon Door
+    -> create_secret_door ->
+    ~ again = -> create_secret_door
+
++ Create Trap
+    -> create_trap ->
+    ~ again = -> create_trap
+
++ [Back] -> back_menu
+
+- (sub_menu)
++ [Again] -> again -> sub_menu
++ [Back] -> create_menu
