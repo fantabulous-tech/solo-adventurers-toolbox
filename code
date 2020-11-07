@@ -58,13 +58,13 @@ There is some other condition that needs to be fulfilled for the thing to happen
 
 {
 - result <= 6:
-    Answer: No. {DisplayResult()} < 6
+    Answer: No. {DisplayResult()} < DC 7
     -> no
 - result <= 12:
-    Answer: Maybe. 6 < {DisplayResult()} <= 12
+    Answer: Maybe. DC 7 <= {DisplayResult()} < DC 13
     -> maybe
 - else:
-    Answer: Yes. {DisplayResult()} > 12
+    Answer: Yes. {DisplayResult()} >= DC 13
     -> yes
 }
 

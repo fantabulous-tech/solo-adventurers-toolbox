@@ -30,6 +30,7 @@ VAR current_weather = "Unknown Weather"
 
 VAR dungeon_room_total = 0
 VAR dungeon_room_found = 0
+VAR dungeon_passages_found = 0
 VAR dungeon_rooms = 0
 VAR dungeon_clues = 0
 VAR dungeon_passages = 0
@@ -37,6 +38,7 @@ VAR dungeon_stairs = 0
 VAR dungeon_doors = 0
 VAR dungeon_traps = 0
 VAR dungeon_secret_doors = 0
+VAR dungeon_content_bonus = 0
 
 VAR stat_survival_bonus = 0
 VAR stat_level = 1

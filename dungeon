@@ -25,6 +25,7 @@ You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target
 
 === random_dungeon ===
 ~ dungeon_room_found = 0
+~ dungeon_passages_found = 0
 ~ dungeon_size = dng_unknown
 ~ dungeon_type = dtype_unknown
 ~ dungeon_rooms = 0
@@ -34,6 +35,8 @@ You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target
 ~ dungeon_passages = 0
 ~ dungeon_doors = 0
 ~ dungeon_secret_doors = 0
+~ dungeon_content_bonus = 0
+~ terrain = dungeon
 
 -> edit_dungeon_size ->
 -> edit_dungeon_type ->
@@ -72,11 +75,27 @@ You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target
     ~ dungeon_rooms--
     -> create_dungeon_room -> menu
 
-+ Camp for the Night
++ Find Place to Camp
     -> camping_menu -> menu
 
 + Yes/No Question
     -> yes_no_question -> menu
+
++ Create Other
+    ++ [Find Room]
+        -> create_dungeon_room -> menu
+    ++ [Find Passage]
+        -> create_dungeon_passage -> menu
+    ++ [Find Stairs]
+        -> create_dungeon_stairs -> menu
+    ++ [Find Door]
+        -> create_dungeon_door -> menu
+    ++ [Find Secret Door]
+        -> create_secret_door -> menu
+    ++ [Find Trap]
+        -> create_trap -> menu
+    ++ [Find Clue]
+        -> create_clue -> menu
 
 + [Exit Dungeon]
     -> back_menu
@@ -84,7 +103,8 @@ You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target
 - ->->
 
 === create_dungeon_passage ===
-{DisplayDungeonSummary()} - Passage
+~ dungeon_passages_found++
+{DisplayDungeonSummary()} - Passage \#{dungeon_passages_found}
 
 
 Passage Description:<br><>
@@ -145,6 +165,7 @@ Passage Description:<br><>
 }
 
 ~ roll = d100()
+~ bonus = dungeon_content_bonus
 ~ result = roll + bonus
 
 Passage Contents ({DisplayResult()}):<br><>
@@ -177,7 +198,7 @@ Passage Contents ({DisplayResult()}):<br><>
     - else: Loot 60%. Roll DMG individual treasure: Challenge 0-4 table. Add 30 to roll. How did this loot get here?
 }
 
-~ bonus = 0
+~ dungeon_content_bonus = 0
 
 ->->
 
@@ -247,6 +268,7 @@ Room Description:<br><>
 
 
 ~ roll = d100()
+~ bonus = dungeon_content_bonus
 ~ result = roll + bonus
 
 Room Contents: ({DisplayResult()}):<br><>
@@ -273,7 +295,7 @@ Room Contents: ({DisplayResult()}):<br><>
 }
 
 ~ dungeon_passages += exits - 1
-~ bonus = 0
+~ dungeon_content_bonus = 0
 
 ->->
 
@@ -291,18 +313,18 @@ Room Contents: ({DisplayResult()}):<br><>
         }
         Down one level to a {test:Room|Passage}.
     - roll <= 9 : Down one level to a Room (+15 to Content roll)
-        ~ bonus = 15
+        ~ dungeon_content_bonus = 15
         ~ dungeon_rooms++
     - roll <= 10: Down one level to a Room (+30 to Content roll)
-        ~ bonus = 30
+        ~ dungeon_content_bonus = 30
         ~ dungeon_rooms++
     - roll <= 11: Down one level to a Passage
         ~dungeon_passages++
     - roll <= 12: Down one level to a Passage (+15 to Content roll)
-        ~ bonus = 15
+        ~ dungeon_content_bonus = 15
         ~dungeon_passages++
     - roll <= 13: Down one level to a Passage (+30 to Content roll)
-        ~ bonus = 30
+        ~ dungeon_content_bonus = 30
         ~dungeon_passages++
     - roll <= 14: 
         ~ test = P(50)
@@ -313,17 +335,17 @@ Room Contents: ({DisplayResult()}):<br><>
         }
         Down two levels to a {test:Room|Passage}
     - roll <= 15: Up one level to a Room (+15 to Content roll)
-        ~ bonus = 15
+        ~ dungeon_content_bonus = 15
         ~ dungeon_rooms++
     - roll <= 16: Up one level to a Room (+30 to Content roll)
-        ~ bonus = 30
+        ~ dungeon_content_bonus = 30
         ~ dungeon_rooms++
     - roll <= 17: Up one level to a Passage
     - roll <= 18: Up one level to a Passage (+15 to Content roll)
-        ~ bonus = 15
+        ~ dungeon_content_bonus = 15
         ~dungeon_passages++
     - roll <= 19: Up one level to a Passage (+30 to Content roll)
-        ~ bonus = 30
+        ~ dungeon_content_bonus = 30
         ~dungeon_passages++
     - roll <= 20:
         ~ test = P(50)
@@ -340,14 +362,14 @@ Room Contents: ({DisplayResult()}):<br><>
 === create_secret_door ===
 {shuffle:
     - Secret door opens into a room (+40 to Content roll)
-        ~ bonus = 40
+        ~ dungeon_content_bonus = 40
         ~ dungeon_rooms++
     - Secret door opens onto passage (+40 to Content roll)
-        ~ bonus = 40
+        ~ dungeon_content_bonus = 40
         ~ dungeon_passages++
     - ~ test = P(50)
     Trapped secret door. Roll on trap table, then on {test:Passage|Room} (+50 to Content roll)
-        ~ bonus = 50
+        ~ dungeon_content_bonus = 50
         { test:
             ~ dungeon_passages++
         - else:

@@ -64,7 +64,8 @@
     You find a campsite.
 - else:
     {DisplayD20Result(difficulty)}
-    No proper campsite found. Where did you have to sleep instead? You will be exhausted in the morning.
+    No proper campsite found. Where did you have to sleep instead?
+    You will be exhausted in the morning.
 }
 
 - ->->
@@ -80,28 +81,27 @@ You are disturbed by <>
 ~ bonus = 0
 
 {
-    - roll <= 20: a loud noise. ({DisplayResult()})
-    - roll <= 35: an animal (indifferent). ({DisplayResult()})
-    - roll <= 50: an animal (hostile). ({DisplayResult()})
+    - roll <= 20: a loud noise.
+    - roll <= 35: an animal (indifferent):<br><>
+        -> create_creature ->
+    - roll <= 50: an animal (hostile):<br><>
         // Go to the 'creatures' table.
         -> create_creature ->
-    - roll <= 60: a disturbing dream/vision. ({DisplayResult()})
-    - roll <= 80: an NPC (curious). ({DisplayResult()})
-    - roll <= 85: a bandit/thief. ({DisplayResult()})
-    - roll <= 90: a monster. ({DisplayResult()})
+    - roll <= 60: a disturbing dream/vision.
+    - roll <= 80: an NPC (curious):<br><>
+        -> create_npc ->
+    - roll <= 85: a bandit/thief.
+    - roll <= 90: a monster.
         // Roll for 'monster by terrain'.
         -> monster_by_terrain_table ->
-    - roll == 91: a natural distaster. ({DisplayResult()})
-    - else: storm/weather change. ({DisplayResult()})
+    - roll == 91: a natural distaster.
+    - else: storm/weather change.
 }
 
 - ->->
 
 = no
-No.
+You are not disturbed and have a restful night.
 ->->
 
-= maybe
-Maybe.
-->->
 

@@ -2,15 +2,15 @@
 
 === edit_settings ===
 <b> Edit Settings </b> #CLEAR
-+ [Survival ({stat_survival_bonus})] -> edit_survival ->
-+ [Level ({stat_level})] -> edit_level ->
 + [Party Size ({stat_party_size})] -> edit_party_size ->
++ [Level ({stat_level})] -> edit_level ->
 + [Terrain ({DisplayTerrain()})] -> edit_terrain ->
 + [Season ({DisplaySeason()})] -> edit_season ->
 + [Time ({DisplayTime()})] -> edit_time ->
 + [Population Density ({DisplayPopulation()})] -> edit_population ->
 + [Dungeon Size ({DisplayDungeonSize()})] -> edit_dungeon_size ->
 + [Dungeon Type ({DisplayDungeonType()})] -> edit_dungeon_type ->
++ [Survival Bonus ({DisplayBonus(stat_survival_bonus)})] -> edit_survival ->
 + [Back] ->->
 
 - -> edit_settings
@@ -33,35 +33,35 @@ What terrain are you entering?
         - ~ terrain = urban
     }
 
-+ [Aquatic Wilderness]
-    ~ terrain = aquatic
-
-+ [Coastal Wilderness]
-    ~ terrain = coastal
-
-+ [Desert Wilderness]
-    ~ terrain = desert
-
 + [Dungeon/Underdark]
     ~ terrain = dungeon
 
-+ [Forest Wilderness]
++ [Town/City]
+    ~ terrain = urban
+
++ [Aquatic]
+    ~ terrain = aquatic
+
++ [Coast]
+    ~ terrain = coastal
+
++ [Desert]
+    ~ terrain = desert
+
++ [Forest]
     ~ terrain = forest
 
-+ [Grassland Wilderness]
++ [Grasslands]
     ~ terrain = grass
 
-+ [Hill Wilderness]
++ [Hills]
     ~ terrain = hill
 
 + [Mountain/Ice Steppes]
     ~ terrain = mountain
 
-+ [Swamp Wilderness]
++ [Swamps]
     ~ terrain = swamp
-
-+ [Town/City]
-    ~ terrain = urban
 
 
 + [Back]
