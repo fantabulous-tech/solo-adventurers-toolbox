@@ -20,6 +20,7 @@
     ~again = -> unmarked_settlement_check
     
 + Camp for the Night
+    ~ time = night
     -> camping_menu -> wilderness_menu
 
 + [Back] -> main_menu
@@ -250,7 +251,7 @@ Based on {DisplayPopulation()} population and traveling during the {DisplayTime(
 - (check_again)
 ~ count++
 
-Check {count}/{total}
+// Check {count}/{total}
 
 - 
 ~ roll = d100()
@@ -263,17 +264,25 @@ Check {count}/{total}
 
 {DisplayResultTarget("25%")}
 
-- {count < total: -> check_again}
+- {count < total:
+    <>, <>
+    -> check_again
+}
 
 Encounters: {encounterCount}
 
 ~ total = encounterCount
 ~ count = 0
 
-{count < total:
-    ~count++
-    -> encounter ->
-}
+
+- (next_encounter)
+{count >= total: -> complete}
+~count++
+
++ [Determine Encounter]
+    -> encounter -> next_encounter
+
+- (complete)
 
 + [Encounter Complete]
 Encounter checks complete.
