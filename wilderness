@@ -513,7 +513,8 @@ Current Season: {DisplaySeason()}
 ~ roll = d100()
 
 {
-    - roll <= 4: Small dungeon or crypt found. Purpose and history unknown. If entering, go to Chapter 8: Random Dungeon Generation.
+    - roll <= 4: Small dungeon or crypt found. Purpose and history unknown.
+        -> ask_dungeon ->
     - roll <= 5: Ready-made camp found, or cosy cave, that could potentially be used as shelter for the night, or a base while exploring. Inhabited?
     - roll <= 6: A small creek, babbling pleasantly. Or a large crack, bubbling pungently.
     - roll <= 7: A storm on the horizon, lightning dancing underneath dark grey clouds.
@@ -579,9 +580,18 @@ Current Season: {DisplaySeason()}
     - roll <= 88: Unmarked settlement
     - roll <= 89: The road disappears and the place looks nothing like on the map.
     - roll <= 94: NPC appears with quest. (Use Chapter 7).
+        -> create_npc ->
+        -> create_quest ->
     - roll <= 100: Monster! Level-appropriate {~hard|hard|hard|<i>deadly</i>} encounter.
 }
 
 ->->
+
+= ask_dungeon
+    + [Enter Dungeon]
+        ~ ResetDungeon()
+        ~ dungeon_size = dng_small
+        -> dungeon_menu ->->
+    + [Continue] ->->
 
 

@@ -1,38 +1,11 @@
 
 
-=== dungeon_menu ===
-~ location = dungeon
-~ back_menu = -> dungeon_menu
-
-<b>{DisplayTerrain()} Terrain Menu</b>
-
-You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target="_blank">One Page Dungeon Generator</a>
-
-+ [Enter Dungeon]
-    -> random_dungeon -> dungeon_menu
-
-+ [Dungeon Enounter Table]
-    -> dungeon_encounter_table ->
-    ~ again = -> dungeon_encounter_table
-
-+ [Exit]
-    -> main_menu
-
-
-- (sub_menu)
-+ [Again] -> again -> sub_menu
-+ [Back] -> create_menu
-
-
-
 === dungeon_event ===
 -> dungeon_encounter_table ->
 ->->
 
 
-
-=== random_dungeon ===
-~ location = dungeon
+=== function ResetDungeon() ===
 ~ dungeon_room_found = 0
 ~ dungeon_passages_found = 0
 ~ dungeon_size = ()
@@ -46,10 +19,18 @@ You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target
 ~ dungeon_secret_doors = 0
 ~ dungeon_content_bonus = 0
 
--> edit_dungeon_size ->
--> edit_dungeon_type ->
 
-{dungeon_size == () || dungeon_type == (): -> dungeon_menu}
+=== dungeon_menu ===
+
+<b>Entering Dungeon</b> #CLEAR
+
+You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target="_blank">One Page Dungeon Generator</a>
+
+~ location = dungeon
+~ back_menu = -> dungeon_menu
+
+{dungeon_size == (): -> edit_dungeon_size ->}
+{dungeon_type == (): -> edit_dungeon_type ->}
 
 {shuffle:
     - ~ dungeon_passages++
@@ -93,7 +74,6 @@ You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target
     -> create_dungeon_menu -> menu
 
 + [Exit Dungeon]
-    -> back_menu
 
 - ->->
 

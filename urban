@@ -329,6 +329,8 @@ Current Urban Size: {DisplayUrbanSize()}
     - roll <= 93: “Ay oop luv, looking for a good time?” A prostitute (any sex or race) begins soliciting you earnestly.
     - roll <= 94: Suddenly, out of the blue, you see a mage of some sort simply appear in the middle of the street/alley.
     - roll <= 99: NPC appears with quest (see Chapter 7)
+        -> create_npc ->
+        -> create_quest ->
     - roll <= 100: Monster: Level appropriate deadly encounter.
 }
 
