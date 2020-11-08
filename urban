@@ -159,22 +159,13 @@ Current {DisplayUrbanSize()} Shops: {urban_shops}
     - urb_metropolis: ~ return "Metropolis"
 }
 
-=== function GetRandomUrbanSize() ===
-{shuffle:
-    - ~ return urb_camp
-    - ~ return urb_hamlet
-    - ~ return urb_village
-    - ~ return urb_town
-    - ~ return urb_city
-    - ~ return urb_metropolis
-}
 
 === edit_urban_size ===
 Current Urban Size: {DisplayUrbanSize()}
 What size is the urban area you are in?
 
 + [Random]
-    ~ urban_size = GetRandomUrbanSize()
+    ~ urban_size = LIST_RANDOM(LIST_ALL(urban_size))
 
 + [Encampment]
     ~ urban_size = urb_camp

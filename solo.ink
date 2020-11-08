@@ -58,7 +58,6 @@ LIST population = pop_low, pop_medium, pop_high
 LIST time = (day), night
 LIST cr_level = (cr0), cr1_8, cr1_4, cr1_2, cr1, cr2, cr3, cr4, cr5, cr6, cr7
 
-
 { debug:
     ~log("Entering ink debug.")
     -> Debug ->
@@ -66,7 +65,7 @@ LIST cr_level = (cr0), cr1_8, cr1_4, cr1_2, cr1, cr2, cr3, cr4, cr5, cr6, cr7
 }
 
 
-~ season = GetRandomSeason()
+~ season = LIST_RANDOM(LIST_ALL(season))
 
 
 -> main_menu

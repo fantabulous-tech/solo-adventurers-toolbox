@@ -344,6 +344,114 @@ Place
 - ->->
 
 
+=== edit_terrain ===
+{terrain:Current Terrain: {DisplayTerrain()}}
+What terrain are you entering?
+
++ [Random]
+    ~ terrain = LIST_RANDOM(LIST_ALL(terrain))
+
++ [Aquatic]
+    ~ terrain = aquatic
+
++ [Coastal]
+    ~ terrain = coastal
+
++ [Desert]
+    ~ terrain = desert
+
++ [Forest]
+    ~ terrain = forest
+
++ [Grasslands]
+    ~ terrain = grass
+
++ [Hills]
+    ~ terrain = hill
+
++ [Mountains/Ice Steppes]
+    ~ terrain = mountain
+
++ [Swamps]
+    ~ terrain = swamp
+
+
++ [Back]
+
+-
+-> roll_weather ->
+
+Terrain is now {DisplayTerrain()}
+
+{season:
+    <> in {DisplaySeason()} ({DisplayWeather()})
+}
+
+->->
+
+=== function DisplayTerrain() ===
+{terrain:
+    - (): ~ return "Unknown Terrain"
+    - aquatic: ~ return "Aquatic"
+    - coastal: ~ return "Coastal Wilderness"
+    - desert: ~ return "Desert Wilderness"
+    - forest: ~ return "Forest Wilderness"
+    - grass: ~ return "Grassland Wilderness"
+    - hill: ~ return "Hill Wilderness"
+    - mountain: ~ return "Mountain/Ice Steppes"
+    - swamp: ~ return "Swamp Wilderness"
+    - else: ~ return "Invalid Setting"
+}
+
+=== function DisplayWeather() ===
+~ return current_weather
+
+
+=== function DisplayWeatherSummary() ===
+{
+    - time == ():
+        ~ return "Unknown Weather/Season/Time"
+    - season == ():
+        ~ return DisplayTime()
+    - else:
+        ~ return "{DisplayWeather()} {DisplaySeason()} {DisplayTime()}"
+}
+
+
+=== edit_season ===
+Current Season: {DisplaySeason()}
+What season is it?
+
++ [Random]
+    ~ season = LIST_RANDOM(LIST_ALL(season))
++ [Summer]
+    ~ season = summer
++ [Autumn]
+    ~ season = autumn
++ [Winter]
+    ~ season = winter
++ [Spring]
+    ~ season = spring
++ [Back] ->->
+
+-
+-> roll_weather ->
+Current Season: {DisplaySeason()}
+->->
+
+
+=== function DisplaySeason() ===
+{season:
+    - (): ~ return "Unknown Season"
+    - summer: ~ return "Summer"
+    - autumn: ~ return "Autumn"
+    - winter: ~ return "Winter"
+    - spring: ~ return "Spring"
+    - else: ~ return "Invalid Setting"
+}
+
+
+
 === wilderness_event ===
 
 {shuffle:
