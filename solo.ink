@@ -67,7 +67,6 @@ LIST cr_level = (cr0), cr1_8, cr1_4, cr1_2, cr1, cr2, cr3, cr4, cr5, cr6, cr7
 
 
 ~ season = GetRandomSeason()
--> roll_weather ->
 
 
 -> main_menu
