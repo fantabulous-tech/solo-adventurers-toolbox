@@ -3,8 +3,6 @@
 ~ count = 0
 ~ total = 4
 
-{terrain == unknown_terrain: -> edit_terrain ->}
-
 Story Event:
 
 - (roll_again)
@@ -36,10 +34,10 @@ Situation: <>
 
 = event
 Event: <>
-{terrain:
+{location:
     - urban: -> urban_event ->
     - dungeon: -> dungeon_event ->
-    - else: -> wilderness_event ->
+    - wilderness: -> wilderness_event ->
 }
 
 ->->

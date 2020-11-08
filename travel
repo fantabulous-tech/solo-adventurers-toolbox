@@ -1,27 +1,9 @@
 
 
-=== travel_menu ===
-
-// Get the terrain if we haven't set the terrain yet.
-{terrain == unknown_terrain:
-    -> edit_terrain ->
-    // If we still haven't set the terrain, return to previous menu.
-    {terrain == unknown_terrain: ->-> }
-}
-
-// Go to the appropriate travel sub-menu.
-{terrain:
-    - dungeon:  -> dungeon_menu ->->
-    - urban:  -> urban_menu ->->
-    - else: -> wilderness_menu ->->
-}
-
-
-
 == base_travel_menu ===
 
 + [Change Terrain ({DisplayTerrain()})] -> edit_terrain ->
-    ~ population = pop_unknown
+    ~ population = ()
     -> back_menu
 + {time == day}[Change Time to Night]
     ~ time = night
@@ -36,18 +18,21 @@
 
 === find_campsite_check ===
 
-{terrain:
-    - forest: ~ difficulty = 6
-    - coastal: ~ difficulty = 8
-    - desert: ~ difficulty = 8
-    - grass: ~ difficulty = 8
-    - hill: ~ difficulty = 6
-    - dungeon: ~ difficulty = 10
-    - swamp: ~ difficulty = 12
-    - mountain: ~ difficulty = 14
-    - else:
-        ~logError("Unknown terrain '{terrain}'.")
-        ~difficulty = 6
+{location == dungeon:
+    ~ difficulty = 10
+- else:
+    {terrain:
+        - forest: ~ difficulty = 6
+        - coastal: ~ difficulty = 8
+        - desert: ~ difficulty = 8
+        - grass: ~ difficulty = 8
+        - hill: ~ difficulty = 6
+        - swamp: ~ difficulty = 12
+        - mountain: ~ difficulty = 14
+        - else:
+            ~logError("Unknown terrain '{terrain}'.")
+            ~difficulty = 6
+    }
 }
 
 

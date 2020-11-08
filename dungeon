@@ -1,6 +1,7 @@
 
 
 === dungeon_menu ===
+~ location = dungeon
 ~ back_menu = -> dungeon_menu
 
 <b>{DisplayTerrain()} Terrain Menu</b>
@@ -31,10 +32,11 @@ You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target
 
 
 === random_dungeon ===
+~ location = dungeon
 ~ dungeon_room_found = 0
 ~ dungeon_passages_found = 0
-~ dungeon_size = dng_unknown
-~ dungeon_type = dtype_unknown
+~ dungeon_size = ()
+~ dungeon_type = ()
 ~ dungeon_rooms = 0
 ~ dungeon_stairs = 0
 ~ dungeon_traps = 0
@@ -43,12 +45,11 @@ You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target
 ~ dungeon_doors = 0
 ~ dungeon_secret_doors = 0
 ~ dungeon_content_bonus = 0
-~ terrain = dungeon
 
 -> edit_dungeon_size ->
 -> edit_dungeon_type ->
 
-{dungeon_size == dng_unknown || dungeon_type == dtype_unknown: -> dungeon_menu}
+{dungeon_size == () || dungeon_type == (): -> dungeon_menu}
 
 {shuffle:
     - ~ dungeon_passages++
@@ -89,26 +90,51 @@ You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target
     -> yes_no_question -> menu
 
 + Create Other
-    ++ [Find Room]
-        -> create_dungeon_room -> menu
-    ++ [Find Passage]
-        -> create_dungeon_passage -> menu
-    ++ [Find Stairs]
-        -> create_dungeon_stairs -> menu
-    ++ [Find Door]
-        -> create_dungeon_door -> menu
-    ++ [Find Secret Door]
-        -> create_secret_door -> menu
-    ++ [Find Trap]
-        -> create_trap -> menu
-    ++ [Find Clue]
-        -> create_dungeon_clue -> menu
-    ++ [Back] -> menu
+    -> create_dungeon_menu -> menu
 
 + [Exit Dungeon]
     -> back_menu
 
 - ->->
+
+
+
+=== create_dungeon_menu ===
+
++ Create Room
+    -> create_dungeon_room ->
+    ~ again = -> create_dungeon_room
+
++ Create Passage
+    -> create_dungeon_passage ->
+    ~ again = -> create_dungeon_passage
+
++ Create Stairs
+    -> create_dungeon_stairs ->
+    ~ again = -> create_dungeon_stairs
+
++ Create Door
+    -> create_dungeon_door ->
+    ~ again = -> create_dungeon_door
+
++ Create Secret Door
+    -> create_secret_door ->
+    ~ again = -> create_secret_door
+
++ Create Trap
+    -> create_trap ->
+    ~ again = -> create_trap
+
++ Create Clue
+    -> create_dungeon_clue ->
+    ~ again = -> create_dungeon_clue
+
++ [Back] -> back_menu
+
+- (sub_menu)
++ [Again] -> again -> sub_menu
++ [Back] -> back_menu
+
 
 === create_dungeon_passage ===
 ~ dungeon_passages_found++
@@ -502,7 +528,7 @@ Room Contents: ({DisplayResult()}):<br><>
 
 === roll_dungeon_rooms ===
 
-{dungeon_size == dng_unknown: -> edit_dungeon_size ->}
+{dungeon_size == (): -> edit_dungeon_size ->}
 
 {dungeon_size:
     - dng_tiny:

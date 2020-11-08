@@ -9,8 +9,8 @@
 + [Time ({DisplayTime()})] -> edit_time ->
 + [Population Density ({DisplayPopulation()})] -> edit_population ->
 + [Urban Size ({DisplayUrbanSize()})] -> edit_urban_size ->
-+ [Roll {urban_size == urb_unknown:Shops|{DisplayUrbanSize()} Shops<br>} {urban_shops:({urban_shops})}]
-    {urban_size == urb_unknown: -> edit_urban_size ->}
++ [Roll {urban_size == ():Shops|{DisplayUrbanSize()} Shops<br>} {urban_shops:({urban_shops})}]
+    {urban_size == (): -> edit_urban_size ->}
     ~ RollShops()
 + [Dungeon Size ({DisplayDungeonSize()})] -> edit_dungeon_size ->
 + [Dungeon Type ({DisplayDungeonType()})] -> edit_dungeon_type ->
@@ -19,147 +19,10 @@
 
 - -> edit_settings
 
-=== edit_urban_shops ===
-{urban_size == urb_unknown: -> edit_urban_size ->}
-Current {DisplayUrbanSize()} Shops: {urban_shops}
-
-+ [Random]
-    ~ RollShops()
-
-Current {DisplayUrbanSize()} Shops: {urban_shops}
-
-- ->->
-
-=== function RollShops() ===
-~ CheckShop(tavern, 10, 8, 6, 4, 2, 1)
-~ CheckShop(supplies, 17, 14, 10, 5, 2, 1)
-~ CheckShop(mounts, 12, 11, 9, 7, 5, 3)
-~ CheckShop(books, 18, 17, 15, 13, 11, 9)
-~ CheckShop(gems, 20, 19, 18, 16, 14, 12)
-~ CheckShop(armourer, 18, 16, 14, 12, 10, 8)
-~ CheckShop(bank, 17, 15, 13, 10, 8, 6)
-~ CheckShop(tinkerer, 18, 17, 15, 13, 11, 9)
-~ CheckShop(tailor, 15, 13, 11, 10, 8, 6)
-~ CheckShop(potions, 18, 17, 16, 14, 12, 10)
-~ CheckShop(idols, 16, 15, 13, 11, 9, 7)
-~ CheckShop(food, 14, 12, 10, 8, 6, 4)
-~ CheckShop(temple, 16, 14, 12, 10, 8, 6)
-~ CheckShop(tomes, 20, 19, 17, 15, 13, 11)
-~ CheckShop(thieving, 19, 18, 16, 14, 12, 10)
-~ CheckShop(weapons, 17, 15, 13, 11, 9, 7)
-~ CheckShop(vehicles, 15, 12, 13, 10, 8, 6)
-~ CheckShop(guild, 19, 18, 16, 14, 12, 10)
-~ CheckShop(magic_items, 25, 22, 19, 16, 15, 14)
-~ CheckShop(blacksmith, 12, 10, 8, 6, 4, 2)
-~ CheckShop(resurrection, 20, 19, 18, 17, 16, 16)
-~ CheckShop(couriers, 19, 18, 17, 15, 13, 11)
-~ CheckShop(brothel, 17, 15, 13, 11, 9, 7)
-~ CheckShop(realty, 16, 15, 13, 10, 8, 6)
-~ CheckShop(carpenter, 15, 13, 10, 8, 6, 4)
-~ CheckShop(theatre, 20, 18, 16, 13, 11, 9)
-~ CheckShop(healer, 18, 15, 12, 10, 7, 4)
-~ CheckShop(boats, 19, 18, 16, 14, 12, 10)
-~ CheckShop(union, 19, 18, 16, 11, 9, 7)
-~ CheckShop(stonemason, 18, 15, 12, 10, 7, 4)
-~ CheckShop(university, -1, -1, 18, 16, 14, 12)
-~ CheckShop(mercenaries, 19, 18, 17, 16, 14, 12)
-
-
-=== function CheckShop(shop, campT, hamT, vilT, townT, cityT, metT) ===
-~ difficulty = -1
-
-{ urban_size:
-    - urb_camp: ~ difficulty = campT
-    - urb_hamlet: ~ difficulty = hamT
-    - urb_village: ~ difficulty = vilT
-    - urb_town: ~ difficulty = townT
-    - urb_city: ~ difficulty = cityT
-    - urb_metropolis: ~ difficulty = metT
-}
-
-{ difficulty >= 0 && Check20(difficulty):
-    ~ urban_shops += shop
-- else:
-    ~ urban_shops -= shop
-}
-
-=== function DisplayUrbanSize() ===
-{urban_size:
-    - urb_unknown: ~ return "Unknown Size"
-    - urb_camp: ~ return "Encampment"
-    - urb_hamlet: ~ return "Hamlet"
-    - urb_village: ~ return "Village"
-    - urb_town: ~ return "Town"
-    - urb_city: ~ return "City"
-    - urb_metropolis: ~ return "Metropolis"
-}
-
-=== function GetRandomUrbanSize() ===
-{shuffle:
-    - ~ return urb_camp
-    - ~ return urb_hamlet
-    - ~ return urb_village
-    - ~ return urb_town
-    - ~ return urb_city
-    - ~ return urb_metropolis
-}
-
-=== edit_urban_size ===
-Current Urban Size: {DisplayUrbanSize()}
-What size is the urban area you are in?
-
-+ [Random]
-    ~ urban_size = GetRandomUrbanSize()
-
-+ [Encampment]
-    ~ urban_size = urb_camp
-
-+ [Hamlet]
-    ~ urban_size = urb_hamlet
-    
-+ [Village]
-    ~ urban_size = urb_village
-
-+ [Town]
-    ~ urban_size = urb_town
-    
-+ [City]
-    ~ urban_size = urb_city
-    
-+ [Metropolis]
-    ~ urban_size = urb_metropolis
-
-+ [Back] ->->
-
--
-~ RollShops()
-Current Urban Size: {DisplayUrbanSize()}
-->->
 
 ==== function GetRandomTerrain() ===
-{shuffle:
-    - ~ return aquatic
-    - ~ return coastal
-    - ~ return desert
-    - ~ return dungeon
-    - ~ return forest
-    - ~ return grass
-    - ~ return hill
-    - ~ return mountain
-    - ~ return swamp
-    - ~ return urban
-}
+~ return LIST_RANDOM(terrain)
 
-==== function GetRandomWildernessTerrain() ===
-{shuffle:
-    - ~ return coastal
-    - ~ return desert
-    - ~ return forest
-    - ~ return grass
-    - ~ return hill
-    - ~ return mountain
-    - ~ return swamp
-}
 
 === edit_terrain ===
 Current Terrain: {DisplayTerrain()}
@@ -168,16 +31,10 @@ What terrain are you entering?
 + [Random]
     ~ terrain = GetRandomTerrain()
 
-+ [Dungeon/Underdark]
-    ~ terrain = dungeon
-
-+ [Town/City]
-    ~ terrain = urban
-
 + [Aquatic]
     ~ terrain = aquatic
 
-+ [Coast]
++ [Coastal]
     ~ terrain = coastal
 
 + [Desert]
@@ -192,7 +49,7 @@ What terrain are you entering?
 + [Hills]
     ~ terrain = hill
 
-+ [Mountain/Ice Steppes]
++ [Mountains/Ice Steppes]
     ~ terrain = mountain
 
 + [Swamps]
@@ -203,13 +60,13 @@ What terrain are you entering?
 
 -
 
-{inWilderness(): 
+{location == wilderness:
     -> roll_weather ->
 }
 
 Terrain is now {DisplayTerrain()}
 
-{season != unknown_season:
+{season == ():
     <> in {DisplaySeason()} ({DisplayWeather()})
 }
 
@@ -217,17 +74,15 @@ Terrain is now {DisplayTerrain()}
 
 === function DisplayTerrain() ===
 {terrain:
-    - unknown_terrain: ~ return "Unknown Terrain"
+    - (): ~ return "Unknown Terrain"
     - aquatic: ~ return "Aquatic"
     - coastal: ~ return "Coastal Wilderness"
     - desert: ~ return "Desert Wilderness"
-    - dungeon: ~ return "Dungeon/Underdark"
     - forest: ~ return "Forest Wilderness"
     - grass: ~ return "Grassland Wilderness"
     - hill: ~ return "Hill Wilderness"
     - mountain: ~ return "Mountain/Ice Steppes"
     - swamp: ~ return "Swamp Wilderness"
-    - urban: ~ return "Town/City"
     - else: ~ return "Invalid Setting"
 }
 
@@ -237,17 +92,13 @@ Terrain is now {DisplayTerrain()}
 
 === function DisplayWeatherSummary() ===
 {
-    - season == unknown_season:
+    - time == ():
         ~ return "Unknown Weather/Season/Time"
-    - season == unknown_season:
+    - season == ():
         ~ return DisplayTime()
     - else:
         ~ return "{DisplayWeather()} {DisplaySeason()} {DisplayTime()}"
 }
-
-
-=== function inWilderness() ===
-~ return terrain != unknown_terrain && terrain != urban && terrain != dungeon
 
 === function GetRandomSeason() ===
 {shuffle:
@@ -281,7 +132,7 @@ Current Season: {DisplaySeason()}
 
 === function DisplaySeason() ===
 {season:
-    - unknown_season: ~ return "Unknown Season"
+    - (): ~ return "Unknown Season"
     - summer: ~ return "Summer"
     - autumn: ~ return "Autumn"
     - winter: ~ return "Winter"
@@ -339,7 +190,7 @@ How dense is the population in {DisplayTerrain()}?
 
 === function DisplayPopulation() ===
 {population:
-    - pop_unknown: ~ return "Unknown Population Density"
+    - (): ~ return "Unknown Population Density"
     - pop_low: ~ return "Low"
     - pop_medium: ~ return "Medium"
     - pop_high: ~ return "High"
@@ -453,7 +304,7 @@ Dungeon Size: {DisplayDungeonSize()}
 
 === function DisplayDungeonSize() ===
 {dungeon_size:
-    - dng_unknown: ~ return "Unknown"
+    - (): ~ return "Unknown"
     - dng_tiny: ~ return "Tiny"
     - dng_small: ~ return "Small"
     - dng_medium: ~ return "Medium"
@@ -514,7 +365,7 @@ Dungeon Type: {DisplayDungeonType()}
 
 === function DisplayDungeonType() ===
 {dungeon_type:
-    - dtype_unknown: ~ return "Unknown"
+    - (): ~ return "Unknown Type"
     - dtype_lair: ~return "Lair"
     - dtype_tomb: ~return "Tomb/Crypt"
     - dtype_stronghold: ~return "Abandoned Stronghold"

@@ -15,7 +15,7 @@ INCLUDE urban
 INCLUDE wilderness
 
 
-VAR debug = true
+VAR debug = false
 
 VAR difficulty = 15
 VAR roll = 1
@@ -40,20 +40,21 @@ VAR dungeon_doors = 0
 VAR dungeon_traps = 0
 VAR dungeon_secret_doors = 0
 VAR dungeon_content_bonus = 0
-LIST dungeon_size = (dng_unknown), dng_tiny, dng_small, dng_medium, dng_large, dng_huge, dng_limitless
-LIST dungeon_type = (dtype_unknown), dtype_lair, dtype_tomb, dtype_stronghold, dtype_temple, dtype_cave, dtype_maze, dtype_mine, dtype_planar, dtype_hq, dtype_trap
+LIST dungeon_size = dng_tiny, dng_small, dng_medium, dng_large, dng_huge, dng_limitless
+LIST dungeon_type = dtype_lair, dtype_tomb, dtype_stronghold, dtype_temple, dtype_cave, dtype_maze, dtype_mine, dtype_planar, dtype_hq, dtype_trap
 LIST dungeon_destination = Passage, Room, Stairs
 
-LIST urban_shops = tavern, supplies, mounts, books, gems, armourer, bank, tinkerer, tailor, potions, idols, food, temple, tomes, thieving, weapons, vehicles, guild, magic_items, blacksmith, resurrection, couriers, brothel, realty, carpenter, theatre, healer, boats, union, stonemason, university, mercenaries
-LIST urban_size = (urb_unknown), urb_camp, urb_hamlet, urb_village, urb_town, urb_city, urb_metropolis
+LIST urban_shops = tavern, supplies, mounts, books, gems, armourer, bank, tinkerer, tailor, potions, idols, food, temple, tomes, thieving, weapons, vehicles, guild, magic_items, blacksmith, resurrection, couriers, brothel, realty, carpenter, theatre, healer, boats, union, stonemason, university, mercenaries, animal_trainer
+LIST urban_size = urb_camp, urb_hamlet, urb_village, urb_town, urb_city, urb_metropolis
 
 VAR stat_survival_bonus = 0
 VAR stat_level = 1
 VAR stat_party_size = 2
 
-LIST terrain = (unknown_terrain), aquatic, coastal, desert, dungeon, forest, grass, hill, mountain, swamp, urban
-LIST season = (unknown_season), summer, autumn, winter, spring
-LIST population = (pop_unknown), pop_low, pop_medium, pop_high
+LIST location = (wilderness), urban, dungeon
+LIST terrain = aquatic, coastal, desert, forest, grass, hill, mountain, swamp
+LIST season = summer, autumn, winter, spring
+LIST population = pop_low, pop_medium, pop_high
 LIST time = (day), night
 LIST cr_level = (cr0), cr1_8, cr1_4, cr1_2, cr1, cr2, cr3, cr4, cr5, cr6, cr7
 
@@ -64,7 +65,7 @@ LIST cr_level = (cr0), cr1_8, cr1_4, cr1_2, cr1, cr2, cr3, cr4, cr5, cr6, cr7
     ~log("Exiting ink debug.")
 }
 
-~ terrain = GetRandomWildernessTerrain()
+
 ~ season = GetRandomSeason()
 -> roll_weather ->
 
@@ -79,7 +80,7 @@ LIST cr_level = (cr0), cr1_8, cr1_4, cr1_2, cr1, cr2, cr3, cr4, cr5, cr6, cr7
 
 <- base_menu
 
-+ [Travel] -> travel_menu -> main_menu
++ [Enter Wilderness] -> wilderness_menu -> main_menu
 + [Enter Dungeon] -> random_dungeon -> main_menu
 + [Enter Town/City] -> urban_menu -> main_menu
 
@@ -95,7 +96,7 @@ LIST cr_level = (cr0), cr1_8, cr1_4, cr1_2, cr1, cr2, cr3, cr4, cr5, cr6, cr7
 + <b>Create</b>
     -> create_menu -> main_menu
 
-+ Generic Skill Check
++ Skill Check
     -> skill_check ->
     ~again = -> skill_check
 
@@ -113,72 +114,82 @@ LIST cr_level = (cr0), cr1_8, cr1_4, cr1_2, cr1, cr2, cr3, cr4, cr5, cr6, cr7
 
 
 === create_menu ===
-+ Create Tavern
-    -> create_tavern ->
-    ~again = -> create_tavern
+<b>Create Menu</b> #CLEAR
+~ back_menu = -> create_menu
+    
++ Create NPC
+    -> create_npc ->
+    ~ again = -> create_npc
+    
++ Create Adventurer
+    -> create_adventurer ->
+    ~ again = -> create_adventurer
 
-+ Create Dungeon Clue
-    -> create_dungeon_clue ->
-    ~again = -> create_dungeon_clue
++ Create Town Stuff
+    -> create_town_menu -> create_menu
 
-+ Create Wilderness Clue
-    -> create_wilderness_clue ->
-    ~again = -> create_dungeon_clue
++ Create Wilderness Stuff
+    -> create_wilderness_menu -> create_menu
 
-+ Create Quest
-    -> create_quest ->
-    ~again = -> create_quest
-
-+ Create Creature
-    -> create_creature ->
-    ~again = -> create_creature
-
-+ Create Monster
-    -> monster_by_terrain_table ->
-    ~again = -> monster_by_terrain_table
-
-+ Create Structure
-    -> create_structure ->
-    ~again = -> create_structure
-
-+ Create Unmarked Settlement
-    -> unmarked_settlement_table ->
-    ~again = -> unmarked_settlement_table
-
-+ Create Wilderness Encounter
-    -> wilderness_encounter_table ->
-    ~again = -> wilderness_encounter_table
-
-+ Create Story Event
-    -> story_element_interaction_table ->
-    ~again = -> story_element_interaction_table
-
-+ Create Dungeon Room
-    -> create_dungeon_room ->
-    ~ again = -> create_dungeon_room
-
-+ Create Dungeon Passage
-    -> create_dungeon_passage ->
-    ~ again = -> create_dungeon_passage
-
-+ Create Dungeon Stairs
-    -> create_dungeon_stairs ->
-    ~ again = -> create_dungeon_stairs
-
-+ Create Dungeon Door
-    -> create_dungeon_door ->
-    ~ again = -> create_dungeon_door
-
-+ Create Secret Dungeon Door
-    -> create_secret_door ->
-    ~ again = -> create_secret_door
-
-+ Create Trap
-    -> create_trap ->
-    ~ again = -> create_trap
++ Create Dungeon Stuff
+    -> create_dungeon_menu -> create_menu
 
 + [Back] -> back_menu
 
 - (sub_menu)
 + [Again] -> again -> sub_menu
-+ [Back] -> create_menu
++ [Back] -> back_menu
+
+
+=== create_town_menu ===
+
++ Create Tavern
+    -> create_tavern ->
+    ~ again = -> create_tavern
+
++ [Back] -> back_menu
+
+- (sub_menu)
++ [Again] -> again -> sub_menu
++ [Back] -> back_menu
+
+
+=== create_wilderness_menu ===
+
++ Create Clue
+    -> create_wilderness_clue ->
+    ~ again = -> create_dungeon_clue
+
++ Create Quest
+    -> create_quest ->
+    ~ again = -> create_quest
+
++ Create Creature
+    -> create_creature ->
+    ~ again = -> create_creature
+
++ Create Monster
+    -> monster_by_terrain_table ->
+    ~ again = -> monster_by_terrain_table
+
++ Create Structure
+    -> create_structure ->
+    ~ again = -> create_structure
+
++ Create Unmarked Settlement
+    -> unmarked_settlement_table ->
+    ~ again = -> unmarked_settlement_table
+
++ Create Wilderness Encounter
+    -> wilderness_encounter_table ->
+    ~ again = -> wilderness_encounter_table
+
++ Create Story Event
+    -> story_element_interaction_table ->
+    ~ again = -> story_element_interaction_table
+
++ [Back] -> back_menu
+
+- (sub_menu)
++ [Again] -> again -> sub_menu
++ [Back] -> back_menu

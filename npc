@@ -1,8 +1,11 @@
 
 === create_npc ===
-{GetRace()} {GetClassOrProfession()} ({~Male|Female}, {GetDisposition()}, {GetAlignment()})
+{GetRace()} {GetClassOrProfession()} ({~Male|Female}, {GetDisposition()}, {GetAlignment()}, {GetEcoStatus()})
 - ->->
 
+=== create_adventurer ===
+{GetRace()} {GetClassAndLevel()} ({~Male|Female}, {GetDisposition()}, {GetAlignment()}, {GetEcoStatus()})
+- ->->
 
 === function GetRace() ===
 ~ roll = d100()
@@ -55,8 +58,12 @@
 {
     - roll <= 25: ~ return "Commoner (unemployed)"
     - roll <= 90: ~ return "{~Tradesperson|Merchant|Artisan|{GetProfession()}}"
-    - else: ~ return "{GetClass()} {GetLevel()}"
+    - else: ~ return GetClassAndLevel()
 }
+
+
+=== function GetClassAndLevel() ===
+~ return "{GetClass()} {GetLevel()}"
 
 
 === function GetProfession() ===
@@ -198,6 +205,22 @@
     - ~ return "Frivolous"
     - ~ return "Disoriented"
 }
+
+=== function GetEcoStatus() ===
+~ roll = d100()
+{
+    - roll <= 4: ~ return "Destitute/homeless"
+    - roll <= 12: ~ return "Poor"
+    - roll <= 20: ~ return "Scraping By"
+    - roll <= 30: ~ return "Can Support Themselves"
+    - roll <= 40: ~ return "Climbing the Ladder"
+    - roll <= 52: ~ return "Comfortable"
+    - roll <= 62: ~ return "Well Off"
+    - roll <= 74: ~ return "Rich"
+    - roll <= 85: ~ return "Extreme Wealth"
+    - else: ~ return "Royalty-Level Wealth"
+}
+
 
 
 

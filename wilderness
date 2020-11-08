@@ -2,6 +2,9 @@
 
 === wilderness_menu ===
 
+{terrain == (): -> edit_terrain ->}
+
+~ location = wilderness
 ~ back_menu = -> wilderness_menu
 
 
@@ -61,7 +64,7 @@
 
 === camping_menu ===
 
-{terrain == unknown_terrain: -> edit_terrain ->}
+{terrain == (): -> edit_terrain ->}
 
 ~ back_menu = -> camping_menu
 
@@ -86,8 +89,8 @@ The weather in {DisplayTerrain()} is now "{current_weather}".
 
 
 === roll_weather ===
-{terrain == unknown_terrain || terrain == dungeon || terrain == urban:-> edit_terrain ->}
-{season == unknown_season: -> edit_season ->}
+{terrain == ():-> edit_terrain ->}
+{season == (): -> edit_season ->}
 
 
 {terrain:
@@ -188,7 +191,7 @@ TODO: GetLake()
 
 
 === unmarked_settlement_check ===
-{population == pop_unknown: -> edit_population ->}
+{population == (): -> edit_population ->}
 
 ~ roll = d4()
 ~ chances = roll - 1
@@ -269,7 +272,7 @@ Based on {DisplayPopulation()} Population Density, each d100 check has a {diffic
 
 
 === wilderness_encounter_check ===
-{population == pop_unknown: -> edit_population ->}
+{population == (): -> edit_population ->}
 
 ~ total = GetWildernessEncounterCheckCount()
 
