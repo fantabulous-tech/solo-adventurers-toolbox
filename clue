@@ -1,110 +1,216 @@
-=== create_clue ===
-~ roll = d100()
+=== create_wilderness_clue ===
 
-{
-    - roll <= 1: A broken arrow of a distinctive type.
-    - roll <= 2: The monster’s / NPCs weapon has dried blood on it. But what type?
-    - roll <= 3: The carcass or area has a strange odour.
-    - roll <= 4: There is a strange noise coming from somewhere in this area.
-    - roll <= 5: You see tracks leading off from this area.
-    - roll <= 6: 1d10 platinum pieces in an ornately embroidered pouch. The embroidery mentions someone’s name.
-    - roll <= 7: Magical compass, player has to figure out the command word to activate it.
-    - roll <= 8: The corpse is gripping an envelope. The wax sealed with an unknown sigil.
-    - roll <= 9: You see fresh blood stains splattered on the wall. One part is still trickling down as you enter the room.
-    - roll <= 10: The body is covered in map symbols
-    - roll <= 11: The body is covered in runic tattoos.
-    - roll <= 12: The body is contorted, showing evidence of reconstructive surgery to head and chest cavity, with attachments & implants below the skin
-    - roll <= 13: The body is branded with a number, directly behind the neck
-    - roll <= 14: The body has a significant number of healed wounds, suggesting ongoing punishment and whipping
-    - roll <= 15: An old wooden toy-horse, that you were used to play with as a child and that you forgot until now
-    - roll <= 16: You hear loud Ravens/Crows nonstop cawing nearby.
-    - roll <= 17: You find a pendant with a missing piece.
-    - roll <= 18: You find sacks of bloody corn and wheat.
-    - roll <= 19: You notice a bright flash of purplish light just out of the corner of your eye
-    - roll <= 20: The room/corpse is covered in a thin layer of frost.
-    - roll <= 21: A note with only the name of the nearby town written in it.
-    - roll <= 22: Stones patterned in a directional arrow with the words Help me under it.
-    - roll <= 23: Part of a map
-    - roll <= 24: Broken weapon with runes on it
-    - roll <= 25: A holy symbol
-    - roll <= 26: An adventurer’s backpack containing a journal, with entries that stop abruptly.
-    - roll <= 27: A rope hanging from above. It appears to have been crudely hacked at the bottom end.
-    - roll <= 28: Graffiti on the wall. “Beware the Great Hall!”
-    - roll <= 29: In the floor is a hole, and beside it a spade. It appears as if someone started digging and then gave up. Or...
-    - roll <= 30: A bear or man trap sitting in a pool of blood. Perhaps a severed limb nearby.
-    - roll <= 31: Tracks, only they are made out in flour.
-    - roll <= 32: A broken lantern
-    - roll <= 33: An empty coffin, the lid broken
-    - roll <= 34: Lying on the floor, a glass chess piece.
-    - roll <= 35: Broken blade of a sword
-    - roll <= 36: Singing, distant and mournful.
-    - roll <= 37: Whispering, from somewhere in the room, disembodied. It stops and starts again, unnervingly.
-    - roll <= 38: A pile of carefully stacked stones is situated in the middle of this area
-    - roll <= 39: Loud thumping from either above or below the current area you are in
-    - roll <= 40: You notice a loose brick in the wall. Peering behind it, you find a hidden scroll. What is written on it? (Q/A or situations table)
-    - roll <= 41: A hole has been bashed through the wall into an adjoining chamber. This chamber doesn’t appear to have any other way in or out.
-    - roll <= 42: A pack and its contents strewn across the ground. (Suggests live or dead NPC somewhere in the dungeon)
-    - roll <= 43: There is rubble here, but it has been swept to the walls in neat piles by someone, obviously using a broom.
-    - roll <= 44: You hear whispering right behind you, but when you turn, no one is there.
-    - roll <= 45: A severed hand covered in stitches lies on the floor
-    - roll <= 46: A book of hand-sketched images of various humanoids, some of them with large red crosses through them.
-    - roll <= 47: A body is here, and has been savaged, as if by a wild animal.
-    - roll <= 48: A shield lies on the ground in two pieces. Whatever ripped through this obviously possesses great strength
-    - roll <= 49: A platinum piece, glued to the floor.
-    - roll <= 50: A small ray of light shines through a crack in the ceiling
-    - roll <= 51: A trail of blood, as if a body were being dragged, leads away. It stops suddenly.
-    - roll <= 52: A long list of names, all of them crossed out except for the last 5-10. Close to the end is the PCs name.
-    - roll <= 53: A detailed colour map of the local area, marked with several previously unknown ruins.
-    - roll <= 54: A chill wind, as if someone opened a door onto an arctic tundra, blows through this area briefly
-    - roll <= 55: You hear the sound of metal being dragged across stone. It continues for a while and then stops.
-    - roll <= 56: Suddenly you realize your footfalls have become completely silent
-    - roll <= 57: Ball bearings or caltrops litter the floor in this area.
-    - roll <= 58: Geometric shapes drawn in chalk on the floor
-    - roll <= 59: The floor is covered by a rug. A close inspection will reveal some spots of a dark liquid, possibly blood...
-    - roll <= 60: A map of a labyrinth neatly made on a piece of parchment.
-    - roll <= 61: A letter of recommendation from a noble no-one has heard of.
-    - roll <= 62: The remains of an adventurer lie slumped against the wall. In his hand he holds a vial or a note.
-    - roll <= 63: Hurried footsteps, coming from somewhere up ahead.
-    - roll <= 64: A small beast (cockroach?) sits in an alcove. As you pass, it speaks to you!
-    - roll <= 65: Bucket of entrails from an unknown creature
-    - roll <= 66: Target practice dummy is nearby
-    - roll <= 67: The sound of glass smashing comes from somewhere, echoing off the walls.
-    - roll <= 68: A fine dagger with a retracting blade. Who did it belong to?
-    - roll <= 69: A piece of shell that looks like it came from a large egg
-    - roll <= 70: The wall has been carved away, and a large standing stone has been placed in the newly formed alcove. It is covered in strange writing.
-    - roll <= 71: A large roast meal is laid out on a table, complete with place settings. It is steaming hot and looks delicious, but it totally untouched.
-    - roll <= 72: Goblin graffiti on the walls
-    - roll <= 73: A large collection of animal bones, organized into a pile.
-    - roll <= 74: A cauldron sits in the corner.
-    - roll <= 75: A hand… it looks severed, but the odd thing is that its made of stone.
-    - roll <= 76: You find a stone jar containing teeth of all descriptions.
-    - roll <= 77: An adventurer’s journal. Reading through, you see the entries stop suddenly
-    - roll <= 78: A table and single chair is in the corner. The table is spattered with large globs of wax.
-    - roll <= 79: An empty net on the ground, torn to shreds.
-    - roll <= 80: A stack of clay tablets, all with indecipherable runes
-    - roll <= 81: A lute, but the neck has been smashed from the body and is dangling by the strings.
-    - roll <= 82: The shrunken head of a kobold
-    - roll <= 83: Book containing a history of the world - not of this world though.
-    - roll <= 84: A well, in the middle of the dungeon. A rope hangs down from its top.
-    - roll <= 85: You step on a stone and hear a click...
-    - roll <= 86: A clanking sound, followed by a hissing sound, from somewhere below...
-    - roll <= 87: A jar of pickled eyes.
-    - roll <= 88: There is a campfire circle containing a prepared fire, but it has not been lit.
-    - roll <= 89: Hammered to a nearby door or affixed to the wall is a piece of framed parchment - completely blank.
-    - roll <= 90: An empty brandy bottle.
-    - roll <= 91: A six-sided dice that is all ones.
-    - roll <= 92: A halfling’s skull, intact except for a perfect circle removed at the top.
-    - roll <= 93: A large assortment of clay pots in alcoves, all containing noxious-smelling liquids.
-    - roll <= 94: A weapons rack is on the wall, containing several ancient, rusted weapons. A few of these might be able to be restored if taken to an expert.
-    - roll <= 95: A steady flow of moisture down a nearby wall leads you to think you might be below a body of water.
-    - roll <= 96: The sound of children’s laughter, echoing from every direction
-    - roll <= 97: A bag of feathers. A successful nature check (DC 12) reveals them to be from a harpy.
-    - roll <= 98: You find a parchment containing what looks like a recipe for a particular kind of potion.
-    - roll <= 99: A pouch of spell components
-    - roll <= 100: Magic item! Relevant to quest. Roll once on Table {~A|B}
+{shuffle:
+    - {d4()} corpses, beast
+    - {d4()} corpses, humanoid
+    - Severed limb
+    - Severed extremity
+    - Holes dug in the ground in a variety of locations
+    - Strange odour on the air
+    - You find a bizarre and haunting monument, such as a totem made of dead bodies, something equally spooky.
+    - A crude sign is staked in the ground, with the head of a humanoid of the same species as yourself atop it. In any language, the words ”Warning! Turn back or die!” are garishly scrawled on the piece of wood that forms the sign.
+    - Tracks of the creature you are currently seeking
+    - You meet an NPC who saw the creature or target earlier.
+    - You meet an NPC who got into an altercation with the target. Roll d4. 1-2: They wounded it and were wounded by it. 3-4: They were savaged fled for their life.
+    - A burnt area of ground, like a fireball or explosion happened here.
+    - Injured beast.
+    - Droppings from some strange animal
+    - Abandoned campsite
+    - Adventurer’s belongings, spattered with blood
+    - A noose hanging from a tree, but no body
+    - A previously triggered trap
+    - Wagon tracks leading off the current path you are on
+    - Sword marks in the trunk of a tree
+    - Hastily scribbled marks in the ground / on the trunk of a tree… someone trying
+    - leave directions? Or is it a warning? Are there words? If so, in what language?
+    - Scrawled on a rock: “I’ve found them. Keep going east, you’ll reach me eventually.”
+    - A stone with ancient runes inscribed
+    - A small ruins, as of a shrine or small temple. Interesting inscriptions/graffiti.
+    - Broken weapon
+    - Ancient coin
+    - A halfling / gnome-sized cloak but the bottom edge is ripped and torn
+    - An incomplete journal. What’s in it? The entries stop abruptly
+    - A map of a labyrinth
+    - A set of parchment and 3 ink bottles. All the red is used up.
+    - A wig of human hair, any colour
+    - A discarded pipe smelling strongly of pipeweed, recently used
+    - Multiple broken branches - it appears someone or something charged recklessly through here. If not in forest, then you notice large areas of earth churned up.
+    - A poster that looks like it was ripped from a wall of a nearby town. Wanted poster? Adventurers wanted? Perhaps a quest source.
+    - A ring of keys, apparently goblin or orcish in origin
+    - An empty, but ornate, jewellery box.
+    - A bag of provisions, ripped and scattered around
+    - A discarded boot
+    - A child’s doll
+    - A gold bar (approximately 100 gp in worth) with the words “Imperial Buillion” embossed in the metal.
+    - An iron amulet in the shape of a snake eating itself
+    - A silver key on a leather thong.
+    - A jar that appears empty, but the lid is jammed shut and cannot be opened, no matter how strong you are. Is it shut magically?
+    - A tree with the bark worn through on one side.
+    - A large clump of fur from some kind of creature.
+    - What appears to be a large snakeskin. Something has shed a layer here
+    - A disturbingly large pile of poop
+    - This area is scattered with bones from many different creatures
+    - A campfire, smouldering, large rodent on a spit which is burnt to a crisp, inedible
+    - A compass, but the glass is smashed
+    - A rock with a target on it, surrounded by a mass of sling stones.
+    - Large quantity of blood spattered over the ground / leaves in this area
+    - The remnants of a naturally-constructed bivouac
+    - From far off, an eerie howling noise.
+    - Scrawled on a rock in red paint, crudely written in Common: “Stop! Go no further
+    - you value your life!!”
+    - Several empty wineskins and discarded goblets
+    - 1d10 arrows, high quality, all sticking out of the ground in this area
+    - Invitation to an event in a nearby town
+    - A small onyx figurine of a beast of some kind (player’s choice)
+    - A grove of large mushrooms, but most of them have been trampled or destroyed
+    - Several plans, as if from a cart or a boat, their ends burned.
+    - A locket with a picture of a humanoid female inside
+    - A perfectly spherical stone. Is it naturally occurring? Nonetheless, it definitely catches your attention.
+    - A book on learning the language Undercommon
+    - A wooden token bearing the symbol of a powerful organisation or faction
+    - Trailblazing marks.
+    - A vial full of some sort of tree sap. On inspection, you see that it has been collected from a particular species of tree that grows in this area (although not commonly)
+    - Black-fletched crossbow bolts sticking out of a tree trunk
+    - A child-sized sword.
+    - A small pouch of seeds
+    - An area of pressed-down grass, as if a humanoid had been lying here
+    - An empty, abandoned tent
+    - A rune, spelt out in stones on the ground
+    - A jar of sweets, half empty
+    - A jawbone from a creature of some kind
+    - The broken blade of a sword
+    - Sword marks in a tree trunk
+    - A belt pouch full of silver coins from an unknown land
+    - About a mile ahead, you see vultures circling in the air
+    - A freshly dug grave, empty
+    - Funeral pyre. Whatever was burnt here is now just ash
+    - Overturned cart. No-one here, just some random belongings.
+    - A wolf (or other sometimes-domesticated beast) starts to follow you. It looks forlorn, as if it has lost its master.
+    - A grove of fruit trees
+    - In the distance, the sound of a boulder rolling through forest, cracking trees etc
+    - Smoke rising about two miles ahead. A lot of smoke, from a specific point
+    - A medium sized tree felled and placed over a river which is in full flow.
+    - Picked mushrooms lying on a stump to dry
+    - Picked moss arranged in one area, possibly as a bed
+    - Huge spider web with humanoid belongings stuck to it
+    - Disembodied voices float on the breeze… what are they saying?
+    - If by water, you see the surface stir. If on land, you feel vibrations beneath your feet.
+    - About 500 yards ahead, a flock of birds rises suddenly into the air as if something had disturbed them
+    - 1d4 corpses, all without heads
+    - Large boot tracks in mud
+    - Abandoned shack
+    - Lost / traumatised humanoid child who doesn’t speak a word
+    - Empty cave, recently inhabited
+    - A bridge, either washed out or deliberately destroyed / burnt
+    - Magic item! Relevant to quest. Roll once on table {~A|B}
 }
 
+->->
 
+=== create_dungeon_clue ===
+
+{shuffle:
+    - A broken arrow of a distinctive type.
+    - The monster’s / NPCs weapon has dried blood on it. But what type?
+    - The carcass or area has a strange odour.
+    - There is a strange noise coming from somewhere in this area.
+    - You see tracks leading off from this area.
+    - {d10()} platinum pieces in an ornately embroidered pouch. The embroidery mentions someone’s name.
+    - Magical compass, player has to figure out the command word to activate it.
+    - The corpse is gripping an envelope. The wax sealed with an unknown sigil.
+    - You see fresh blood stains splattered on the wall. One part is still trickling down as you enter the room.
+    - The body is covered in map symbols
+    - The body is covered in runic tattoos.
+    - The body is contorted, showing evidence of reconstructive surgery to head and chest cavity, with attachments & implants below the skin
+    - The body is branded with a number, directly behind the neck
+    - The body has a significant number of healed wounds, suggesting ongoing punishment and whipping
+    - An old wooden toy-horse, that you were used to play with as a child and that you forgot until now
+    - You hear loud Ravens/Crows nonstop cawing nearby.
+    - You find a pendant with a missing piece.
+    - You find sacks of bloody corn and wheat.
+    - You notice a bright flash of purplish light just out of the corner of your eye
+    - The room/corpse is covered in a thin layer of frost.
+    - A note with only the name of the nearby town written in it.
+    - Stones patterned in a directional arrow with the words Help me under it.
+    - Part of a map
+    - Broken weapon with runes on it
+    - A holy symbol
+    - An adventurer’s backpack containing a journal, with entries that stop abruptly.
+    - A rope hanging from above. It appears to have been crudely hacked at the bottom end.
+    - Graffiti on the wall. “Beware the Great Hall!”
+    - In the floor is a hole, and beside it a spade. It appears as if someone started digging and then gave up. Or...
+    - A bear or man trap sitting in a pool of blood. Perhaps a severed limb nearby.
+    - Tracks, only they are made out in flour.
+    - A broken lantern
+    - An empty coffin, the lid broken
+    - Lying on the floor, a glass chess piece.
+    - Broken blade of a sword
+    - Singing, distant and mournful.
+    - Whispering, from somewhere in the room, disembodied. It stops and starts again, unnervingly.
+    - A pile of carefully stacked stones is situated in the middle of this area
+    - Loud thumping from either above or below the current area you are in
+    - You notice a loose brick in the wall. Peering behind it, you find a hidden scroll. What is written on it? (Q/A or situations table)
+    - A hole has been bashed through the wall into an adjoining chamber. This chamber doesn’t appear to have any other way in or out.
+    - A pack and its contents strewn across the ground. (Suggests live or dead NPC somewhere in the dungeon)
+    - There is rubble here, but it has been swept to the walls in neat piles by someone, obviously using a broom.
+    - You hear whispering right behind you, but when you turn, no one is there.
+    - A severed hand covered in stitches lies on the floor
+    - A book of hand-sketched images of various humanoids, some of them with large red crosses through them.
+    - A body is here, and has been savaged, as if by a wild animal.
+    - A shield lies on the ground in two pieces. Whatever ripped through this obviously possesses great strength
+    - A platinum piece, glued to the floor.
+    - A small ray of light shines through a crack in the ceiling
+    - A trail of blood, as if a body were being dragged, leads away. It stops suddenly.
+    - A long list of names, all of them crossed out except for the last 5-10. Close to the end is the PCs name.
+    - A detailed colour map of the local area, marked with several previously unknown ruins.
+    - A chill wind, as if someone opened a door onto an arctic tundra, blows through this area briefly
+    - You hear the sound of metal being dragged across stone. It continues for a while and then stops.
+    - Suddenly you realize your footfalls have become completely silent
+    - Ball bearings or caltrops litter the floor in this area.
+    - Geometric shapes drawn in chalk on the floor
+    - The floor is covered by a rug. A close inspection will reveal some spots of a dark liquid, possibly blood...
+    - A map of a labyrinth neatly made on a piece of parchment.
+    - A letter of recommendation from a noble no-one has heard of.
+    - The remains of an adventurer lie slumped against the wall. In his hand he holds a vial or a note.
+    - Hurried footsteps, coming from somewhere up ahead.
+    - A small beast (cockroach?) sits in an alcove. As you pass, it speaks to you!
+    - Bucket of entrails from an unknown creature
+    - Target practice dummy is nearby
+    - The sound of glass smashing comes from somewhere, echoing off the walls.
+    - A fine dagger with a retracting blade. Who did it belong to?
+    - A piece of shell that looks like it came from a large egg
+    - The wall has been carved away, and a large standing stone has been placed in the newly formed alcove. It is covered in strange writing.
+    - A large roast meal is laid out on a table, complete with place settings. It is steaming hot and looks delicious, but it totally untouched.
+    - Goblin graffiti on the walls
+    - A large collection of animal bones, organized into a pile.
+    - A cauldron sits in the corner.
+    - A hand… it looks severed, but the odd thing is that its made of stone.
+    - You find a stone jar containing teeth of all descriptions.
+    - An adventurer’s journal. Reading through, you see the entries stop suddenly
+    - A table and single chair is in the corner. The table is spattered with large globs of wax.
+    - An empty net on the ground, torn to shreds.
+    - A stack of clay tablets, all with indecipherable runes
+    - A lute, but the neck has been smashed from the body and is dangling by the strings.
+    - The shrunken head of a kobold
+    - Book containing a history of the world - not of this world though.
+    - A well, in the middle of the dungeon. A rope hangs down from its top.
+    - You step on a stone and hear a click...
+    - A clanking sound, followed by a hissing sound, from somewhere below...
+    - A jar of pickled eyes.
+    - There is a campfire circle containing a prepared fire, but it has not been lit.
+    - Hammered to a nearby door or affixed to the wall is a piece of framed parchment - completely blank.
+    - An empty brandy bottle.
+    - A six-sided dice that is all ones.
+    - A halfling’s skull, intact except for a perfect circle removed at the top.
+    - A large assortment of clay pots in alcoves, all containing noxious-smelling liquids.
+    - A weapons rack is on the wall, containing several ancient, rusted weapons. A few of these might be able to be restored if taken to an expert.
+    - A steady flow of moisture down a nearby wall leads you to think you might be below a body of water.
+    - The sound of children’s laughter, echoing from every direction
+    - A bag of feathers. A successful nature check (DC 12) reveals them to be from a harpy.
+    - You find a parchment containing what looks like a recipe for a particular kind of potion.
+    - A pouch of spell components
+    - Magic item! Relevant to quest. Roll once on Table {~A|B}
+}
 
 ->->
 

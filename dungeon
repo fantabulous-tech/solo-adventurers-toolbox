@@ -23,6 +23,13 @@ You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target
 + [Back] -> create_menu
 
 
+
+=== dungeon_event ===
+-> dungeon_encounter_table ->
+->->
+
+
+
 === random_dungeon ===
 ~ dungeon_room_found = 0
 ~ dungeon_passages_found = 0
@@ -53,9 +60,9 @@ You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target
 
 = menu
 
-+ {dungeon_clues}[Look at Clue (x{dungeon_clues})]
++ {dungeon_clues}[Look at Dungeon Clue (x{dungeon_clues})]
     ~ dungeon_clues--
-    -> create_clue -> menu
+    -> create_dungeon_clue -> menu
 + {dungeon_traps}[Look at Trap (x{dungeon_traps})]
     ~ dungeon_traps--
     -> create_trap -> menu
@@ -95,7 +102,8 @@ You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target
     ++ [Find Trap]
         -> create_trap -> menu
     ++ [Find Clue]
-        -> create_clue -> menu
+        -> create_dungeon_clue -> menu
+    ++ [Back] -> menu
 
 + [Exit Dungeon]
     -> back_menu

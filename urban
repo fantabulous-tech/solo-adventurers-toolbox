@@ -1,10 +1,143 @@
 
 
 === urban_menu ===
-<b>{DisplayTerrain()} Terrain Menu<b> #CLEAR
+~ back_menu = -> urban_menu
+~ terrain = urban
 
-+ [Back] -> main_menu
+{urban_size == urb_unknown: -> edit_urban_size ->}
 
+<b>{DisplayUrbanSize()} Menu<b> ({DisplayWeatherSummary()}) #CLEAR
+
+Shops: {urban_shops}
++ [Roll for Encounter]
+    -> urban_encounter_check -> urban_menu
+
++ {urban_shops ? tavern}[Enter Tavern]
+    -> create_tavern -> urban_menu
+ 
++ [Leave]
+
+- -> main_menu
+
+
+=== urban_encounter_check ===
+
+{urban_size == urb_unknown: -> edit_urban_size ->}
+
+~ total = GetUrbanEncounterCheckCount()
+
+Based on {DisplayPopulation()} population and traveling through the {DisplayUrbanSize()} during the {DisplayTime()}, we will check {total} times.
+
+-> RollD100Checks(total,25,0) ->
+
+~ temp encounterCount = 0
+~ temp encounterTotal = total
+
+Encounters: {encounterTotal}
+
+- (next_encounter)
+{encounterCount >= encounterTotal: -> complete}
+~ encounterCount++
+
+Encounter \#{encounterCount}/{encounterTotal}
+
++ [Determine on Urban Encounter Table]
+    -> urban_encounter_table ->
++ [Determine on Story Event Table]
+    -> story_element_interaction_table ->
++ [Surprise Me]
+    {shuffle:
+        - -> wilderness_encounter_table ->
+        - -> story_element_interaction_table ->
+    }
+
+- {encounterCount >= encounterTotal: -> complete}
++ [Next] -> next_encounter
++ [Cancel] -> back_menu
+
+- (complete)
+
++ [Encounters Complete] -> back_menu
+
+
+=== function GetUrbanEncounterCheckCount() ===
+~ temp checkCount = 0
+
+{urban_size:
+    - urb_camp: ~ checkCount = 1
+    - urb_hamlet: ~ checkCount = 1
+    - urb_village: ~ checkCount = 2
+    - urb_town: ~ checkCount = 2
+    - urb_city: ~ checkCount = 3
+    - urb_metropolis: ~ checkCount = 3
+    - else:
+        ~logError("Unrecognized population. Assuming 'medium'.")
+        ~ checkCount = 2
+}
+
+{time == day:
+    ~ checkCount = checkCount * 2
+}
+
+~ return checkCount
+
+
+=== urban_event ===
+
+{shuffle:
+    - Wedding
+    - Name-giving day celebrations
+    - Public holiday
+    - Procession
+    - Harvest Festival
+    - Festival celebrating a god
+    - Celebration of a hero’s return
+    - Market day
+    - Religious rally
+    - Official proclamation
+    - Amnesty
+    - Sudden storm / gale force winds
+    - Election / Change of civic leader
+    - Yearly local festival
+    - Assassination
+    - Performance of a play
+    - Musical concert
+    - Buskers performance
+    - Orator / storyteller
+    - Alefest
+    - Warrior exhibition
+    - Procession of royals
+    - Museum exhibition
+    - New building being opened
+    - Large army passing through town
+    - Gridlocked traffic
+    - Monster invasion!
+    - Conference of Wizards
+    - Graduation ceremony
+    - Traffic accident
+    - Freakish weather event
+    - Fire in Building
+    - Notable local figure assassinated
+    - Public duel
+    - Large scale fire
+    - Sinkhole opens
+    - Local army returning after recent skirmish
+    - Co-ordinated attack
+    - Protest
+    - Flood
+    - Martial law enforced (Reason?)
+    - Wild magic eruption
+    - Military conscription
+    - Revolution taking place (scale uncertain)
+    - Public Execution
+    - Storm
+    - Plague
+    - Earthquake
+    - Dimensional disruption
+    - Invading force
+}
+
+->->
 
 === urban_encounter_table ===
 ~ roll = d100()

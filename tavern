@@ -23,9 +23,13 @@ Rumours: {rumours}
 ~ count = 0
 - (next)
 ~ count++
-<br/>Rumour \#{count}: 
--> create_rumour ->
-{count < rumours: -> next}
+
++ [Hear Next Rumour]
+    Rumour \#{count}: 
+    -> create_rumour ->
+    {count < rumours: -> next}
+
++ [Leave Tavern]
 
 - ->->
 

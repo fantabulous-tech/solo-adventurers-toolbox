@@ -1,6 +1,6 @@
 === create_creature ===
 {shuffle:
-    - Monster!
+    - -> create_monster ->
     - Bear
     - Cat
     - Dire Wolf
@@ -43,9 +43,13 @@
 ->->
 
 
+=== create_monster ===
+Monster
+->->
 
 
 === monster_by_terrain_table ===
 TODO: monster_by_terrain_table
+Monster
 - ->->
 

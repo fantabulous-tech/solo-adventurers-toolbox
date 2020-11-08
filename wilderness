@@ -9,17 +9,20 @@
 
 <- base_travel_menu
 
++ [Continue On]
+    -> travel_next -> wilderness_menu
+
 + [Roll Weather (Currently {DisplayWeather()})]
     -> weather -> wilderness_menu
 
-+ Roll for Encounter ({DisplayTerrain()})
++ [Roll for Encounter ({DisplayTerrain()})]
     -> wilderness_encounter_check ->->
 
-+ Roll for Unmarked Settlement
++ [Roll for Unmarked Settlement]
     -> unmarked_settlement_check ->
     ~again = -> unmarked_settlement_check
     
-+ Camp for the Night
++ [Camp for the Night]
     ~ time = night
     -> camping_menu -> wilderness_menu
 
@@ -29,6 +32,32 @@
 + [Again] -> again -> sub_menu
 + [Back] -> wilderness_menu
 
+
+=== travel_next ===
+
+// {terrain:
+//     - arctic: 
+// }
+
+->->
+
+= travel_arctic
+
+~ roll = d100()
+
+{
+    - roll <= 60: Continuing arctic terrain 5 miles
+    - roll <= 65: Icy hills (roll hills and interpret… arctically). {d4()} m.
+    - roll <= 70: Small mountain range / foothills {d4()} m.
+    - roll <= 75: Waterway (probably frozen) {d4()} m.
+    - roll <= 80: Small Wood {d4()} m.
+    - roll <= 85: Rocky outcrop {d4()} m.
+    - roll <= 90: Unmarked Settlement
+    - roll <= 95: {~Structure|Monument|Interesting landscape feature}
+    - else: Monster Lair
+}
+
+->->
 
 === camping_menu ===
 
@@ -93,7 +122,7 @@ The weather in {DisplayTerrain()} is now "{current_weather}".
         {
             - result <= 1: ~ current_weather = "Heavy Snow"
             - result <= 4: ~ current_weather = "Snowstorm"
-            - result <= 8: ~ current_weather = "Rain"
+            - result <= 8: ~ current_weather = "Rainy"
             - result <= 11: ~ current_weather = "Overcast"
             - result <= 18: ~ current_weather = "Clear"
             - else: ~ current_weather = "Unseasonably Warm"
@@ -101,7 +130,7 @@ The weather in {DisplayTerrain()} is now "{current_weather}".
     - spring:
         {
             - result <= 1: ~ current_weather = "Sleet/Blizzard"
-            - result <= 4: ~ current_weather = "Rain"
+            - result <= 4: ~ current_weather = "Rainy"
             - result <= 8: ~ current_weather = "Overcast"
             - result <= 11: ~ current_weather = "Clear"
             - result <= 18: ~ current_weather = "Warm"
@@ -245,49 +274,37 @@ Based on {DisplayPopulation()} Population Density, each d100 check has a {diffic
 ~ total = GetWildernessEncounterCheckCount()
 
 Based on {DisplayPopulation()} population and traveling during the {DisplayTime()}, we will check {total} times.
-~ count = 0
+
+-> RollD100Checks(total,25,0) ->
+
 ~ temp encounterCount = 0
+~ temp encounterTotal = total
 
-- (check_again)
-~ count++
-
-// Check {count}/{total}
-
-- 
-~ roll = d100()
-~ bonus = 0
-~ result = roll
-
-{result <= 25:
-    ~ encounterCount++
-}
-
-{DisplayResultTarget("25%")}
-
-- {count < total:
-    <>, <>
-    -> check_again
-}
-
-Encounters: {encounterCount}
-
-~ total = encounterCount
-~ count = 0
-
+Encounters: {encounterTotal}
 
 - (next_encounter)
-{count >= total: -> complete}
-~count++
+{encounterCount >= encounterTotal: -> complete}
+~ encounterCount++
 
-+ [Determine Encounter]
-    -> encounter -> next_encounter
+Encounter \#{encounterCount}/{encounterTotal}
+
++ [Determine on Wilderness Table]
+    -> wilderness_encounter_table ->
++ [Determine on Story Event Table]
+    -> story_element_interaction_table ->
++ [Surprise Me]
+    {shuffle:
+        - -> wilderness_encounter_table ->
+        - -> story_element_interaction_table ->
+    }
+
+- {encounterCount >= encounterTotal: -> complete}
++ [Next] -> next_encounter
++ [Cancel] -> back_menu
 
 - (complete)
 
-+ [Encounter Complete]
-Encounter checks complete.
-
--> back_menu
++ [Encounters Complete] -> back_menu
 
 
 = no_encounter
@@ -297,17 +314,6 @@ No encounter.
 {DisplayResultTarget("25%")}
 
 ->->
-
-
-= encounter
-You have an encounter!
-
-
-+ Use Wilderness Enounter Table
-    -> wilderness_encounter_table ->->
-+ Use Story Element Interaction Table
-    -> story_element_interaction_table ->->
-
 
 
 === function GetWildernessEncounterCheckCount() ===
@@ -333,6 +339,63 @@ You have an encounter!
 TODO: create_place
 Place
 - ->->
+
+
+=== wilderness_event ===
+
+{shuffle:
+    - Landslide / Avalanche
+    - Earthquake
+    - Storm
+    - Druid gathering
+    - Religious pilgrimage
+    - Army encamped
+    - Sudden storm / gale force winds
+    - Overturned cart
+    - Flash flood
+    - Forest Fire
+    - Local humanoids having a festival
+    - Solar eclipse
+    - Hail (large hailstones?)
+    - Hurricane
+    - Tribal encounter
+    - Animal stampede
+    - Tree falls
+    - Boulder falls
+    - Unseasonable weather
+    - Lightning strikes
+    - Market
+    - Hunting Party
+    - Farmers harvesting crops
+    - Cart passing
+    - Refugees
+    - Massed Animals -> create_creature ->
+    - Toll demanded
+    - Distressed -> create_npc ->
+    - Besieged settlement -> unmarked_settlement_table ->
+    - Come across <> -> create_structure ->
+    - Battle in progress
+    - Carcass of a {~ -> create_creature ->|->create_monster ->}
+    - Monster - easy encounter
+    - Monster - easy encounter
+    - Monster - medium encounter
+    - Monster - medium encounter
+    - Monster - hard encounter
+    - Monster - deadly encounter
+    - Volcanic eruption
+    - Plague (insect / vermin)
+    - Interdimensional Rift
+    - Army going to war
+    - Sinkhole Appears
+    - Appearance of Tyrant in the area
+    - Savage raiding party
+    - Marauding monster attacking village
+    - Undead awakening
+    - -> unmarked_settlement_table ->
+    - -> unmarked_settlement_table ->
+    - -> unmarked_settlement_table ->
+}
+->->
 
 
 === wilderness_encounter_table ===
@@ -384,7 +447,8 @@ Place
     - roll <= 58: Traveling merchant
     - roll <= 59: A traveling adventurer who is impressed and wants to join your party.
     - roll <= 65: Monster Encounter: Level-appropriate medium encounter. Go to Chapter 16.
-    - roll <= 66: A traveller, resting by the side of the road, begins pointing and laughing uproariously at you. Is she mad?
+    - roll <= 66: A traveller, resting by the side of the road, begins pointing and laughing uproariously at you. Are they mad?
+        -> create_npc ->
     - roll <= 67: Heavily-guarded transport passes.
     - roll <= 68: Travelling sage/archivist
     - roll <= 69: Bandits (human or otherwise) demand a toll from you.
@@ -407,5 +471,6 @@ Place
     - roll <= 100: Monster! Level-appropriate {~hard|hard|hard|<i>deadly</i>} encounter.
 }
 
-+ [Encounter Complete] ->->
-+ [Cancel] -> back_menu
+->->
+
+
