@@ -451,6 +451,37 @@ Current Season: {DisplaySeason()}
 }
 
 
+=== edit_population ===
+Current Population Density: {DisplayPopulation()}
+How dense is the population in {DisplayTerrain()}?
+
++ [Random]
+    {shuffle:
+        - ~ population = pop_low
+        - ~ population = pop_medium
+        - ~ population = pop_high
+    }
++ [Low]
+    ~ population = pop_low
++ [Medium]
+    ~ population = pop_medium
++ [High]
+    ~ population = pop_high
++ [Back] ->->
+
+- Current Population Density: {DisplayPopulation()}
+->->
+
+
+=== function DisplayPopulation() ===
+{population:
+    - (): ~ return "Unknown Population Density"
+    - pop_low: ~ return "Low"
+    - pop_medium: ~ return "Medium"
+    - pop_high: ~ return "High"
+    - else: ~ return "Invalid Setting"
+}
+
 
 === wilderness_event ===
 
