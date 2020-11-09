@@ -49,21 +49,9 @@ Situations:
 
 
 Where: <>
-{shuffle:
-    - In this settlement/area
-    - Just outside settlement
-    - {d4()} miles away in a -> create_structure ->
-    - In the nearby forest
-    - In the nearby mountains
-    - In the nearby swamp
-    - In/beside the nearby body of water
-    - In the next village
-    - In the next large town
-    - In the captial of the realm
-    - In the next realm
-}
+-> create_place ->
 
-- ->->
+->->
 
 
 

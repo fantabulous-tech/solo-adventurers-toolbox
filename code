@@ -13,6 +13,34 @@
 - -> roll_dice_menu
 
 
+=== function DisplayLocation() ===
+
+{location:
+    - wilderness: ~ return DisplayTerrain()
+    - dungeon: ~ return DisplayDungeonType()
+    - urban: ~ return DisplayUrbanSize()
+    - else: ~ return "Unknown Location"
+}
+
+
+=== edit_location ===
+
+Where are you located?
+
++ [City/Town]
+    ~ location = urban
+    -> edit_urban_size ->
+    
++ [Dungeon]
+    ~ location = dungeon
+    -> edit_dungeon_type ->
+    
++ [Wilderness]
+    ~ location = wilderness
+    -> edit_terrain ->
+    
+- ->->
+
 
 === RollD100Checks(checkCount, checkTarget, checkBonus) ===
 ~ total = 0

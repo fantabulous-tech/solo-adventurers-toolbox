@@ -1,6 +1,6 @@
 === create_creature ===
 {shuffle:
-    - -> create_monster ->
+    - -> create_single_monster ->
     - Bear
     - Cat
     - Dire Wolf
@@ -43,8 +43,69 @@
 ->->
 
 
-=== create_monster ===
-Monster
+=== create_encounter ===
+{encounter_difficulty == (): -> edit_monster_difficulty ->}
+{location == (): -> edit_location ->}
+{location == wilderness && terrain == (): -> edit_terrain ->}
+
+Creating {encounter_difficulty} encounter for {stat_party_size} lvl {stat_level} PCs in {DisplayLocation()}.
+-> roll_encounter ->->
+
+
+=== create_monster(difficult) ===
+~ encounter_difficulty = difficulty
+-> roll_encounter ->->
+
+
+=== create_single_monster ===
+{encounter_difficulty == (): -> edit_monster_difficulty ->}
+{location == (): -> edit_location ->}
+{location == wilderness && terrain == (): -> edit_terrain ->}
+
+~ encounter_difficulty = medium
+
+~ monster_count = 0
+~ monster_level = ()
+
+~ monster_count_2 = 0
+~ monster_level_2 = ()
+
+{
+    - stat_party_size == 1:
+        -> roll_encounter.solo ->
+    - stat_party_size == 2:
+        -> roll_encounter.duo ->
+    - else:
+        ~logError("Unsupported party size of {stat_party_size}.")
+}
+
+-> roll_encounter.roll_monster(monster_level, 1) ->->
+
+
+=== edit_monster_difficulty ===
+What difficulty is this encounter?
+
++ [Easy]
+    ~ encounter_difficulty = easy
+
++ [Medium]
+    ~ encounter_difficulty = medium
+
++ [Hard]
+    ~ encounter_difficulty = hard
+
++ [Deadly]
+    ~ encounter_difficulty = deadly
+    
++ [Random]
+    ~ encounter_difficulty = LIST_RANDOM(LIST_ALL(encounter_difficulty))
+    
+- ->->
+
+
+=== create_boss_monster ===
+TODO: Boss Monster Creator
+Boss Monster
 ->->
 
 
@@ -52,4 +113,2129 @@ Monster
 TODO: monster_by_terrain_table
 Monster
 - ->->
+
+
+=== roll_encounter ===
+
+~ monster_count = 0
+~ monster_level = ()
+
+~ monster_count_2 = 0
+~ monster_level_2 = ()
+
+{
+    - stat_party_size == 1:
+        -> solo ->
+    - stat_party_size == 2:
+        -> duo ->
+    - else:
+        ~logError("Unsupported party size of {stat_party_size}.")
+}
+
+{monster_count > 0:
+    -> roll_monster(monster_level, monster_count) ->
+}
+
+{monster_count_2 > 0:
+    <> and <>
+    -> roll_monster(monster_level, monster_count_2) ->
+}
+
+
+->->
+
+= roll_monster(cr, num)
+
+{
+    - cr == cr0:   -> cr0_table(num) ->
+    - cr == cr1_8: -> cr1_8_table(num) ->
+    - cr == cr1_4: -> cr1_4_table(num) ->
+    - cr == cr1_2: -> cr1_2_table(num) ->
+    - cr == cr1:   -> cr1_table(num) ->
+    - cr == cr2:   -> cr2_table(num) ->
+    - cr == cr3:   -> cr3_table(num) ->
+    - cr == cr4:   -> cr4_table(num) ->
+    - cr == cr5:   -> cr5_table(num) ->
+    - cr == cr6:   -> cr6_table(num) ->
+    - cr == cr7:   -> cr7_table(num) ->
+    - else: ~logError("Unsupported cr: {cr} in {DisplayTerrain()}")
+}
+
+->->
+
+= solo
+{stat_level:
+    - 1:
+        {encounter_difficulty:
+            - easy:   -> L1Easy ->
+            - medium: -> L1Medium ->
+            - hard:   -> L1Hard ->
+            - deadly: -> L1Deadly ->
+        }
+    - 2:
+        {encounter_difficulty:
+            - easy:   -> L2Easy ->
+            - medium: -> L2Medium ->
+            - hard:   -> L2Hard ->
+            - deadly: -> L2Deadly ->
+        }
+    - 3:
+        {encounter_difficulty:
+            - easy:   -> L3Easy ->
+            - medium: -> L3Medium ->
+            - hard:   -> L3Hard ->
+            - deadly: -> L3Deadly ->
+        }
+    - else:
+        ~logError("Unsupported level: {stat_level} with party of {stat_party_size}.")
+}
+
+->->
+
+= duo
+{stat_level:
+    - 1:
+        {encounter_difficulty:
+            - easy:   -> L1Medium ->
+            - medium: -> L1Deadly ->
+            - hard:   -> L2Hard ->
+            - deadly: -> L2Deadly ->
+        }
+    - 2:
+        {encounter_difficulty:
+            - easy:   -> L2Medium ->
+            - medium: -> L2Deadly ->
+            - hard:   -> L6Easy ->
+            - deadly: -> L3Deadly ->
+        }
+    - else:
+        ~logError("Unsupported level: {stat_level} with party of {stat_party_size}.")
+}
+
+->->
+
+= L1Easy
+{d4() <= 2:
+    ~ monster_count = 1
+    ~ monster_level = cr0
+- else:
+    ~ monster_count = 2
+    ~ monster_level = cr0
+}
+->->
+
+= L1Medium
+~ roll = d4()
+{
+    - roll <= 2:
+        ~ monster_count = 1
+        ~ monster_level = cr1_8
+    - else:
+        ~ monster_count = 2
+        ~ monster_level = cr0
+}
+->->
+
+= L1Hard
+~ roll = d6()
+{
+    - roll <= 2:
+        ~ monster_count = 1
+        ~ monster_level = cr1_8
+        ~ monster_count_2 = 1
+        ~ monster_level_2 = cr0
+    - roll <= 4:
+        ~ monster_count = 1
+        ~ monster_level = cr1_4
+    - else:
+        ~ monster_count = 3
+        ~ monster_level = cr0
+}
+->->
+
+= L1Deadly
+~ roll = d6()
+{
+    - roll <= 2:
+        ~ monster_count = 2
+        ~ monster_level = cr1_8
+    - roll <= 4:
+        ~ monster_count = 4
+        ~ monster_level = cr0
+    - else:
+        ~ monster_count = 1
+        ~ monster_level = cr1_4
+        ~ monster_count_2 = 1
+        ~ monster_level_2 = cr0
+}
+->->
+
+= L2Easy
+{d4() <= 2:
+    ~ monster_count = 1
+    ~ monster_level = cr1_8
+- else:
+    ~ monster_count = 2
+    ~ monster_level = cr0
+}
+->->
+
+= L2Medium
+~ roll = d6()
+{
+    - roll <= 2:
+        ~ monster_count = 2
+        ~ monster_level = cr1_8
+    - roll <= 4:
+        ~ monster_count = 4
+        ~ monster_level = cr0
+    - else:
+        ~ monster_count = 1
+        ~ monster_level = cr1_4
+        ~ monster_count_2 = 1
+        ~ monster_level_2 = cr0
+}
+->->
+
+= L2Hard
+~ roll = d6()
+{
+    - roll <= 2:
+        ~ monster_count = 1
+        ~ monster_level = cr1_2
+    - roll <= 4:
+        ~ monster_count = 1
+        ~ monster_level = cr1_4
+        ~ monster_count_2 = 1
+        ~ monster_level_2 = cr1_8
+    - else:
+        ~ monster_count = 2
+        ~ monster_level = cr1_8
+        ~ monster_count_2 = 1
+        ~ monster_level_2 = cr0
+}
+->->
+
+= L2Deadly
+~ roll = d4()
+{
+    - roll <= 1:
+        ~ monster_count = 3
+        ~ monster_level = cr1_8
+    - roll <= 2:
+        ~ monster_count = 2
+        ~ monster_level = cr1_4
+    - roll <= 3:
+        ~ monster_count = 1
+        ~ monster_level = cr1_4
+        ~ monster_count_2 = 3
+        ~ monster_level_2 = cr0
+    - else:
+        ~ monster_count = 3
+        ~ monster_level = cr1_8
+        ~ monster_count_2 = 1
+        ~ monster_level_2 = cr0
+}
+->->
+
+= L3Easy
+~ roll = d6()
+{
+    - roll <= 2:
+        ~ monster_count = 1
+        ~ monster_level = cr1_8
+        ~ monster_count_2 = 1
+        ~ monster_level_2 = cr0
+    - roll <= 4:
+        ~ monster_count = 1
+        ~ monster_level = cr1_4
+    - else:
+        ~ monster_count = 3
+        ~ monster_level = cr0
+}
+->->
+
+= L3Medium
+~ roll = d6()
+{
+    - roll <= 2:
+        ~ monster_count = 1
+        ~ monster_level = cr1_2
+    - roll <= 4:
+        ~ monster_count = 1
+        ~ monster_level = cr1_4
+        ~ monster_count_2 = 1
+        ~ monster_level_2 = cr1_8
+    - else:
+        ~ monster_count = 2
+        ~ monster_level = cr1_8
+        ~ monster_count_2 = 1
+        ~ monster_level_2 = cr0
+}
+->->
+
+= L3Hard
+~ roll = d4()
+{
+    - roll <= 1:
+        ~ monster_count = 1
+        ~ monster_level = cr1_4
+        ~ monster_count_2 = 4
+        ~ monster_level_2 = cr0
+    - roll <= 2:
+        ~ monster_count = 3
+        ~ monster_level = cr1_8
+        ~ monster_count_2 = 2
+        ~ monster_level_2 = cr0
+    - roll <= 3:
+        ~ monster_count = 2
+        ~ monster_level = cr1_8
+        ~ monster_count_2 = 1
+        ~ monster_level_2 = cr1_4
+    - else:
+        ~ monster_count = 1
+        ~ monster_level = cr1
+}
+->->
+
+= L3Deadly
+~ roll = d6()
+{
+    - roll <= 2:
+        ~ monster_count = 1
+        ~ monster_level = cr1_2
+        ~ monster_count_2 = 2
+        ~ monster_level_2 = cr1_8
+    - roll <= 4:
+        ~ monster_count = 2
+        ~ monster_level = cr1_2
+    - else:
+        ~ monster_count = 1
+        ~ monster_level = cr1_2
+        ~ monster_count_2 = 2
+        ~ monster_level_2 = cr1_8
+}
+->->
+
+
+
+
+= L6Easy
+~ roll = d6()
+{
+    - roll <= 2:
+        ~ monster_count = 1
+        ~ monster_level = cr1
+    - roll <= 4:
+        ~ monster_count = 1
+        ~ monster_level = cr1_2
+        ~ monster_count_2 = 1
+        ~ monster_level_2 = cr1_4
+    - else:
+        ~ monster_count = 2
+        ~ monster_level = cr1_4
+        ~ monster_count_2 = 1
+        ~ monster_level_2 = cr1_8
+}
+->->
+
+
+
+=== cr0_table(num) ===
+~ temp s = num > 1
+{num} <>
+
+{
+    - location == dungeon: -> cr0_dungeon(s) ->
+    - location == urban:   -> cr0_urban(s) ->
+    - terrain == aquatic:  -> cr0_aquatic(s) ->
+    - terrain == coastal:  -> cr0_coastal(s) ->
+    - terrain == desert:   -> cr0_desert(s) ->
+    - terrain == forest:   -> cr0_forest(s) ->
+    - terrain == grass:    -> cr0_grass(s) ->
+    - terrain == hill:     -> cr0_hill(s) ->
+    - terrain == mountain: -> cr0_mountain(s) ->
+    - terrain == swamp:    -> cr0_swamp(s) ->
+    
+    - else: ~logError("Unsupported: cr0 monster in {DisplayLocation()}")
+}
+
+->->
+
+
+=== cr1_8_table(num) ===
+~ temp s = num > 1
+{num} <>
+
+{
+    - location == dungeon: -> cr1_8_dungeon(s) ->
+    - location == urban:   -> cr1_8_urban(s) ->
+    - terrain == aquatic:  -> cr1_8_aquatic(s) ->
+    - terrain == coastal:  -> cr1_8_coastal(s) ->
+    - terrain == desert:   -> cr1_8_desert(s) ->
+    - terrain == forest:   -> cr1_8_forest(s) ->
+    - terrain == grass:    -> cr1_8_grass(s) ->
+    - terrain == hill:     -> cr1_8_hill(s) ->
+    - terrain == mountain: -> cr1_8_mountain(s) ->
+    - terrain == swamp:    -> cr1_8_swamp(s) ->
+
+    - else: ~logError("Unsupported: cr0 monster in {DisplayLocation()}")
+}
+
+->->
+
+
+=== cr1_4_table(num) ===
+~ temp s = num > 1
+{num} <>
+
+{
+    - location == dungeon: -> cr1_4_dungeon(s) ->
+    - location == urban:   -> cr1_4_urban(s) ->
+    - terrain == aquatic:  -> cr1_4_aquatic(s) ->
+    - terrain == coastal:  -> cr1_4_coastal(s) ->
+    - terrain == desert:   -> cr1_4_desert(s) ->
+    - terrain == forest:   -> cr1_4_forest(s) ->
+    - terrain == grass:    -> cr1_4_grass(s) ->
+    - terrain == hill:     -> cr1_4_hill(s) ->
+    - terrain == mountain: -> cr1_4_mountain(s) ->
+    - terrain == swamp:    -> cr1_4_swamp(s) ->
+
+    - else: ~logError("Unsupported: cr1_4 monster in {DisplayLocation()}")
+}
+
+->->
+
+
+=== cr1_2_table(num) ===
+~ temp s = num > 1
+{num} <>
+
+{
+    - location == dungeon: -> cr1_2_dungeon(s) ->
+    - location == urban:   -> cr1_2_urban(s) ->
+    - terrain == aquatic:  -> cr1_2_aquatic(s) ->
+    - terrain == coastal:  -> cr1_2_coastal(s) ->
+    - terrain == desert:   -> cr1_2_desert(s) ->
+    - terrain == forest:   -> cr1_2_forest(s) ->
+    - terrain == grass:    -> cr1_2_grass(s) ->
+    - terrain == hill:     -> cr1_2_hill(s) ->
+    - terrain == mountain: -> cr1_2_mountain(s) ->
+    - terrain == swamp:    -> cr1_2_swamp(s) ->
+
+    - else: ~logError("Unsupported: cr1_2 monster in {DisplayLocation()}")
+}
+
+->->
+
+
+=== cr1_table(num) ===
+~ temp s = num > 1
+{num} <>
+
+{
+    - location == dungeon: -> cr1_dungeon(s) ->
+    - location == urban:   -> cr1_urban(s) ->
+    - terrain == aquatic:  -> cr1_aquatic(s) ->
+    - terrain == coastal:  -> cr1_coastal(s) ->
+    - terrain == desert:   -> cr1_desert(s) ->
+    - terrain == forest:   -> cr1_forest(s) ->
+    - terrain == grass:    -> cr1_grass(s) ->
+    - terrain == hill:     -> cr1_hill(s) ->
+    - terrain == mountain: -> cr1_mountain(s) ->
+    - terrain == swamp:    -> cr1_swamp(s) ->
+
+    - else: ~logError("Unsupported: cr1 monster in {DisplayLocation()}")
+}
+
+->->
+
+
+=== cr2_table(num) ===
+~ temp s = num > 1
+{num} <>
+
+{
+    - location == dungeon: -> cr2_dungeon(s) ->
+    - location == urban:   -> cr2_urban(s) ->
+    - terrain == aquatic:  -> cr2_aquatic(s) ->
+    - terrain == coastal:  -> cr2_coastal(s) ->
+    - terrain == desert:   -> cr2_desert(s) ->
+    - terrain == forest:   -> cr2_forest(s) ->
+    - terrain == grass:    -> cr2_grass(s) ->
+    - terrain == hill:     -> cr2_hill(s) ->
+    - terrain == mountain: -> cr2_mountain(s) ->
+    - terrain == swamp:    -> cr2_swamp(s) ->
+
+    - else: ~logError("Unsupported: cr2 monster in {DisplayLocation()}")
+}
+
+->->
+
+
+=== cr3_table(num) ===
+~ temp s = num > 1
+{num} <>
+
+{
+    - location == dungeon: -> cr3_dungeon(s) ->
+    - location == urban:   -> cr3_urban(s) ->
+    - terrain == aquatic:  -> cr3_aquatic(s) ->
+    - terrain == coastal:  -> cr3_coastal(s) ->
+    - terrain == desert:   -> cr3_desert(s) ->
+    - terrain == forest:   -> cr3_forest(s) ->
+    - terrain == grass:    -> cr3_grass(s) ->
+    - terrain == hill:     -> cr3_hill(s) ->
+    - terrain == mountain: -> cr3_mountain(s) ->
+    - terrain == swamp:    -> cr3_swamp(s) ->
+
+    - else: ~logError("Unsupported: cr3 monster in {DisplayLocation()}")
+}
+
+->->
+
+
+=== cr4_table(num) ===
+~ temp s = num > 1
+{num} <>
+
+{
+    - location == dungeon: -> cr4_dungeon(s) ->
+    - location == urban:   -> cr4_urban(s) ->
+    - terrain == aquatic:  -> cr4_aquatic(s) ->
+    - terrain == coastal:  -> cr4_coastal(s) ->
+    - terrain == desert:   -> cr4_desert(s) ->
+    - terrain == forest:   -> cr4_forest(s) ->
+    - terrain == grass:    -> cr4_grass(s) ->
+    - terrain == hill:     -> cr4_hill(s) ->
+    - terrain == mountain: -> cr4_mountain(s) ->
+    - terrain == swamp:    -> cr4_swamp(s) ->
+
+    - else: ~logError("Unsupported: cr4 monster in {DisplayLocation()}")
+}
+
+->->
+
+
+=== cr5_table(num) ===
+~ temp s = num > 1
+{num} <>
+
+{
+    - location == dungeon: -> cr5_dungeon(s) ->
+    - location == urban:   -> cr5_urban(s) ->
+    - terrain == aquatic:  -> cr5_aquatic(s) ->
+    - terrain == coastal:  -> cr5_coastal(s) ->
+    - terrain == desert:   -> cr5_desert(s) ->
+    - terrain == forest:   -> cr5_forest(s) ->
+    - terrain == grass:    -> cr5_grass(s) ->
+    - terrain == hill:     -> cr5_hill(s) ->
+    - terrain == mountain: -> cr5_mountain(s) ->
+    - terrain == swamp:    -> cr5_swamp(s) ->
+
+    - else: ~logError("Unsupported: cr5 monster in {DisplayLocation()}")
+}
+
+->->
+
+
+=== cr6_table(num) ===
+~ temp s = num > 1
+{num} <>
+
+{
+    - location == dungeon: -> cr6_dungeon(s) ->
+    - location == urban:   -> cr6_urban(s) ->
+    - terrain == aquatic:  -> cr6_aquatic(s) ->
+    - terrain == coastal:  -> cr6_coastal(s) ->
+    - terrain == desert:   -> cr6_desert(s) ->
+    - terrain == forest:   -> cr6_forest(s) ->
+    - terrain == grass:    -> cr6_grass(s) ->
+    - terrain == hill:     -> cr6_hill(s) ->
+    - terrain == mountain: -> cr6_mountain(s) ->
+    - terrain == swamp:    -> cr6_swamp(s) ->
+
+    - else: ~logError("Unsupported: cr6 monster in {DisplayLocation()}")
+}
+
+->->
+
+
+=== cr7_table(num) ===
+~ temp s = num > 1
+{num} <>
+
+{
+    - location == dungeon: -> cr7_dungeon(s) ->
+    - location == urban:   -> cr7_urban(s) ->
+    - terrain == aquatic:  -> cr7_aquatic(s) ->
+    - terrain == coastal:  -> cr7_coastal(s) ->
+    - terrain == desert:   -> cr7_desert(s) ->
+    - terrain == forest:   -> cr7_forest(s) ->
+    - terrain == grass:    -> cr7_grass(s) ->
+    - terrain == hill:     -> cr7_hill(s) ->
+    - terrain == mountain: -> cr7_mountain(s) ->
+    - terrain == swamp:    -> cr7_swamp(s) ->
+
+    - else: ~logError("Unsupported: cr7 monster in {DisplayLocation()}")
+}
+
+->->
+
+
+// Dungeon Monster Tables
+
+=== cr0_dungeon(s) ===
+{shuffle:
+    - Cranium Rat{s:s} (Volo’s, p. 133)
+    - Crawling Claw{s:s} (MM, p.44)
+    - Giant Fire Beetle{s:s} (MM, p. 325)
+    - Homuncul{s:i|us} (MM, p.188)
+    - Lemure{s:s} (MM, p.76)
+    - Myconid Sprout{s:s} (MM, p.230)
+    - Rat{s:s} (MM, p.335)
+    - Scorpion{s:s} (MM, p.337)
+    - Shrieker{s:s} (MM, p. 138)
+    - Spider{s:s} (MM, p. 337)
+}
+->->
+
+=== cr1_8_dungeon(s) ===
+{shuffle:
+    - Boggle{s:s} (Volo’s, p.128)
+    - Flumph{s:s} (MM, p.135)
+    - Giant Rat{s:s} (MM, p.327)
+    - Kobold{s:s} (MM, p.195)
+    - Manes{s:s} (MM, p.60)
+    - Monodrone{s:s} (MM, p.224)
+    - Neogi Hatchling{s:s} (Volo’s, p.179)
+    - Poisonous Snake{s:s} (MM, p.334)
+    - Slaad Tadpole{s:s} (MM, p.276)
+    - Stirge{s:s} (MM, p.284)
+    - Xvaart{s:s} (Volo’s, p.200)
+    - Young Kruthik{s:s} (Mord., p.211)
+}
+->->
+
+=== cr1_4_dungeon(s) ===
+{shuffle:
+    - Deep Rothe{s:s} (Volo’s, p.207)
+    - Derro{s:s} (Mord., p.158)
+    - Drow{s:s} (MM, p.128)
+    - Giant Bat{s:s} (MM, p.323)
+    - Giant Centipede{s:s} (MM, p.323)
+    - Giant Lizard{s:s} (MM, p.326)
+    - Giant Poisonous Snake{s:s} (MM, p.327)
+    - Goblin{s:s} (MM, p.166)
+    - Goblin{s:s} (MM, p.166)
+    - Grimlock{s:s} (MM, p.175)
+    - Kobold Inventor{s:s} (Volo’s, p.166)
+    - Kuo-toa{s:s} (MM, p.175)
+    - Male Steeder{s:s} (Mord., p.238)
+    - Oblex Spawn{s:s} (Mord., p.217)
+    - Swarm Of Bats{s:s} (MM, p.337)
+    - Swarm Of Bats{s:s} (MM, p.337)
+    - Troglodyte{s:s} (MM, p.290)
+    - Violet Fungus{s:s} (MM, p.138)
+    - Winged Kobold{s:s} (MM, p.195)
+    - Wretched Sorrowsworn{s:s} (Mord., p.233)
+}
+->->
+
+=== cr1_2_dungeon(s) ===
+{shuffle:
+    - Chitine{s:s} (Volo’s, p.131)
+    - Darkling{s:s} (Volo’s, p.134)
+    - Darkmantle{s:s} (MM, p.46)
+    - Firenewt Warrior{s:s} (Volo’s, p.142)
+    - Gas Spore{s:s} (MM, p.138)
+    - Gazer{s:s} (Volo’s, p.126)
+    - Gray Ooze{s:s} (MM, p.243)
+    - Hobgoblin{s:s} (MM, p.186)
+    - Magma Mephit{s:s} (MM, p.216)
+    - Myconid Adult{s:s} (MM, p.232)
+    - Orc{s:s} (MM, p.246)
+    - Orc Nurtured One of
+    - trus{s:s} (Volo’s, p.184)
+    - Piercer{s:s} (MM, p.252)
+    - Rust Monster{s:s} (MM, p.262)
+    - Scout{s:s} (MM, p.349)
+    - Shadow{s:s} (MM, p.269)
+    - Skulk{s:s} (Mord., p.227)
+    - Svirfneblin{s:s} (MM, p.164)
+    - Swarm of Insects{s:s} (MM, p.338)
+    - Swarm of Rot Grubs{s:s} (Volo’s, p.208)
+}
+->->
+
+=== cr1_dungeon(s) ===
+{shuffle:
+    - Bugbear{s:s} (MM, p.13)
+    - Choker{s:s} (Mord., p.123)
+    - Duergar{s:s} (MM, p.122)
+    - Female Steeder{s:s} (Mord., p.190)
+    - Fire Snake{s:s} (MM, p.265)
+    - Firenewt Warlock of Imix{s:s} (Volo’s, p.143)
+    - Ghoul{s:s} (MM, p.148)
+    - Giant Spider{s:s} (MM, p.328)
+    - Quaggoth Spore Servant{s:s} (MM, p.230)
+    - Giant Toad{s:s} (MM, p.329)
+    - Goblin Boss{s:s} (MM, p.166)
+    - Half Ogre{s:s} (MM, p.238)
+    - Kobold Dragonshield{s:s} (Volo’s, p.165)
+    - Kobold Scale Sorcerer{s:s} (Volo’s, p.167)
+    - Kuo-toa Whip{s:s} (MM, p.200)
+    - Maw Demon{s:s} (Volo’s, p.137)
+    - Meazel{s:s} (Mord., p.214)
+    - Nilbog{s:s} (Volo’s, p.182)
+    - Vargouille{s:s} (Volo’s, p.195)
+    - Xvart Warlock of Raxivort{s:s} (Volo’s, p.200)
+}
+->->
+
+=== cr2_dungeon(s) ===
+{shuffle:
+    - Adult Kruthik{s:s} (Mord., p.212)
+    - Carrion Crawler{s:s} (MM, p.37)
+    - Darkling Elder{s:s} (Volo’s, p.134)
+    - Duergar Ha(mmerer Mord., p.188)
+    - Duergar Kavalrachni{s:s} (Mord., p.189)
+    - Duergar Mind Master{s:s} (Mord., p.189)
+    - Duergar Stone Guard{s:s} (Mord., p.191)
+    - Duergar Xarrorn{s:s} (Mord., p.193)
+    - Gargoyle{s:s} (MM, p.140)
+    - Gelatinous Cube{s:s} (MM, p.242)
+    - Ghast{s:s} (MM, p.148)
+    - Giant Constrictor Snake{s:s} (MM, p.324)
+    - Gibbering Mouther{s:s} (MM, p.157)
+    - Grick{s:s} (MM, p.173)
+    - Guard Drake{s:s} (Volo’s, p.158)
+    - Intellect Devourer{s:s} (MM, p.191)
+    - Mimic{s:s} (MM, p.220)
+    - Minotaur Skeleton{s:s} (MM, p.273)
+    - Nothic{s:s} (MM, p.236)
+    - Ochre Jelly{s:s} (MM, p.243)
+    - Ogre{s:s} (MM, p.237)
+    - Orc Claw of Luthic{s:s} (Volo’s, p.183)
+    - Orc Eye of Gruumsh{s:s} (MM, p.247)
+    - Orc Hand of Yurtrus{s:s} (Volo’s, p.184)
+    - Orog{s:s} (MM, p.247)
+    - Quaggoth{s:s} (MM, p.256)
+    - Yuan-ti Broodguard{s:s} (Volo’s, p.203)
+}
+->->
+
+=== cr3_dungeon(s) ===
+{shuffle:
+    - Cave Fisher{s:s} (Volo’s, p.130)
+    - Choldrith{s:s} (Volo’s, p.132)
+    - Derro Savant{s:s} (Mord., p.159)
+    - Doppelganger{s:s} (MM, p.82)
+    - Duergar Screamer{s:s} (Mord., p.190)
+    - Flail Snail{s:s} (Volo’s, p.144)
+    - Grell{s:s} (MM, p.172)
+    - Hell Hound{s:s} (MM, p.182)
+    - Hobgoblin Captain{s:s} (MM, p.186)
+    - Hook Horror{s:s} (MM, p.189)
+    - Minotaur{s:s} (MM, p.223)
+    - Neogi{s:s} (Volo’s, p.180)
+    - Orc Red Fang of Shargaas{s:s} (Volo’s, p.185)
+    - Phase Spider{s:s} (MM, p.334)
+    - Quaggoth Thonot{s:s} (MM, p.256)
+    - Slithering Tracker{s:s} (Volo’s, p.191)
+    - Spectator{s:s} (MM, p.30)
+    - Trapper{s:s} (Volo’s, p.194)
+    - Vampiric Mist{s:s} (Mord., p.246)
+    - Wight{s:s} (MM, p.300)
+}
+->->
+
+=== cr4_dungeon(s) ===
+{shuffle:
+    - Babau{s:s} (Volo’s, p.134)
+    - Barghest{s:s} (Volo’s, p.123)
+    - Black Pudding{s:s} (MM, p.241)
+    - Bone Naga{s:s} (MM, p.233)
+    - Chuul{s:s} (MM, p.40)
+    - Ettin{s:s} (MM, p.132)
+    - Flameskull{s:s} (MM, p.134)
+    - Ghost{s:s} (MM, p.147)
+    - Neogi Master{s:s} (Volo’s, p.180)
+    - Orc Blade of Ilneval{s:s} (Volo’s, p.183)
+    - Yuan-ti Mind Whisperer{s:s} (Volo’s, p.204)
+    - Yuan-ti Nightmare Speaker{s:s} (Volo’s, p.205)
+}
+->->
+
+=== cr5_dungeon(s) ===
+{shuffle:
+    - Adult Oblex{s:s} (Mord., p.218)
+    - Beholder Zombie{s:s} (MM, p.316)
+    - Drow Elite Warrior{s:s} (MM, p.128)
+    - Earth Elemental{s:s} (MM, p.124)
+    - 6 Kruthik Hive Lord{s:s} (Mord., p.212)
+    - Mindwitness{s:s} (Volo’s, p.176)
+    - Otyugh{s:s} (MM, p.248)
+    - Roper{s:s} (MM, p.261)
+    - Salamander{s:s} (MM, p.266)
+    - Spawn of Kyuss{s:s} (Volo’s, p.192)
+    - Swarm of Cranium Rats{s:s} (Volo’s, p.133)
+    - Tanarukk{s:s} (Volo’s, p.186)
+    - Troll{s:s} (MM, p.291)
+    - Troll{s:s} (MM, p.291)
+    - Umber Hulk{s:s} (MM, p.292)
+    - Vampire Spawn{s:s} (MM, p.298)
+    - Wraith{s:s} (MM, p.302)
+    - Xorn{s:s} (MM, p.304)
+    - Yuan-ti Pit Master{s:s} (Volo’s, p.206)
+}
+->->
+
+=== cr6_dungeon(s) ===
+{shuffle:
+    - Bodak{s:s} (Volo’s, p.127)
+    - Chimera{s:s} (MM, p.39)
+    - Cyclops{s:s} (MM, p.45)
+    - Drider{s:s} (MM, p.120)
+    - Duergar Warlord{s:s} (Mord., p.192)
+    - Gauth{s:s} (Volo’s, p.125)
+    - Hobgoblin Warlord{s:s} (MM, p.187)
+    - Kuo-toa Archpriest{s:s} (MM, p.200)
+}
+->->
+
+=== cr7_dungeon(s) ===
+{shuffle:
+    - Armanite{s:s} (Mord, p.131)
+    - Dhergoloth{s:s} (Mord, p.248)
+    - Draegloth{s:s} (Volo's, p.141)
+    - Grick Alpha{s:s} (MM, p.173)
+    - Lost Sorrowsworn{s:s} (Mord., p.233)
+    - Mind Flayer{s:s} (MM, p.222)
+    - Shadow Dancer{s:s} (Mord, p.225)
+    - Venom Troll{s:s} (Mord, p.245)
+}
+->->
+
+
+// Aquatic Monster Tables
+
+
+=== cr0_aquatic(s) ===
+{shuffle:
+    - Quipper{s:s} (MM, p.335)
+    - Sea Horse{s:s} (MM, p.337)
+    - Crab{s:s} (MM, p.320)
+    - Octopus{s:s} (MM, p.333)
+}
+->->
+
+=== cr1_8_aquatic(s) ===
+{shuffle:
+    - Dolphin{s:s} (Volo’s, p.208)
+    - Merfolk{s:s} (MM, p.218)
+    - Giant Crab{s:s} (MM, p.324)
+}
+->->
+
+=== cr1_4_aquatic(s) ===
+{shuffle:
+    - Constrictor Snake{s:s} (MM, p.320)
+    - Steam Mephit{s:s} (MM, p.217)
+    - Kuo-toa{s:s} (MM, p.199)
+}
+->->
+
+=== cr1_2_aquatic(s) ===
+{shuffle:
+    - Reef Shark{s:s} (MM, p.336)
+    - Giant Seahorse{s:s} (MM, p.328)
+    - Sahuagin{s:s} (MM, p.263)
+    - Crocodile{s:s} (MM, p.320)
+}
+->->
+=== cr1_aquatic(s) ===
+{shuffle:
+    - Giant Octopus{s:s} (MM, p.326)
+    - Seaspawn{s:s} (Volo’s, p.189)
+    - Swarm of Quippers{s:s} (MM, p.338)
+    - Kuo-toa whip{s:s} (MM, p.200)
+}
+->->
+
+=== cr2_aquatic(s) ===
+{shuffle:
+    - Giant Constrictor Snake{s:s} (MM, p.324)
+    - Hunter Shark{s:s} (MM, p.330)
+    - Merrow{s:s} (MM, p.219)
+    - Sahuagin Priestess{s:s} (MM, p.264)
+    - Sea Hag{s:s} (MM, p.179)
+}
+->->
+
+=== cr3_aquatic(s) ===
+{shuffle:
+    - Deep Scion{s:s} (Volo’s, p.135)
+    - Killer Whale{s:s} (MM, p.331)
+}
+->->
+
+=== cr4_aquatic(s) ===
+-> cr3_aquatic(s) ->->
+
+=== cr5_aquatic(s) ===
+{shuffle:
+    - Giant Shark{s:s} (MM, p.328)
+    - Sahuagin Baron{s:s} (MM, p.264)
+    - Water Elemental{s:s} (MM, p.125)
+}
+->->
+
+=== cr6_aquatic(s) ===
+-> cr5_aquatic(s) ->->
+
+=== cr7_aquatic(s) ===
+-> cr5_aquatic(s) ->->
+
+
+// Coastal Monster Tables
+
+=== cr0_coastal(s) ===
+{shuffle:
+    - Lizard{s:s} (MM, p.332)
+    - Eagle{s:s} (MM, p.322)
+    - Rat{s:s} (MM, p.335)
+    - Crab{s:s} (MM, p.320)
+    - Scorpion{s:s} (MM, p.337)
+    - Blood Hawk{s:s} (MM, p.319)
+}
+->->
+
+=== cr1_8_coastal(s) ===
+{shuffle:
+    - Bandit{s:s} (MM, p.343)
+    - Poisonous Snake{s:s} (MM, p.334)
+    - Tribal Warrior{s:s} (MM, p.350)
+    - Giant Crab{s:s} (MM, p.324)
+    - Guard{s:s} (MM, p.347)
+    - Kobold{s:s} (MM, p.195)
+    - Merfolk{s:s} (MM, p.218)
+    - Stirge{s:s} (MM, p.284)
+}
+->->
+
+=== cr1_4_coastal(s) ===
+{shuffle:
+    - Dimetrodon{s:s} (Volo’s p.139)
+    - Giant Lizard{s:s} (MM, p.326)
+    - Giant Wolf Spider{s:s} (MM, p.330)
+    - Pseudodragon{s:s} (MM, p.254)
+    - Tortle{s:s} (Morden., p.242)
+    - Winged Kobold{s:s} (MM, p.195)
+}
+->->
+
+=== cr1_2_coastal(s) ===
+{shuffle:
+    - Sahuagin{s:s} (MM, p.263)
+    - Scout{s:s} (MM, p.349)
+    - Skulk{s:s} (Morden., p.227)
+}
+->->
+
+=== cr1_coastal(s) ===
+{shuffle:
+    - Giant Eagle{s:s} (MM, p.324)
+    - Giant Toad{s:s} (MM, p.329)
+    - Harpy{s:s} (MM, p.181)
+    - Sea Spawn{s:s} (Volo’s, p.189)
+}
+->->
+
+=== cr2_coastal(s) ===
+{shuffle:
+    - Bandit Captain{s:s} (MM, p.344)
+    - Berserker{s:s} (MM, p.344)
+    - Griffon{s:s} (MM, p.174)
+    - Merrow{s:s} (MM, p.219)
+    - Ogre{s:s} (MM, p.237)
+    - Sahuagin Priestess{s:s} (MM, p.264)
+    - Seahag{s:s} (MM, p.179)
+    - Quetzalcoatlus{s:s} (Volo’s, p.140)
+}
+->->
+
+=== cr3_coastal(s) ===
+{shuffle:
+    - Deep Scion{s:s} (Volo’s, p.135)
+    - Manticore{s:s} (MM, p.213)
+    - Merrenoloth{s:s} (Morden, p.250)
+    - Vampiric Mist{s:s} (Morden, p.246)
+    - Veteran{s:s} (MM, p.350)
+}
+->->
+
+=== cr4_coastal(s) ===
+{shuffle:
+    - Banshee{s:s} (MM, p.23)
+    - Orc War Chief{s:s} (MM, p.246)
+}
+->->
+
+=== cr5_coastal(s) ===
+{shuffle:
+    - Sahuagin Baron{s:s} (MM, p.264)
+    - Water Elemental{s:s} (MM, p.125)
+}
+->->
+
+=== cr6_coastal(s) ===
+{shuffle:
+    - Cyclops{s:s} (MM, p.45)
+    - Kuo-toa Archpriest{s:s} (MM, p.200)
+}
+->->
+
+=== cr7_coastal(s) ===
+{shuffle:
+    - Water Elemental Myrmidon{s:s} (Morden., p.203)
+    - Kuo-toa Archpriest{s:s} (MM, p.200)
+}
+->->
+
+
+
+
+// Desert Monster Tables
+
+=== cr0_desert(s) ===
+{shuffle:
+    - Lizard{s:s} (MM, p.332)
+    - Hyena{s:s} (MM, p.331)
+    - Jackal{s:s} (MM, p.331)
+    - Scorpion{s:s} (MM, p.337)
+    - Vulture{s:s} (MM, p.339)
+    - Giant Fire Beetle{s:s} (MM, p.325)
+}
+->->
+
+=== cr1_8_desert(s) ===
+{shuffle:
+    - Bandit{s:s} (MM, p.343)
+    - Flying Snake{s:s} (MM, p.322)
+    - Kobold{s:s} (MM, p.195)
+    - Poisonous Snake{s:s} (MM, p.334)
+    - Tribal Warrior{s:s} (MM, p.350)
+    - Young Kruthik{s:s} (Morden., p.211)
+}
+->->
+
+=== cr1_4_desert(s) ===
+{shuffle:
+    - Constrictor Snake{s:s} (MM, p.320)
+    - Giant Lizard{s:s} (MM, p.326)
+    - Giant Poisonous Snake{s:s} (MM, p.327)
+    - Giant Wolf Spider{s:s} (MM, p.330)
+    - Pseudodragon{s:s} (MM, p.254)
+    - Winged Kobold{s:s} (MM, p.195)
+}
+->->
+
+=== cr1_2_desert(s) ===
+{shuffle:
+    - Dust Mephit{s:s} (MM, p.215)
+    - Firenewt Warrior{s:s} (Volo’s, p.142)
+    - Gnoll{s:s} (MM, p.163)
+    - Hobgoblin{s:s} (MM, p.186)
+    - Jackalwere{s:s} (MM, p.193)
+    - Scout{s:s} (MM, p.349)
+    - Swarm of Insects{s:s} (MM, p.338)
+    - Gnoll Hunter{s:s} (Volo’s, p.154)
+}
+->->
+=== cr1_desert(s) ===
+{shuffle:
+    - Death Dog{s:s} (MM, p.321)
+    - Firenewt Warlock of Imix{s:s} (Volo’s, p.143)
+    - Giant Hyena{s:s} (MM, p.326)
+    - Giant Spider{s:s} (MM, p.328)
+    - Giant Toad{s:s} (MM, p.329)
+    - Giant Vulture{s:s} (MM, p.329)
+    - Half Ogre{s:s} (MM, p.238)
+    - Meazel{s:s} (Morden., p.214)
+    - Stone Cursed{s:s} (Morden., p.240)
+    - Thri-keen{s:s} (MM, p.288)
+    - Yuan-ti Pureblood{s:s} (MM, p.310)
+    - Vargouille{s:s} (Volo’s, p.195)
+}
+->->
+
+=== cr2_desert(s) ===
+{shuffle:
+    - Adult Kruthik{s:s} (Morden., p.212)
+    - Guard Drake{s:s} (Volo’s, p.158)
+    - Bandit Captain{s:s} (MM, p.344)
+    - Berbalang{s:s} (Morden., p.120)
+    - Berserker{s:s} (MM, p.344)
+    - Giant Constrictor Snake{s:s} (MM, p.324)
+    - Gnoll Pack Lord{s:s} (MM, p.163)
+    - Ogre{s:s} (MM, p.327)
+    - Yuan-ti Broodguard{s:s} (Volo’s, p.203)
+    - Ogre Zombie{s:s} (MM, p.316)
+}
+->->
+
+=== cr3_desert(s) ===
+{shuffle:
+    - Giant Scorpion{s:s} (MM, p.327)
+    - Hobgoblin Captain{s:s} (MM, p.186)
+    - Leucrotta{s:s} (Volo’s, p.169)
+    - Mu(mmy MM, p.228)
+    - Phase Spider{s:s} (MM, p.334)
+    - Wight{s:s} (MM, p.300)
+    - Yuan-ti Mallison{s:s} (MM, p.309)
+    - Bearded Devil{s:s} (MM, p.70)
+}
+->->
+
+=== cr4_desert(s) ===
+{shuffle:
+    - Couatl{s:s} (MM, p.43)
+    - Dybbuk{s:s} (Morden., p.32)
+    - Gnoll Fang of Yeenoghu{s:s} (MM, p.163)
+    - Lamia{s:s} (MM, p.201)
+    - Weretiger{s:s} (MM, p.210)
+    - Yuan-ti Mind Whisperer{s:s} (Volo’s, p.204)
+    - Yuan-ti Nightmare Speaker{s:s} (Volo’s, p.205)
+    - Stone Defender{s:s} (Morden., p.126)
+}
+->->
+
+=== cr5_desert(s) ===
+{shuffle:
+    - Air Elemental{s:s} (MM, p.124)
+    - Kruthik Hive Lord{s:s} (Morden., p.212)
+    - Fire Elemental{s:s} (MM, p.125)
+    - Revenant{s:s} (MM, p.259)
+    - Tanarukk{s:s} (Volo’s, p.186)
+    - Spawn of Kyuss{s:s} (Volo’s, p.192)
+    - Tlincalli{s:s} (Volo’s, p.193)
+    - Yuan-ti Pitmaster{s:s} (Volo’s, p.206)
+}
+->->
+
+=== cr6_desert(s) ===
+{shuffle:
+    - Cyclops{s:s} (MM, p.45)
+    - Hobgoblin Warlord{s:s} (MM, p.187)
+    - Medusa{s:s} (MM, p.214)
+    - Young Brass Dragon{s:s} (MM, p.105)
+}
+->->
+
+=== cr7_desert(s) ===
+{shuffle:
+    - Lost Sorrowsworn{s:s} (Morden., p.233)
+    - Yuan-ti Abomination{s:s} (MM, p.308)
+}
+->->
+
+
+// Forest Monster Tables
+
+
+=== cr0_forest(s) ===
+{shuffle:
+    - Awakened Shrub{s:s} (MM, p.317)
+    - Baboon{s:s} (MM, p.318)
+    - Badger{s:s} (MM, p. 318)
+    - Cat{s:s} (MM, p.320)
+    - Deer{s:s} (MM, p.321)
+    - Hyena{s:s} (MM, p.331)
+    - Owl{s:s} (MM, p.333)
+    - Weasel{s:s} (MM, p.340)
+    - Goat{s:s} (MM, p.330)
+    - Spider{s:s} (MM, p.337)
+}
+->->
+
+=== cr1_8_forest(s) ===
+{shuffle:
+    - Bandit{s:s} (MM, p.343)
+    - Bandit{s:s} (MM, p.343)
+    - Bandit{s:s} (MM, p.343)
+    - Blood Hawk{s:s} (MM, p.319)
+    - Boggle{s:s} (Volo’s, p.128)
+    - Flying Snake{s:s} (MM, p.322)
+    - Giant Rat{s:s} (MM, p.327)
+    - Giant Rat{s:s} (MM, p.327)
+    - Giant Weasel{s:s} (MM, p.329)
+    - Guard{s:s} (MM, p.347)
+    - Kobold{s:s} (MM, p.195)
+    - Kobold{s:s} (MM, p.195)
+    - Mastiff{s:s} (MM, p.332)
+    - Poisonous Snake{s:s} (MM, p.334)
+    - Stirge{s:s} (MM, p.284)
+    - Tribal Warrior{s:s} (MM, p.350)
+    - Twig Blight{s:s} (MM, p.32)
+    - Cultist{s:s} (MM, p.345)
+    - Noble{s:s} (MM, p.348)
+}
+->->
+
+=== cr1_4_forest(s) ===
+{shuffle:
+    - Blink Dog{s:s} (MM, p.318)
+    - Boar{s:s} (MM, p.319)
+    - Constrictor Snake{s:s} (MM, p.320)
+    - Giant Badger{s:s} (MM, p.323)
+    - Giant Bat{s:s} (MM, p.323)
+    - Giant Frog{s:s} (MM, p.325)
+    - Giant Lizard{s:s} (MM, p.326)
+    - Giant Owl{s:s} (MM, p.327)
+    - Giant Poisonous Snake{s:s} (MM, p.327)
+    - Giant Wolf Spider{s:s} (MM, p.330)
+    - Gnoll Witherling{s:s} (Volo’s, p.155)
+    - Goblin{s:s} (MM, p.166)
+    - Grung{s:s} (Volo’s, p.156)
+    - Kenku{s:s} (MM, p.194)
+    - Kobold Inventor{s:s} (Volo, p.166)
+    - Needle Blight{s:s} (MM, p.32)
+    - Panther{s:s} (MM, p.333)
+    - Pixie{s:s} (MM, p.253)
+    - Pseudodragon{s:s} (MM, p.254)
+    - Sprite{s:s} (MM, p.283)
+    - Swarm of Ravens{s:s} (MM, p.339)
+    - Vegepygmy{s:s} (Volo, p.196)
+    - Winged Kobold{s:s} (MM, p.195)
+    - Wolf{s:s} (MM, p.341)
+}
+->->
+
+=== cr1_2_forest(s) ===
+{shuffle:
+    - Ape{s:s} (MM, p.317)
+    - Black Bear{s:s} (MM, p.318)
+    - Darkling{s:s} (Volo’s, p.314)
+    - Giant Wasp{s:s} (MM, p.329)
+    - Gnoll{s:s} (MM, p.163)
+    - Gnoll{s:s} (MM, p.163)
+    - Gnoll Hunter{s:s} (Volo’s, p.154)
+    - Hobgoblin{s:s} (MM, p.186)
+    - Hobgoblin{s:s} (MM, p.186)
+    - Lizardfolk{s:s} (MM, p.204)
+    - Lizardfolk{s:s} (MM, p.204)
+    - Orc{s:s} (MM, p.246)
+    - Orc{s:s} (MM, p.246)
+    - Orc Nurtured One of Yurtrus{s:s} (Volo’s, p.184)
+    - Satyr{s:s} (MM, p.227)
+    - Scout{s:s} (MM, p.349)
+    - Skulk{s:s} (Mord., p.227)
+    - Swarm of Insects{s:s} (MM, p.338)
+    - Vine Blight{s:s} (MM, p.32)
+    - Worg{s:s} (MM, p.341)
+    - Worg{s:s} (MM, p.341)
+}
+->->
+=== cr1_forest(s) ===
+{shuffle:
+    - Bronze Scout{s:s} (Mord., p.125)
+    - Bugbear{s:s} (MM, p.33)
+    - Choker{s:s} (Mord., p.123)
+    - Dire Wolf{s:s} (MM, p.321)
+    - Dryad{s:s} (MM, p.121)
+    - Giant Spider{s:s} (MM, p.328)
+    - Giant Toad{s:s} (MM, p.329)
+    - Gnoll Flesh Gnawer{s:s} (Volo’s, p.154)
+    - Goblin Boss{s:s} (MM, p.166)
+    - Grung Wildling{s:s} (Volo’s, p.157)
+    - Half Ogre{s:s} (MM, p.238)
+    - Harpy{s:s} (MM, p.181)
+    - Kobold Dragonshield{s:s} (Volo’s, p.165)
+    - Kobold Scale Sorcerer{s:s} (Volo’s, p.167)
+    - Meazel{s:s} (Mord., p.214)
+    - Nilbog{s:s} (Volo’s, p.182)
+    - Quickling{s:s} (Volo’s, p.187)
+    - Thorny{s:s} (Volo’s, p.197)
+    - Young Faerie Dragon{s:s} (MM, p.133)
+    - Yuan-ti Pureblood{s:s} (MM, p.310)
+}
+->->
+
+=== cr2_forest(s) ===
+{shuffle:
+    - Adult Faerie Dragon{s:s} (MM, p.133)
+    - Ankheg{s:s} (MM, p.21)
+    - Awakened Tree{s:s} (MM, p.317)
+    - Bandit Captain{s:s} (MM, p.344)
+    - Berserker{s:s} (MM, p.344)
+    - Centaur{s:s} (MM, p.38)
+    - Darkling Elder{s:s} (Volo’s, p.134)
+    - Druid{s:s} (MM, p.346)
+    - Ettercap{s:s} (MM, p.131)
+    - Giant Boar{s:s} (MM, p.323)
+    - Giant Constrictor Snake{s:s} (MM, p.323)
+    - Giant Elk{s:s} (MM, p.325)
+    - Gnoll Pack Lord{s:s} (MM, p.163)
+    - Grick{s:s} (MM, p.173)
+    - Grung Elite Warrior{s:s} (Volo’s, p.157)
+    - Guard Drake{s:s} (Volo’s, p.158)
+    - Hobgoblin Iron Shadow{s:s} (Volo’s, p.162)
+    - Lizardfolk Shaman{s:s} (MM, p.205)
+    - Meenlock{s:s} (Volo’s, p.170)
+    - Ogre{s:s} (MM, p.237)
+    - Orc Eye of Gruumsh{s:s} (MM, p.247)
+    - Orc Hand of Yurtrus{s:s} (Volo’s, p.184)
+    - Orog{s:s} (MM, p.247)
+    - Pegasus{s:s} (MM, p.250)
+    - Shadow Mastiff{s:s} (Volo’s, p.190)
+    - Swarm of Poisonous Snakes{s:s} (MM, p.338)
+    - Vegepygmy Chief{s:s} (Volo’s, p.197)
+    - Wererat{s:s} (MM, p.209)
+    - Will-o-wisp{s:s} (MM, p.301)
+    - Yuan-ti Broodguard{s:s} (Volo’s, p.203)
+}
+->->
+
+=== cr3_forest(s) ===
+{shuffle:
+    - Displacer Beast{s:s} (MM, p.81)
+    - Flail Snail{s:s} (Volo’s, p.144)
+    - Green Hag{s:s} (MM, p.177)
+    - Hobgoblin Captain{s:s} (MM, p.186)
+    - Orc Red Fang of Shargaas{s:s} (Volo’s, p.185)
+    - Owlbear{s:s} (MM, p.249)
+    - Phase Spider{s:s} (MM, p.334)
+    - Redcap{s:s} (Volo’s, p.188)
+    - Vampiric Mist{s:s} (Mord., p.246)
+    - Veteran{s:s} (MM, p.350)
+    - Werewolf{s:s} (MM, p.211)
+    - Yuan-ti Malison{s:s} (MM, p.309)
+}
+->->
+
+=== cr4_forest(s) ===
+{shuffle:
+    - Banshee{s:s} (MM, p.23)
+    - Barghest{s:s} (Volo’s, p.123)
+    - Couatl{s:s} (MM, p.43)
+    - Girallon{s:s} (Volo’s, p.152)
+    - Gnoll Fang of
+    - enoghu{s:s} (MM, p.163)
+    - Hobgoblin Devastator{s:s} (Volo’s, p.161)
+    - Iron Cobra{s:s} (Mord., p.125)
+    - Orc Blade of Ilneval{s:s} (Volo’s, p.183)
+    - Stone Defender{s:s} (Mord., p.126)
+    - Wereboar{s:s} (MM, p.209)
+    - Weretiger{s:s} (MM, p.210)
+    - Yeth Hound{s:s} (Volo’s, p.201)
+}
+->->
+
+=== cr5_forest(s) ===
+{shuffle:
+    - Gorgon{s:s} (MM, p.171)
+    - Oaken Bolter{s:s} (Mord., p.126)
+    - Revenant{s:s} (MM, p.259)
+    - Shambling Mound{s:s} (MM, p.270)
+    - Troll{s:s} (MM, p.291)
+    - Werebear{s:s} (MM, p.208)
+    - Wood Woad{s:s} (Volo’s, p.198)
+    - Yuan-ti Pit Master{s:s} (Volo’s, p.206)
+}
+->->
+
+=== cr6_forest(s) ===
+{shuffle:
+    - Hobgoblin Warlord{s:s} (MM, p.187)
+    - Annis Hag{s:s} (Volo’s, p.159)
+    - Chimera{s:s} (MM, p.39)
+    - Cyclops{s:s} (MM, p.45)
+    - Wyvern{s:s} (MM, p.303)
+}
+->->
+
+=== cr7_forest(s) ===
+{shuffle:
+    - Giant Ape{s:s} (MM, p.323)
+    - Grick Alpha{s:s} (MM, p.173)
+    - Korred{s:s} (Volo’s, p.168)
+    - Lost Sorrowsworn{s:s} (Mord., p.233)
+    - Oni{s:s} (MM, p.239)
+    - Shadow Dancer{s:s} (Mord., p.225)
+    - Venom Troll{s:s} (Mord., p.245)
+    - Yuan-ti Abomination{s:s} (MM, p.308)
+}
+->->
+
+
+// Grass Monster Tables
+
+=== cr0_grass(s) ===
+{shuffle:
+    - Cat{s:s} (MM, p.320)
+    - Deer{s:s} (MM, p.321)
+    - Eagle{s:s} (MM, p.322)
+    - Goat{s:s} (MM, p.330)
+    - Hyena{s:s} (MM, p.331)
+    - Jackal{s:s} (MM, p.331)
+    - Vulture{s:s} (MM, p.339)
+    - Lizard{s:s} (MM, p.332)
+}
+->->
+
+=== cr1_8_grass(s) ===
+{shuffle:
+    - Blood Hawk{s:s} (MM, p.319)
+    - Flying Snake{s:s} (MM, p.322)
+    - Giant Weasel{s:s} (MM, p.329)
+    - Guard{s:s} (MM, p.347)
+    - Poisonous Snake{s:s} (MM, p.334)
+    - Stirge{s:s} (MM, p.284)
+    - Tribal Warrior{s:s} (MM, p.350)
+    - Cultist{s:s} (MM, p.345)
+}
+->->
+
+=== cr1_4_grass(s) ===
+{shuffle:
+    - Axe Beak{s:s} (MM, p.317)
+    - Boar{s:s} (MM, p.319)
+    - Elk{s:s} (MM, p.322)
+    - Giant Poisonous Snake{s:s} (MM, p.327)
+    - Giant Wolf Spider{s:s} (MM, p.330)
+    - Gnoll Witherling{s:s} (Volo’s, p.155)
+    - Goblin{s:s} (MM, p.166)
+    - Panther{s:s} (MM, p.333)
+    - Riding Horse{s:s} (MM, p.336)
+    - Wolf{s:s} (MM, p.341)
+}
+->->
+
+=== cr1_2_grass(s) ===
+{shuffle:
+    - Cockatrice{s:s} (MM, p.42)
+    - Giant Goat{s:s} (MM, p.326)
+    - Giant Wasp{s:s} (MM, p.329)
+    - Gnoll{s:s} (MM, p.163)
+    - Gnoll Hunter{s:s} (Volo’s, p.154)
+    - Hobgoblin{s:s} (MM, p.186)
+    - Jackalwere{s:s} (MM, p.193)
+    - Orc{s:s} (MM, p.246)
+    - Orc Nurtured One of Yurtrus{s:s} (Volo’s, p.184)
+    - Scout{s:s} (MM, p.349)
+    - Swarm of Insects{s:s} (MM, p.338)
+    - Worg{s:s} (MM, p.341)
+}
+->->
+=== cr1_grass(s) ===
+{shuffle:
+    - Bronze Scout{s:s} (Mord., p.125)
+    - Bugbear{s:s} (MM, p.33)
+    - Giant Eagle{s:s} (MM, p.324)
+    - Giant Hyena{s:s} (MM, p.326)
+    - Giant Vulture{s:s} (MM, p.329)
+    - Gnoll Flesh Gnawer{s:s} (Volo’s, p.154)
+    - Goblin Boss{s:s} (MM, p.166)
+    - Hippogriff{s:s} (MM, p.184)
+    - Meazel{s:s} (Mord., p.214)
+    - Thri-keen{s:s} (MM, p.288)
+}
+->->
+
+=== cr2_grass(s) ===
+{shuffle:
+    - Ankheg{s:s} (MM, p.21)
+    - Aurochs{s:s} (Volo’s, p.207)
+    - Centaur{s:s} (MM, p.38)
+    - Druid{s:s} (MM, p.346)
+    - 6 Giant Boar{s:s} (MM, p.323)
+    - Giant Elk{s:s} (MM, p.325)
+    - Gnoll Pack Lord{s:s} (MM, p.164)
+    - Griffon{s:s} (MM, p.174)
+    - Hobgoblin Iron Shadow{s:s} (Volo’s, p.162)
+    - Ogre{s:s} (MM, p.237)
+    - Ogre{s:s} (MM, p.237)
+    - Ogre Bolt Launcher{s:s} (Mord., p.220)
+    - Ogre Howday{s:s} (Mord., p.221)
+    - Orc Eye of Gruumsh{s:s} (MM, p.247)
+    - Orc Hand of Yurtrus{s:s} (Volo’s, p.184)
+    - Orog{s:s} (MM, p.247)
+    - Pegasus{s:s} (MM, p.250)
+    - Sabre-toothed Tiger{s:s} (MM, p.336)
+    - Bandit Captain{s:s} (MM, p.344)
+}
+->->
+
+=== cr3_grass(s) ===
+{shuffle:
+    - Hobgoblin Captain{s:s} (MM, p.186)
+    - Leucrotta{s:s} (Volo’s, p.169)
+    - Manticore{s:s} (MM, p.213)
+    - Ogre Chain Brute{s:s} (Mord., p.221)
+    - Phase Spider{s:s} (MM, p.334)
+    - Sword Wraith Warrior{s:s} (Mord., p.241)
+    - Vampiric Mist{s:s} (Mord., p.246)
+    - Veteran{s:s} (MM, p.350)
+}
+->->
+
+=== cr4_grass(s) ===
+{shuffle:
+    - Barghest{s:s} (Volo’s, p.123)
+    - Couatl{s:s} (MM, p.43)
+    - Gnoll Fang of Yeenoghu{s:s} (MM, p.163)
+    - Hobgoblin Devastator{s:s} (Volo’s, p.161)
+    - Iron Cobra{s:s} (Mord., p.125)
+    - Ogre Battering Ram{s:s} (Mord., p.220)
+    - Orc Blade of Ilneval{s:s} (Volo’s, p.183)
+    - Stone Defender{s:s} (Mord., p.126)
+    - Wereboar{s:s} (MM, p.209)
+    - Yeth Hound{s:s} (Volo’s, p.201)
+}
+->->
+
+=== cr5_grass(s) ===
+{shuffle:
+    - Bulette{s:s} (MM, p.34)
+    - Gorgon{s:s} (MM, p.171)
+    - Oaken Bolter{s:s} (Mord., p.126)
+}
+->->
+
+=== cr6_grass(s) ===
+{shuffle:
+    - Chimera{s:s} (MM, p.39)
+    - Cyclops{s:s} (MM, p.45)
+    - Hobgoblin Warlord{s:s} (MM, p.187)
+    - Mouth of Grolantor{s:s} (Volo’s, p.149)
+}
+->->
+
+=== cr7_grass(s) ===
+-> cr6_grass(s) ->->
+
+
+// Hill Monster Tables
+
+=== cr0_hill(s) ===
+{shuffle:
+    - Baboon{s:s} (MM, p.318)
+    - Deer{s:s} (MM, p.321)
+    - Eagle{s:s} (MM, p.322)
+    - Goat{s:s} (MM, p.330)
+    - Hyena{s:s} (MM, p.331)
+    - Raven{s:s} (MM, p.335)
+    - Vulture{s:s} (MM, p.339)
+    - Lizard{s:s} (MM, p.332)
+}
+->->
+
+=== cr1_8_hill(s) ===
+{shuffle:
+    - Bandit{s:s} (MM, p.343)
+    - Blood Hawk{s:s} (MM, p.319)
+    - Boggle{s:s} (Volo’s, p.128)
+    - Giant Weasel{s:s} (MM, p.329)
+    - Guard{s:s} (MM, p.347)
+    - Kobold{s:s} (MM, p.195)
+    - Mastiff{s:s} (MM, p.332)
+    - Neogi Hatchling{s:s} (Volo’s, p.179)
+    - Poisonous Snake{s:s} (MM, p.334)
+    - Stirge{s:s} (MM, p.284)
+    - Tribal Warrior{s:s} (MM, p.350)
+    - Xvart{s:s} (Volo’s, p.200)
+}
+->->
+
+=== cr1_4_hill(s) ===
+{shuffle:
+    - Axe Beak{s:s} (MM, p.317)
+    - Boar{s:s} (MM, p.319)
+    - Giant Wolf Spider{s:s} (MM, p.330)
+    - Gnoll Witherling{s:s} (Volo’s, p.155)
+    - Goblin{s:s} (MM, p.166)
+    - Kobold Inventor{s:s} (Volo’s, p.166)
+    - Panther{s:s} (MM, p.333)
+    - Pseudodragon{s:s} (MM, p.254)
+    - Swarm of Bats{s:s} (MM, p.337)
+    - Swarm of Ravens{s:s} (MM, p.339)
+    - Winged Kobold{s:s} (MM, p.195)
+    - Wolf{s:s} (MM, p.341)
+}
+->->
+
+=== cr1_2_hill(s) ===
+{shuffle:
+    - Firenewt Warrior{s:s} (Volo’s, p.142)
+    - Giant Goat{s:s} (MM, p.326)
+    - Gnoll{s:s} (MM, p.163)
+    - Gnoll Hunter{s:s} (Volo’s, p.154)
+    - Hobgoblin{s:s} (MM, p.186)
+    - Orc{s:s} (MM, p.246)
+    - Orc Nurtured One of Yurtrus{s:s} (Volo’s, p.184)
+    - Scout{s:s} (MM, p.349)
+    - Swarm of Insects{s:s} (MM, p.338)
+    - Worg{s:s} (MM, p.341)
+}
+->->
+=== cr1_hill(s) ===
+{shuffle:
+    - Brown Bear{s:s} (MM, p.319)
+    - Brown Bear{s:s} (MM, p.319)
+    - Bugbear{s:s} (MM, p.33)
+    - Dire Wolf{s:s} (MM, p.321)
+    - Giant Eagle{s:s} (MM, p.324)
+    - Giant Hyena{s:s} (MM, p.326)
+    - Goblin Boss{s:s} (MM, p.166)
+    - Half-ogre{s:s} (MM, p.238)
+    - Harpy{s:s} (MM, p.181)
+    - Hippogriff{s:s} (MM, p.184)
+    - Fire Snake{s:s} (MM, p.265)
+    - Bronze Scout{s:s} (Mord., p.125)
+    - Meazel{s:s} (Mord., p.214)
+    - Firenewt Warlock of Imix{s:s} (Volo, p.143)
+    - Giant Strider{s:s} (Volo p.143)
+    - Gnoll Flesh Gnawer{s:s} (Volo, p.154)
+    - Kobold Dragonshield{s:s} (Volo, p.165)
+    - Kobold Scale Sorcerer{s:s} (Volo, p.167)
+    - Nilbog{s:s} (Volo p.182)
+    - Xvart Warlock of Raxivort{s:s} (Volo, p.200)
+}
+->->
+
+=== cr2_hill(s) ===
+{shuffle:
+    - Ogre{s:s} (MM,. p.237)
+    - Ogre{s:s} (MM,. p.237)
+    - Giant Boar{s:s} (MM, p.323)
+    - Giant Boar{s:s} (MM, p.323)
+    - Giant Elk{s:s} (MM, p.325)
+    - Gnoll Pack Lord{s:s} (MM, p.163)
+    - Gnoll Pack Lord{s:s} (MM, p.163)
+    - Griffon{s:s} (MM, p.174)
+    - Griffon{s:s} (MM, p.174)
+    - Orog{s:s} (MM, p.247)
+    - Pegasus{s:s} (MM, p.250)
+    - Peryton{s:s} (MM, p.251)
+    - Quetzalcoatlus{s:s} (Volo’s, p.140)
+    - Ogre Howdah{s:s} (Morden, p.221)
+    - Ogre Bolt Launcher{s:s} (Morden., p.220)
+    - Shadow Mastiff{s:s} (Volo’s 190)
+    - Orc Hand of Yurtrus{s:s} (Volo’s, p.184)
+    - Hobgoblin Iron Shadow{s:s} (Volos, p.162)
+    - Hobgoblin Iron Shadow{s:s} (Volos, p.162)
+    - Aurochs{s:s} (Volo’s, p.207)
+}
+->->
+
+=== cr3_hill(s) ===
+{shuffle:
+    - Green Hag{s:s} (MM, p.177)
+    - Hobgoblin Captain{s:s} (MM, p.186)
+    - Manticore{s:s} (MM, p.213)
+    - Neogi{s:s} (Volos, p.180)
+    - Ogre Chain Brute{s:s} (Morden, p.221)
+    - Orc Red Fang of Shargaas{s:s} (Volos, p.185)
+    - Phase Spider{s:s} (MM, p.334)
+    - Redcap{s:s} (Volos, p.188)
+    - Werewolf{s:s} (MM, p.211)
+    - Veteran{s:s} (MM, p.350)
+}
+->->
+
+=== cr4_hill(s) ===
+{shuffle:
+    - Barghest{s:s} (Volos, p.123)
+    - Barghest{s:s} (Volos, p.123)
+    - Ettin{s:s} (MM, p.132)
+    - Gnoll Fang of Yeenoghu{s:s} (MM, p.163)
+    - Hobgoblin Devastator{s:s} (Volos, p.161)
+    - Iron Cobra{s:s} (Mord, p.125)
+    - Neogi Master{s:s} (Volos, p.180)
+    - Ogre Battering Ram{s:s} (Morden, p.220)
+    - Orc Blade of Ilneval{s:s} (Volo’s, p.183)
+    - Stone Defender{s:s} (Mord, p.126)
+    - Wereboar{s:s} (MM, p.209)
+    - Yeth Hound{s:s} (Volo’s, p.201)
+}
+->->
+
+=== cr5_hill(s) ===
+{shuffle:
+    - Bulette{s:s} (MM, p.34)
+    - Gorgon{s:s} (MM, p.171)
+    - Hill Giant{s:s} (MM, p.155)
+    - Oaken Bolter{s:s} (Morden, p.126)
+    - Revenant{s:s} (MM, p.259)
+    - Tanarukk{s:s} (Volos, p.186)
+    - Troll{s:s} (MM, p.291)
+    - Werebear{s:s} (MM, p.208)
+}
+->->
+
+=== cr6_hill(s) ===
+{shuffle:
+    - Annis Hag{s:s} (Volos, p.159)
+    - Chimera{s:s} (MM, p.39)
+    - Cyclops{s:s} (MM, p.45)
+    - Galeb Duhr{s:s} (MM, p.139)
+    - Hobgoblin Warlord{s:s} (MM, p.187)
+    - Mouth of Grolantor{s:s} (Volos, p.149)
+}
+->->
+
+=== cr7_hill(s) ===
+{shuffle:
+    - Stone Giant{s:s} (MM, p.156)
+    - Young Copper Dragon{s:s} (MM, p.111)
+}
+->->
+
+
+// Mountain Monster Tables
+
+=== cr0_mountain(s) ===
+{shuffle:
+    - Goat{s:s} (MM, p.330)
+    - Owl{s:s} (MM, p.333)
+    - Eagle{s:s} (MM, p.322)
+    - Hawk{s:s} (MM, p.330)
+}
+->->
+
+=== cr1_8_mountain(s) ===
+{shuffle:
+    - Blood Hawk{s:s} (MM, p.319)
+    - Guard{s:s} (MM, p.347)
+    - Kobold{s:s} (MM, p.195)
+    - Stirge{s:s} (MM, p.284)
+    - Tribal Warrior{s:s} (MM, p.350)
+    - Young Kruthik{s:s} (Morden, p.211)
+}
+->->
+
+=== cr1_4_mountain(s) ===
+{shuffle:
+    - Aarakocra{s:s} (MM, p.12)
+    - Derro{s:s} (Morden, p.158)
+    - Kobold Inventor{s:s} (Volos, p.166)
+    - Pseudodragon{s:s} (MM, p.254)
+    - Star Spawn Grue{s:s} (Morden, p.234)
+    - Winged Kobold{s:s} (MM, p.195)
+}
+->->
+
+=== cr1_2_mountain(s) ===
+{shuffle:
+    - Firenewt Warrior{s:s} (Volos, p.142)
+    - Giant Goat{s:s} (MM, p.326)
+    - Orc{s:s} (MM, p.246)
+    - Ice Mephit{s:s} (MM, p.215)
+    - Orc Nurtured One of Yurtrus{s:s} (Volos, p.184)
+}
+->->
+=== cr1_mountain(s) ===
+{shuffle:
+    - Bronze Scout{s:s} (Morden, p.125)
+    - Brown Bear{s:s} (MM, p.319)
+    - Duergar Soulblade{s:s} (Morden, p.190)
+    - Firenewt Warlock of Imix{s:s} (Volos, p.143)
+    - Giant Eagle{s:s} (MM, p.324)
+    - Giant Strider{s:s} (Volos, p.143)
+    - Gnoll Flesh Gnawer{s:s} (Volos, p.154)
+    - Half Ogre{s:s} (MM, p.238)
+    - Harpy{s:s} (MM, p.181)
+    - Hippogriff{s:s} (MM, p.184)
+    - Kobold Dragonshield{s:s} (Volos, p.165)
+    - Kobold Scale Sorcerer{s:s} (Volos, p.167)
+}
+->->
+
+=== cr2_mountain(s) ===
+{shuffle:
+    - Adult Kruthik{s:s} (Morden, p.212)
+    - Aurochs{s:s} (Volos, p.207)
+    - Bandit Captain{s:s} (MM, p.344)
+    - Berserker{s:s} (MM, p.344)
+    - Duergar Ha(mmerer Morden, p.188)
+    - Duergar Kavalrachni{s:s} (Morden, p.189)
+    - Duergar Mind Master{s:s} (Morden, p.189)
+    - Duergar Stone Guard{s:s} (Morden, p.191)
+    - Duergar Xarrorn{s:s} (Morden, p.193)
+    - Giant Elk{s:s} (MM, p.325)
+    - Griffon{s:s} (MM, p.174)
+    - Guard Drake{s:s} (Volos, p.158)
+    - Ogre{s:s} (MM, p.237)
+    - Ogre Bolt Launcher{s:s} (Morden, p.220)
+    - Ogre Howdah{s:s} (Morden, p.221)
+    - Orc Claw of Luthic{s:s} (Volos, p.183)
+    - Orog{s:s} (MM, p.247)
+    - Peryton{s:s} (MM, p.251)
+    - Polar Bear{s:s} (MM, p.334)
+    - Saber-toothed Tiger{s:s} (MM, p.336)
+}
+->->
+
+=== cr3_mountain(s) ===
+{shuffle:
+    - Basilisk{s:s} (MM, p.24)
+    - Duergar Screamer{s:s} (Morden, p.190)
+    - Hell Hound{s:s} (MM, p.182)
+    - Manticore{s:s} (MM, p.213)
+    - Ogre Chain Brute{s:s} (Morden, p.221)
+    - Orc Red Fang of Shargaas{s:s} (Volos, p.185)
+    - Vampiric Mist{s:s} (Morden, p.246)
+    - Veteran{s:s} (MM, p.350)
+    - Winter Wolf{s:s} (MM, p.340)
+    - Yeti{s:s} (MM, p.305)
+}
+->->
+
+=== cr4_mountain(s) ===
+{shuffle:
+    - Barghest{s:s} (Volos, p.123)
+    - Ettin{s:s} (MM, p.132)
+    - Iron Cobra{s:s} (Morden, p.125)
+    - Ogre Battering Ram{s:s} (Morden, p.220)
+    - Orc Blade of Ilneval{s:s} (Volos, p.183)
+    - Stone Defender{s:s} (Morden, p.126)
+}
+->->
+
+=== cr5_mountain(s) ===
+{shuffle:
+    - Air Elemental{s:s} (MM, p.124)
+    - Bulette{s:s} (MM, p.34)
+    - Kruthik Hive Lord{s:s} (Mord, p.212)
+    - Oaken Bolter{s:s} (Mord, p.126)
+    - Revenant{s:s} (MM, p.259)
+    - Tanarukk{s:s} (Volos, p.186)
+    - Troll{s:s} (MM, p.291)
+    - Werebear{s:s} (MM, p.208)
+    - Young Remorhaz{s:s} (MM, p.258)
+    - Umber Hulk{s:s} (MM, p.292)
+}
+->->
+
+=== cr6_mountain(s) ===
+{shuffle:
+    - Annis Hag{s:s} (Volos, p.159)
+    - Chimera{s:s} (MM, p.39)
+    - Cyclops{s:s} (MM, p.45)
+    - Duergar Warlord{s:s} (Mord, p.192)
+    - Galeb Duhr{s:s} (MM, p.139)
+    - Ma(mmoth MM, p.332)
+    - Wyvern{s:s} (MM, p.303)
+    - Young White Dragon{s:s} (MM, p.101)
+}
+->->
+
+=== cr7_mountain(s) ===
+{shuffle:
+    - Bheur Hag{s:s} (Volos, p.160)
+    - Lost Sorrowsworn{s:s} (Morden, p.233)
+    - Stone Giant{s:s} (MM, p.156)
+}
+->->
+
+
+// Swamp Monster Tables
+
+=== cr0_swamp(s) ===
+{shuffle:
+    - Rat{s:s} (MM, p.335)
+    - Raven{s:s} (MM, p.335)
+    - Frog{s:s} (MM, p.322)
+    - Spider{s:s} (MM, p.337)
+}
+->->
+
+=== cr1_8_swamp(s) ===
+{shuffle:
+    - Giant Rat{s:s} (MM, p.327)
+    - Kobold{s:s} (MM, p.195)
+    - Poisonous Snake{s:s} (MM, p.334)
+    - Stirge{s:s} (MM, p.284)
+    - Tribal Warrior{s:s} (MM, p.350)
+}
+->->
+
+=== cr1_4_swamp(s) ===
+{shuffle:
+    - Bullywug{s:s} (MM, p.35)
+    - Constrictor Snake{s:s} (MM, p.320)
+    - Giant Frog{s:s} (MM, p.325)
+    - Giant Lizard{s:s} (MM, p.326)
+    - Giant Poisonous Snake{s:s} (MM, p.327)
+    - Mud Mephit{s:s} (MM, p.216)
+    - Oblex Spawn{s:s} (Mord, p.217)
+    - Star Spawn Grue{s:s} (Mord, p.234)
+    - Swarm of Ravens{s:s} (MM, p.339)
+    - Vegepygmy{s:s} (Volo, p.196)
+    - Winged Kobold{s:s} (MM, p.195)
+    - Wretched Sorrowsworn{s:s} (Morden, p.233)
+}
+->->
+
+=== cr1_2_swamp(s) ===
+{shuffle:
+    - Crocodile{s:s} (MM, p.320)
+    - Darkling{s:s} (Volos, p.134)
+    - Lizardfolk{s:s} (MM, p.204)
+    - Orc{s:s} (MM, p.246)
+    - Scout{s:s} (MM, p.349)
+    - Skulk{s:s} (Morden, p.227)
+    - Swarm of Insects{s:s} (MM, p.338)
+    - Swarm of Rot Grubs{s:s} (Volos, p.208)
+}
+->->
+=== cr1_swamp(s) ===
+{shuffle:
+    - Ghoul{s:s} (MM, p.148)
+    - Giant Spider{s:s} (MM, p.328)
+    - Giant Toad{s:s} (MM, p.329)
+    - Meazel{s:s} (Morden, p.214)
+    - Thorny{s:s} (Volos, p.197)
+    - Vargouille{s:s} (Volos, p.195)
+    - Yuan-ti Pureblood{s:s} (MM, p.310)
+    - Bugbear{s:s} (MM, p.33)
+}
+->->
+
+=== cr2_swamp(s) ===
+{shuffle:
+    - Darkling Elder{s:s} (Volos, p.134)
+    - Ghast{s:s} (MM, p.148)
+    - Giant Constrictor Snake{s:s} (MM, p.324)
+    - Guard Drake{s:s} (Volos, p.158)
+    - Lizardfolk Shaman{s:s} (MM, p.205)
+    - Meenlock{s:s} (Volos, p.170)
+    - Ogre{s:s} (MM, p.237)
+    - Orc Eye of Gruumsh{s:s} (MM, p.247)
+    - Shadow Mastiff{s:s} (Volos, p.190)
+    - Swarm of Poisonous Snakes{s:s} (MM, p.338)
+    - Vegepygmy Chief{s:s} (Volos, p.197)
+    - Will-o-wisp{s:s} (MM, p.301)
+}
+->->
+
+=== cr3_swamp(s) ===
+{shuffle:
+    - Flail Snail{s:s} (Volos, p.144)
+    - Green Hag{s:s} (MM, p.177)
+    - Redcap{s:s} (Volos, p.188)
+    - Sword Wraith Warrior{s:s} (Morden, p.241)
+    - Vampiric Mist{s:s} (Morden, p.246)
+    - Wight{s:s} (MM, p.300)
+    - Yuan-ti Malison{s:s} (MM, p.309)
+    - Bugbear Chief{s:s} (MM, p.33)
+}
+->->
+
+=== cr4_swamp(s) ===
+{shuffle:
+    - Chuul{s:s} (MM, p.40)
+    - Ghost{s:s} (MM, p.147)
+    - Lizard King / Queen{s:s} (MM, p.205)
+    - Orc War Chief{s:s} (MM, p.246)
+    - Wereboar{s:s} (MM, p.209)
+    - Yuan-ti Mind Whisperer{s:s} (Volos, p.204)
+}
+->->
+
+=== cr5_swamp(s) ===
+{shuffle:
+    - Adult Oblex{s:s} (Morden, p.218)
+    - Allip{s:s} (Morden, p.116)
+    - Catoblepas{s:s} (Volos, p.129)
+    - Giant Crocodile{s:s} (MM, p.324)
+    - Revenant{s:s} (MM, p.259)
+    - Shambling Mound{s:s} (MM, p.270)
+    - Troll{s:s} (MM, p.291)
+    - Water Elemental{s:s} (MM, p.125)
+}
+->->
+
+=== cr6_swamp(s) ===
+{shuffle:
+    - Bodak{s:s} (Volos, p.127)
+    - Annis Hag{s:s} (Volos, p.159)
+    - Chimera{s:s} (MM, p.39)
+    - Hobgoblin Warlord{s:s} (MM, p.187)
+}
+->->
+
+=== cr7_swamp(s) ===
+{shuffle:
+    - Lost Sorrowsworn{s:s} (Morden, p.233)
+    - Maurezhi{s:s} (Morden, p.133)
+    - Venom Troll{s:s} (Morden, p.245)
+    - Young Black Dragon{s:s} (MM, p.88)
+    - Yuan-ti Abomination{s:s} (MM, p.308)
+}
+->->
+
+
+// Urban Monster Tables
+
+=== cr0_urban(s) ===
+{shuffle:
+    - Rat{s:s} (MM, p.335)
+    - Raven{s:s} (MM, p.335)
+    - Frog{s:s} (MM, p.322)
+    - Spider{s:s} (MM, p.337)
+}
+->->
+
+=== cr1_8_urban(s) ===
+{shuffle:
+    - Bandit{s:s} (MM, p.343)
+    - Boggle{s:s} (Volo’s, p.128)
+    - Cultist{s:s} (MM, p.345)
+    - Flying Snake{s:s} (MM, p.322)
+    - Giant Rat{s:s} (MM, p.327)
+    - Guard{s:s} (MM, p.347)
+    - Kobold{s:s} (MM, p.195)
+    - Mastiff{s:s} (MM, p.332)
+    - Mule{s:s} (MM, p.333)
+    - Noble{s:s} (MM, p.348)
+    - Pony{s:s} (MM, p.335)
+    - Stirge{s:s} (MM, p.284)
+}
+->->
+
+=== cr1_4_urban(s) ===
+{shuffle:
+    - Acolyte{s:s} (MM, p.342)
+    - Draft Horse{s:s} (Volo’s, p.321)
+    - Giant Centipede{s:s} (MM, p.323)
+    - Giant Poisonous Snake{s:s} (MM, p.327)
+    - Kenku{s:s} (MM, p.194)
+    - Kobold Inventor{s:s} (Volo’s p.166)
+    - Oblex Spawn{s:s} (Morden., p.217)
+    - Ox{s:s} (Volo’s p.207)
+    - Pseudodragon{s:s} (MM, p.254)
+    - Riding Horse{s:s} (MM, p.336)
+    - Skeleton{s:s} (MM, p.272)
+    - Smoke Mephit{s:s} (MM, p.217)
+    - Swarm of Bats{s:s} (MM, p.337)
+    - Swarm of Rats{s:s} (MM, p.339)
+    - Swarm of Ravens{s:s} (MM, p.339)
+    - Winged Kobold{s:s} (MM, p.195)
+    - Wretched Sorrowsworn{s:s} (Morden., p.233)
+    - Zombie{s:s} (MM, p.316)
+    - Goblin{s:s} (MM, p.166)
+    - Giant Wolf Spider{s:s} (MM, p.330)
+}
+->->
+
+=== cr1_2_urban(s) ===
+{shuffle:
+    - Crocodile{s:s} (MM, p.320)
+    - Darkling{s:s} (Volo’s, p.134)
+    - Giant Wasp{s:s} (MM, p.329)
+    - Shadow{s:s} (MM, p.269)
+    - Skulk{s:s} (Morden., p.227)
+    - Swarm of Insects{s:s} (MM, p.338)
+    - Thug{s:s} (MM, p.350)
+    - Warhorse{s:s} (MM, p.340)
+}
+->->
+=== cr1_urban(s) ===
+{shuffle:
+    - Ghoul{s:s} (MM, p.148)
+    - Giant Spider{s:s} (MM, p.328)
+    - Half Ogre{s:s} (MM, p.328)
+    - Kobold Scale Sorcerer{s:s} (Volo’s, p.167)
+    - Meazel{s:s} (Morden., p.214)
+    - Specter{s:s} (MM, p.279)
+    - Spy{s:s} (MM, p.349)
+    - Stone Cursed{s:s} (Morden., p.240)
+    - Yuan-ti Pureblood{s:s} (MM, p.320)
+    - Animated Armour{s:s} (MM, p.10)
+}
+->->
+
+=== cr2_urban(s) ===
+{shuffle:
+    - Bandit Captain{s:s} (MM, p.344)
+    - Cult Fanatic{s:s} (MM, p.345)
+    - Gargoyle{s:s} (MM, p.140)
+    - Darkling Eldet{s:s} (Volo’s, p.134)
+    - Ghast{s:s} (MM, p.148)
+    - Guard Drake{s:s} (Volo’s, p.158)
+    - Meenlock{s:s} (Volo’s, p.170)
+    - Priest{s:s} (MM, p.348)
+    - Mimic{s:s} (MM, p.220)
+    - Wererat{s:s} (MM, p.209)
+    - Will o’ Wisp{s:s} (MM, p.301)
+    - Rug of Smothering{s:s} (MM, p.20)
+}
+->->
+
+=== cr3_urban(s) ===
+{shuffle:
+    - Doppelganger{s:s} (MM, p.82)
+    - Giff{s:s} (Morden., p.204)
+    - Knight{s:s} (MM, p.347)
+    - Orc Red Fang of Shargaas{s:s} (Volo’s, p.185)
+    - Phase Spider{s:s} (MM, p.334)
+    - Slithering Tracker{s:s} (Volo’s, p.191)
+    - Vampiric Mist{s:s} (Morden., p.246)
+    - Veteran{s:s} (MM, p.350)
+    - Water Weird{s:s} (MM, p.299)
+    - Wight{s:s} (MM, p.300)
+}
+->->
+
+=== cr4_urban(s) ===
+{shuffle:
+    - Babau{s:s} (Volo’s, p.136)
+    - Couatl{s:s} (MM, p.43)
+    - Deathlock{s:s} (Morden., p.128)
+    - Dybbuk{s:s} (Morden., p.132)
+    - Ghost{s:s} (MM, p.147)
+    - Incubus{s:s} (MM, p.285)
+    - Succubus{s:s} (MM, p.285)
+    - Orc Blade of Ilneval{s:s} (Volo’s, p.183)
+}
+->->
+
+=== cr5_urban(s) ===
+{shuffle:
+    - Adult Oblex{s:s} (Morden., p.218)
+    - Allip{s:s} (Morden., p.116)
+    - Banderhobb{s:s} (Volo’s, p.122)
+    - Cambion{s:s} (MM, p.36)
+    - Gladiator{s:s} (MM, p.346)
+    - Revenant{s:s} (MM, p.259)
+    - Swarm of Cranium Rats{s:s} (Volo’s, p.133)
+    - Vampire Spawn{s:s} (MM, p.298)
+}
+->->
+
+=== cr6_urban(s) ===
+{shuffle:
+    - Bodak{s:s} (Volo’s, p.127)
+    - Invisible Stalker{s:s} (MM, p.192)
+    - Mage{s:s} (MM, p.347)
+    - White Abishai{s:s} (Morden., p.163)
+}
+->->
+
+=== cr7_urban(s) ===
+{shuffle:
+    - Black Abishai{s:s} (Morden., p.160)
+    - Lost Sorrowsworn{s:s} (Morden., p.233)
+    - Maurezhi{s:s} (Morden., p.133)
+    - Oni{s:s} (MM, p.239)
+    - Shadow Dancer{s:s} (Morden., p.225)
+    - Shield Guardian{s:s} (MM, p.271)
+}
+->->
+
+
+
+
 

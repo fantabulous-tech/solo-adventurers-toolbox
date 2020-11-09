@@ -15,7 +15,7 @@ INCLUDE urban
 INCLUDE wilderness
 
 
-VAR debug = false
+VAR debug = true
 
 VAR difficulty = 15
 VAR roll = 1
@@ -47,16 +47,26 @@ LIST dungeon_destination = Passage, Room, Stairs
 LIST urban_shops = tavern, supplies, mounts, books, gems, armourer, bank, tinkerer, tailor, potions, idols, food, temple, tomes, thieving, weapons, vehicles, guild, magic_items, blacksmith, resurrection, couriers, brothel, realty, carpenter, theatre, healer, boats, union, stonemason, university, mercenaries, animal_trainer
 LIST urban_size = urb_camp, urb_hamlet, urb_village, urb_town, urb_city, urb_metropolis
 
+LIST cr_list = cr0, cr1_8, cr1_4, cr1_2, cr1, cr2, cr3, cr4, cr5, cr6, cr7
+LIST encounter_difficulty = easy, medium, hard, deadly
+
+// encounter group 1
+VAR monster_count = 0
+VAR monster_level = ()
+
+// encounter group 2
+VAR monster_count_2 = 0
+VAR monster_level_2 = ()
+
 VAR stat_survival_bonus = 0
 VAR stat_level = 1
 VAR stat_party_size = 2
 
-LIST location = (wilderness), urban, dungeon
+LIST location = wilderness, urban, dungeon
 LIST terrain = aquatic, coastal, desert, forest, grass, hill, mountain, swamp
 LIST season = summer, autumn, winter, spring
 LIST population = pop_low, pop_medium, pop_high
 LIST time = (day), night
-LIST cr_level = (cr0), cr1_8, cr1_4, cr1_2, cr1, cr2, cr3, cr4, cr5, cr6, cr7
 
 { debug:
     ~log("Entering ink debug.")
@@ -118,6 +128,14 @@ LIST cr_level = (cr0), cr1_8, cr1_4, cr1_2, cr1, cr2, cr3, cr4, cr5, cr6, cr7
 === create_menu ===
 <b>Create Menu</b> #CLEAR
 ~ back_menu = -> create_menu
+
++ Create Encounter 
+    -> create_encounter ->
+    ~ again = -> create_encounter
+    
++ Create Monster
+    -> create_single_monster ->
+    ~ again = -> create_single_monster
     
 + Create NPC
     -> create_npc ->

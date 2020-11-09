@@ -181,14 +181,37 @@ The weather in {DisplayTerrain()} is now "{current_weather}".
 
 === function GetWaterway() ===
 ~ roll = d100()
-TODO: GetWaterway()
-~ return "waterway"
-->->
+
+{
+    - roll <= 50: ~ return "Stream /river running through {P(15):with waterfall nearby}."
+    - roll <= 55: ~ return "Slightly larger river, might be difficult to ford."
+    - roll <= 60: ~ return "A man-made waterway of some sort, irrigation channel perhaps?"
+    - roll <= 65: ~ return "Deep but narrow stream. You see something float by! Dex check to grab it."
+    - roll <= 70: ~ return "Large, unmapped river. Could be rideable in canoe."
+    - roll <= 75: ~ return "Sizable river with pond areas. Probably quite good for fishing or swimming."
+    - roll <= 80: ~ return "Sizable, unmapped river, spanned by bridge."
+    - roll <= 85: ~ return "Meandering river with pier where small boats are tied up. Ferryman?"
+    - roll <= 90: ~ return "This appears to be a drainage channel for a nearby settlement."
+    - roll <= 95: ~ return "Humanoids or fey (elves? dryads?) frolicking in the water."
+    - else: ~ return "Shallow brook... what’s that you see there amongst the pebbles?"
+}
 
 === function GetLake() ===
-TODO: GetLake()
-~ return "lake"
+~ roll = d100()
 
+{
+    - roll <= 50 : ~ return "Medium-sized lake, unmarked on map. Situated in {DisplayTerrain()}."
+    - roll <= 55 : ~ return "Medium sized lake, small settlement somewhere on its shores."
+    - roll <= 60 : ~ return "Smallish lake/pond/watering hole."
+    - roll <= 65 : ~ return "Large, unmapped lake, with a waterway running out of it. Could be rideable in a canoe"
+    - roll <= 70 : ~ return "Medium sized lake, small settlement somewhere on its shores."
+    - roll <= 75 : ~ return "Large, unmapped lake, with small mountain range by its shores"
+    - roll <= 80 : ~ return "Large lake with small woods on its shores"
+    - roll <= 85 : ~ return "Medium-sized lakes with many boats"
+    - roll <= 90 : ~ return "Small lake or pond, serves as a lair for some aquatic creature"
+    - roll <= 95 : ~ return "Medium-sized lake, fish jumping DC 15 Survival check to catch a fish."
+    - else: ~ return "Sacred pool of some sort. Magical in nature."
+}
 
 === unmarked_settlement_check ===
 {population == (): -> edit_population ->}
@@ -339,8 +362,19 @@ No encounter.
 
 
 === create_place ===
-TODO: create_place
-Place
+{shuffle:
+    - In this settlement/area
+    - Just outside settlement
+    - {d4()} miles away in a -> create_structure ->
+    - In the nearby forest
+    - In the nearby mountains
+    - In the nearby swamp
+    - In/beside the nearby body of water
+    - In the next village
+    - In the next large town
+    - In the captial of the realm
+    - In the next realm
+}
 - ->->
 
 
@@ -517,7 +551,7 @@ How dense is the population in {DisplayTerrain()}?
     - Besieged settlement -> unmarked_settlement_table ->
     - Come across <> -> create_structure ->
     - Battle in progress
-    - Carcass of a {~ -> create_creature ->|->create_monster ->}
+    - Carcass of a {~ -> create_creature ->|->create_single_monster ->}
     - Monster - easy encounter
     - Monster - easy encounter
     - Monster - medium encounter

@@ -286,7 +286,7 @@ Room Description:<br><>
 ~ result = roll + bonus
 
 Room Contents: ({DisplayResult()}):<br><>
-
+// SD = Secret Door
 {
     - result <= 4 : Level appropriate Deadly Encounter (see Chapter 16). Loot 45%, Clue 75%. Roll DMG Loot table appropriate to encounter.
     - result <= 8 : Remnants / proof of the boss or BBEG. It looks as though they have been up to mischief in this room.
@@ -294,7 +294,7 @@ Room Contents: ({DisplayResult()}):<br><>
     - result <= 20: Dungeon Hazard. 1: sinkhole, 2: fungus, 3: trap, 4: collapsing masonry or other natural hazard, 5: wandering monster, medium difficulty, 6: Player’s choice.
     - result <= 32: Level appropriate Hard Encounter (see Chapter 16). Clue, Loot, Random, SD all 30%.
     - result <= 36: NPC in room investigating. Roll again to find out what they are investigating.
-    - result <= 40: A previously triggered trap is in this room, with a level appropriate Hard Encounter enemy caught in it / victim to it. Enemy alive, 30%. Loot 10%.
+    - result <= 40: A previously triggered trap is in this room, with a level appropriate Hard Encounter enemy {P(30):caught in it and still alive|caught and killed by it}. {P(10):Loot.}
     - result <= 52: Level appropriate Easy Encounter (see Chapter 16) Loot 20%, SD 10%, Clue 30%
     - result <= 56: Obstacle of some sort (e.g. rubble, crevasse, sinkhole, underground stream, wild magic field). Athletics or acrobatics check might be required to pass it, or it might be impassable. (Alterntively, roll on Obstacles Table, DMG p.297)
     - result <= 67: Level appropriate Medium Encounter (see Chapter 16) Loot 30%, SD 20%, Clue 30%
@@ -645,7 +645,7 @@ What type of dungeon is this?
 + [Back] ->->
 
 -
--> roll_dungeon_rooms ->
+{dungeon_size: -> roll_dungeon_rooms ->}
 Dungeon Type: {DisplayDungeonType()}
 ->->
 
