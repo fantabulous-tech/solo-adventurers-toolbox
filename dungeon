@@ -652,7 +652,7 @@ Dungeon Type: {DisplayDungeonType()}
 
 === function DisplayDungeonType() ===
 {dungeon_type:
-    - (): ~ return "Unknown Type"
+    - (): ~ return "Dungeon"
     - dtype_lair: ~return "Lair"
     - dtype_tomb: ~return "Tomb/Crypt"
     - dtype_stronghold: ~return "Abandoned Stronghold"

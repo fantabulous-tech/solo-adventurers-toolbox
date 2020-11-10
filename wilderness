@@ -425,7 +425,7 @@ Terrain is now {DisplayTerrain()}
 
 === function DisplayTerrain() ===
 {terrain:
-    - (): ~ return "Unknown Terrain"
+    - (): ~ return "Wilderness"
     - aquatic: ~ return "Aquatic"
     - coastal: ~ return "Coastal Wilderness"
     - desert: ~ return "Desert Wilderness"

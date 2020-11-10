@@ -29,15 +29,12 @@ Where are you located?
 
 + [City/Town]
     ~ location = urban
-    -> edit_urban_size ->
     
 + [Dungeon]
     ~ location = dungeon
-    -> edit_dungeon_type ->
     
 + [Wilderness]
     ~ location = wilderness
-    -> edit_terrain ->
     
 - ->->
 
