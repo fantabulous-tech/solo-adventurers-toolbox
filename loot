@@ -1,0 +1,306 @@
+// Replace this comment with Ink and start writing!
+
+
+=== create_loot ===
+{monster_level == ():
+    -> edit_monster_difficulty ->
+    -> roll_encounter ->
+}
+
+Creating look for monster level {monster_level}:
+
+-> create_loot_by_cr(monster_level) ->->
+
+
+=== create_hoard ===
+{monster_level == ():
+    -> edit_monster_difficulty ->
+    -> roll_encounter ->
+}
+
+Creating hoard for monster level {monster_level}:<br><>
+-> create_hoard_by_cr(monster_level)
+
+->->
+
+= create_hoard_by_cr(cr)
+
+{cr:
+    - cr0:   -> create_hoard_cr1_8 ->
+    - cr1_8: -> create_hoard_cr1_8 ->
+    - cr1_4: -> create_hoard_cr1_4 ->
+    - cr1_2: -> create_hoard_cr1_2 ->
+    - cr1:   -> create_hoard_cr1 ->
+    - cr2:   -> create_hoard_cr2 ->
+    - cr3:   -> create_hoard_cr3 ->
+    - cr4:   -> create_hoard_cr4 ->
+    - cr5:   -> create_hoard_cr5 ->
+    - cr6:   -> create_hoard_cr6 ->
+    - cr7:   -> create_hoard_cr7 ->
+}
+
+->->
+
+= create_hoard_cr1_8
+
+~ temp c = 50
+{P(c):{d10()*100} cp, <>}
+{P(c):{d4()*10} sp, <>}
+{P(c):{d12x(10)*10} ep, <>}
+{P(c):{d4()*50} gp, <>}
+{P(c):{d6x(3)} pp, <>}
+{P(c):{d4()} x 10 gp gems|no gems}
+
+->->
+
+= create_hoard_cr1_4
+
+~ temp c = 50
+{P(c):{d20()*100} cp, <>}
+{P(c):{d8()*100} sp, <>}
+{P(c):{d10()*50} ep, <>}
+{P(c):{d4()*100} gp, <>}
+{P(c):{d12x(3)} pp, <>}
+{P(c):{d8()} x 10 gp gems|no gems}
+
+->->
+
+= create_hoard_cr1_2
+
+~ temp c = 50
+{P(c):{d20()*100} cp, <>}
+{P(c):{d8()*100} sp, <>}
+{P(c):{d12()*100} ep, <>}
+{P(c):{d6()*100} gp, <>}
+{P(c):{d20x(2)} pp, <>}
+{P(c):{d8()} x 10 gp gems|no gems}
+
+->->
+
+= create_hoard_cr1
+
+~ temp c = 50
+{P(c):{d20()*100} cp, <>}
+{P(c):{d8()*100} sp, <>}
+{P(c):{d12()*100} ep, <>}
+{P(c):{d10()*100} gp, <>}
+{P(c):{d12x(4)} pp, <>}
+{P(c):{d8()} x 10 gp gems, <>}
+{P(c):{d4()} magic items (DMG table A)|no magic items}
+
+->->
+
+= create_hoard_cr2
+
+~ temp c = 50
+{P(c):{d20()*100} cp, <>}
+{P(c):{d8()*100} sp, <>}
+{P(c):{d12()*100} ep, <>}
+{P(c):{d12()*100} gp, <>}
+{P(c):{d6()*5} pp, <>}
+{P(c):{d4()} x 50 gp gems, <>}
+{P(c):{d4()} magic items (DMG table A)|no magic items}
+
+->->
+
+= create_hoard_cr3
+
+~ temp c = 50
+{P(c):{d20()*100} cp, <>}
+{P(c):{d8()*100} sp, <>}
+{P(c):{d12()*100} ep, <>}
+{P(c):{d6x(3)*100} gp, <>}
+{P(c):{d6()*5} pp, <>}
+{P(c):{d4()} x 50 gp gems, <>}
+{P(c):{d6()} magic items (DMG table A)|no magic items}
+
+->->
+
+= create_hoard_cr4
+
+~ temp c = 50
+{P(c):{d20()*150} cp, <>}
+{P(c):{d8()*200} sp, <>}
+{P(c):{d12()*100} ep, <>}
+{P(c):{d12x(2)*100} gp, <>}
+{P(c):{d6()*5} pp, <>}
+{P(c):{d4()} x 50 gp gems, <>}
+{P(c):{d6()} magic items (DMG table A)|no magic items}
+
+->->
+
+= create_hoard_cr5
+
+~ temp c = 50
+{P(c):{d20()*150} cp, <>}
+{P(c):{d8()*200} sp, <>}
+{P(c):{d12()*100} ep, <>}
+{P(c):{d12x(2)*100} gp, <>}
+{P(c):{d6()*5} pp, <>}
+{P(c):{d6()} x 50 gp gems, <>}
+{P(c):1 magic item (DMG table B)|no magic items}
+
+->->
+
+= create_hoard_cr6
+
+~ temp c = 60
+{P(c):{d20x(2)*100} cp, <>}
+{P(c):{d12x(4)*100} sp, <>}
+{P(c):{d12x(2)*100} ep, <>}
+{P(c):{d12()*100} gp, <>}
+{P(c):{d4()*10} pp, <>}
+{P(c):{d4()} x 100 gp gems, <>}
+{P(c):1 magic item (DMG table B)|no magic items}
+
+->->
+
+= create_hoard_cr7
+
+~ temp c = 60
+{P(c):{d20x(2)*100} cp, <>}
+{P(c):{d12x(4)*100} sp, <>}
+{P(c):{d20x(2)*100} ep, <>}
+{P(c):{d12x(2)*100} gp, <>}
+{P(c):{d6()*10} pp, <>}
+{P(c):{d6()} x 100 gp gems, <>}
+{P(c):{d4()} magic items (DMG table B)|no magic items}
+
+->->
+
+
+=== create_loot_by_cr(cr) ===
+
+{cr:
+    - cr0:   -> create_loot_cr0 ->
+    - cr1_8: -> create_loot_cr1_8 ->
+    - cr1_4: -> create_loot_cr1_4 ->
+    - cr1_2: -> create_loot_cr1_2 ->
+    - cr1:   -> create_loot_cr1 ->
+    - cr2:   -> create_loot_cr2 ->
+    - cr3:   -> create_loot_cr3 ->
+    - cr4:   -> create_loot_cr4 ->
+    - cr5:   -> create_loot_cr5 ->
+    - cr6:   -> create_loot_cr6 ->
+    - cr7:   -> create_loot_cr7 ->
+}
+
+->->
+
+= create_loot_cr0
+{shuffle:
+    - cr0 loot
+}
+->->
+
+= create_loot_cr1_8
+{shuffle:
+    - {d6()} cp
+    - {d6x(3)} cp
+    - {d6x(5)} cp
+    - {d6x(4)} sp
+    - {d6x(3)} ep
+    - {d6x(3)} gp
+}
+->->
+
+= create_loot_cr1_4
+{shuffle:
+    - {d6x(3)} cp
+    - {d6x(5)} cp
+    - {d6x(4)} sp
+    - {d6x(3)} ep
+    - {d6x(3)} gp
+    - {d6()} pp
+}
+->->
+
+= create_loot_cr1_2
+{shuffle:
+    - {d6x(5)} cp
+    - {d6x(4)} sp
+    - {d6x(3)} ep
+    - {d6x(3)} gp
+    - {d6()} pp
+    - 1 x 10 gp gem
+}
+->->
+
+= create_loot_cr1
+{shuffle:
+    - {d6x(4)} sp
+    - {d6x(3)} ep
+    - {d6x(3)} gp
+    - {d6()} pp
+    - 1 x 10 gp gem
+    - 2 x 10 gp gem
+}
+->->
+
+= create_loot_cr2
+{shuffle:
+    - {d6x(4)} sp
+    - {d6x(3)} ep
+    - {d6x(3)} gp
+    - {d6x(5)} gp
+    - {d6()} pp
+    - {d6x(2)} pp
+}
+->->
+
+= create_loot_cr3
+{shuffle:
+    - {d6x(5)} sp
+    - {d6x(4)} ep
+    - {d6x(5)} gp
+    - {d6x(6)} gp
+    - {d6x(2)} pp
+    - {d6x(3)} pp
+}
+->->
+
+= create_loot_cr4
+{shuffle:
+    - {d6x(4)} ep
+    - {d6x(5)} gp
+    - {d6x(6)} gp
+    - {d6x(2)} pp
+    - {d6x(3)} pp
+    - {d6()} x 50 gp gems
+}
+->->
+
+= create_loot_cr5
+{shuffle:
+    - {d10()*10} cp, {d6()*5} ep
+    - {d8()*50} sp, {d6x(6)} gp
+    - {d6()*10} ep, {d6()*10} gp
+    - {d8x(2)*10} gp
+    - {d6x(2)*10} gp, {d10()} pp
+    - {d8x(2)*10} gp, {d4()} x 50 gp gemstones
+}
+->->
+
+= create_loot_cr6
+{shuffle:
+    - {d6x(4)*100} cp, {d6()*10} ep
+    - {d10()*50} sp, {d6()*10} gp
+    - {d8()*10} ep, {d6x(2)*10} gp
+    - {d10*20} gp
+    - {d8x(3)*10} gp, {d6()*2} pp
+    - {d6x(3)*50} gp, {d4x(3)} x 50 gp gemstones
+}
+->->
+
+= create_loot_cr7
+{shuffle:
+    - {d6x(4)*100} cp, {d6()*10} ep
+    - {d6x(6)*10} sp, {d6x(2)*10} gp
+    - {d6x(3)*10} ep, {d6x(2)*10} gp
+    - {d6x(4)*10} gp
+    - {d6x(2)*10} gp, {d6x(3)} pp
+    - {d6x(3)*10} gp, {d6()} x 50 gp gemstones
+}
+->->
+
+

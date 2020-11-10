@@ -4,6 +4,7 @@ INCLUDE settings
 
 INCLUDE clue
 INCLUDE dungeon
+INCLUDE loot
 INCLUDE monsters
 INCLUDE npc
 INCLUDE quests
@@ -144,6 +145,16 @@ LIST time = (day), night
 + Create Adventurer
     -> create_adventurer ->
     ~ again = -> create_adventurer
+
++ Create Loot
+    -> create_loot ->
+    -> roll_encounter ->
+    ~ again = -> create_loot
+
++ Create Hoard
+    -> create_hoard ->
+    -> roll_encounter ->
+    ~ again = -> create_hoard
 
 + Create Town Stuff
     -> create_town_menu -> create_menu

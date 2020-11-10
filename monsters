@@ -49,37 +49,33 @@
 {location == wilderness && terrain == (): -> edit_terrain ->}
 
 Creating {encounter_difficulty} encounter for {stat_party_size} lvl {stat_level} PCs in {DisplayLocation()}.
--> roll_encounter ->->
+-> roll_encounter -> display_enocunter ->->
 
 
 === create_monster(difficult) ===
 ~ encounter_difficulty = difficulty
--> roll_encounter ->->
+-> roll_encounter -> display_enocunter ->->
+
+=== display_enocunter ===
+
+{monster_count > 0:
+    -> roll_monster(monster_level, monster_count) ->
+}
+
+{monster_count_2 > 0:
+    <> and <>
+    -> roll_monster(monster_level, monster_count_2) ->
+}
+
+->->
 
 
 === create_single_monster ===
-{encounter_difficulty == (): -> edit_monster_difficulty ->}
+~ encounter_difficulty = medium
 {location == (): -> edit_location ->}
 {location == wilderness && terrain == (): -> edit_terrain ->}
 
-~ encounter_difficulty = medium
-
-~ monster_count = 0
-~ monster_level = ()
-
-~ monster_count_2 = 0
-~ monster_level_2 = ()
-
-{
-    - stat_party_size == 1:
-        -> roll_encounter.solo ->
-    - stat_party_size == 2:
-        -> roll_encounter.duo ->
-    - else:
-        ~logError("Unsupported party size of {stat_party_size}.")
-}
-
--> roll_encounter.roll_monster(monster_level, 1) ->->
+-> roll_encounter -> roll_monster(monster_level, 1) ->->
 
 
 === edit_monster_difficulty ===
@@ -116,7 +112,6 @@ Monster
 
 
 === roll_encounter ===
-
 ~ monster_count = 0
 ~ monster_level = ()
 
@@ -131,36 +126,6 @@ Monster
     - else:
         ~logError("Unsupported party size of {stat_party_size}.")
 }
-
-{monster_count > 0:
-    -> roll_monster(monster_level, monster_count) ->
-}
-
-{monster_count_2 > 0:
-    <> and <>
-    -> roll_monster(monster_level, monster_count_2) ->
-}
-
-
-->->
-
-= roll_monster(cr, num)
-
-{
-    - cr == cr0:   -> cr0_table(num) ->
-    - cr == cr1_8: -> cr1_8_table(num) ->
-    - cr == cr1_4: -> cr1_4_table(num) ->
-    - cr == cr1_2: -> cr1_2_table(num) ->
-    - cr == cr1:   -> cr1_table(num) ->
-    - cr == cr2:   -> cr2_table(num) ->
-    - cr == cr3:   -> cr3_table(num) ->
-    - cr == cr4:   -> cr4_table(num) ->
-    - cr == cr5:   -> cr5_table(num) ->
-    - cr == cr6:   -> cr6_table(num) ->
-    - cr == cr7:   -> cr7_table(num) ->
-    - else: ~logError("Unsupported cr: {cr} in {DisplayTerrain()}")
-}
-
 ->->
 
 = solo
@@ -439,6 +404,25 @@ Monster
 }
 ->->
 
+
+=== roll_monster(cr, num) ===
+
+{
+    - cr == cr0:   -> cr0_table(num) ->
+    - cr == cr1_8: -> cr1_8_table(num) ->
+    - cr == cr1_4: -> cr1_4_table(num) ->
+    - cr == cr1_2: -> cr1_2_table(num) ->
+    - cr == cr1:   -> cr1_table(num) ->
+    - cr == cr2:   -> cr2_table(num) ->
+    - cr == cr3:   -> cr3_table(num) ->
+    - cr == cr4:   -> cr4_table(num) ->
+    - cr == cr5:   -> cr5_table(num) ->
+    - cr == cr6:   -> cr6_table(num) ->
+    - cr == cr7:   -> cr7_table(num) ->
+    - else: ~logError("Unsupported cr: {cr} in {DisplayTerrain()}")
+}
+
+->->
 
 
 === cr0_table(num) ===

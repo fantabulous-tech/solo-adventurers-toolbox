@@ -232,6 +232,63 @@ Difficulty:
 ~ return RANDOM(1,100)
 
 
+=== function d4x(c) ===
+{c <= 0:
+    ~ return 0
+- else:
+    ~ c--
+    ~ return d4() + d4x(c)
+}
+
+=== function d6x(c) ===
+{c <= 0:
+    ~ return 0
+- else:
+    ~ c--
+    ~ return d6() + d6x(c)
+}
+
+=== function d8x(c) ===
+{c <= 0:
+    ~ return 0
+- else:
+    ~ c--
+    ~ return d8() + d8x(c)
+}
+
+=== function d10x(c) ===
+{c <= 0:
+    ~ return 0
+- else:
+    ~ c--
+    ~ return d10() + d10x(c)
+}
+
+=== function d12x(c) ===
+{c <= 0:
+    ~ return 0
+- else:
+    ~ c--
+    ~ return d12() + d12x(c)
+}
+
+=== function d20x(c) ===
+{c <= 0:
+    ~ return 0
+- else:
+    ~ c--
+    ~ return d20() + d20x(c)
+}
+
+=== function d100x(c) ===
+{c <= 0:
+    ~ return 0
+- else:
+    ~ c--
+    ~ return d100() + d100x(c)
+}
+
+
 
 === function log(text) ===
 <i>~~ {text} ~~</i>
