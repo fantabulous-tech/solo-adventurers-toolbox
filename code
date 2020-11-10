@@ -1,6 +1,8 @@
 
 
 === roll_dice_menu ===
+Roll Dice Menu
+
 + 1d4[] Result: {d4()}🎲
 + 1d6[] Result: {d6()}🎲
 + 1d8[] Result: {d8()}🎲
@@ -22,6 +24,17 @@
     - else: ~ return "Unknown Location"
 }
 
+
+=== function DisplaySummary() ===
+~ temp summary = "{stat_party_size} lvl{stat_level} PCs"
+
+{location:
+    ~ summary += ", {DisplayLocation()}"
+}
+
+~ summary += ", {DisplayWeatherSummary()}"
+
+~ return summary
 
 === edit_location ===
 

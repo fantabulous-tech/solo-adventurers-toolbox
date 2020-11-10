@@ -5,17 +5,18 @@
 ~ back_menu = -> urban_menu
 
 {urban_size == (): -> edit_urban_size ->}
+{population == (): -> edit_population ->}
 
-<b>{DisplayUrbanSize()} Menu<b> ({DisplayWeatherSummary()}) #CLEAR
+<b>{DisplayUrbanSize()} Menu</b> ({DisplaySummary()}) #CLEAR
 
 Shops: {urban_shops}
-+ [Roll for Encounter]
++ [Continue On]
     -> urban_encounter_check -> urban_menu
 
 + {urban_shops ? tavern}[Enter Tavern]
     -> create_tavern -> urban_menu
  
-+ [Leave]
++ [Leave {DisplayLocation()}]
 
 - -> main_menu
 
@@ -41,15 +42,15 @@ Encounters: {encounterTotal}
 
 Encounter \#{encounterCount}/{encounterTotal}
 
-+ [Determine on Urban Encounter Table]
-    -> urban_encounter_table ->
-+ [Determine on Story Event Table]
-    -> story_element_interaction_table ->
-+ [Surprise Me]
++ [Random]
     {shuffle:
         - -> wilderness_encounter_table ->
         - -> story_element_interaction_table ->
     }
++ [Determine on Urban Encounter Table]
+    -> urban_encounter_table ->
++ [Determine on Story Event Table]
+    -> story_element_interaction_table ->
 
 - {encounterCount >= encounterTotal: -> complete}
 + [Next] -> next_encounter
@@ -161,7 +162,7 @@ Current {DisplayUrbanSize()} Shops: {urban_shops}
 
 
 === edit_urban_size ===
-Current Urban Size: {DisplayUrbanSize()}
+{urban_size:Current Urban Size: {DisplayUrbanSize()}}
 What size is the urban area you are in?
 
 + [Random]
@@ -274,7 +275,9 @@ Current Urban Size: {DisplayUrbanSize()}
     - roll <= 17: A young urchin is in an alley, cornered by either thugs or stray dogs.
     - roll <= 18: Street is having a block party tomorrow and need help setting up.
     - roll <= 19: Someone sentenced to death: You happen across the hanging/beheading scene before it concludes, what do you do?
-    - roll <= 25: Monster: Level appropriate easy encounter.
+    - roll <= 25: Monster!
+        ~ encounter_difficulty = easy
+        -> create_encounter ->
     - roll <= 26: A con man is selling jewels and rare components that you might need.
     - roll <= 27: A chamber pot is emptied from above. Make a DC 13 dex save to avoid. If unsuccessful, you disadvantage all charisma and stealth related rolls until you have a bath and change clothes. (Optional: make a con save vs filth fever).
     - roll <= 28: A scrap of paper is pressed into your hand by a young man, who looks at you desperately before turning and running away. You turn over the note and read it. “Please help, he’s coming for us all!”
@@ -300,6 +303,8 @@ Current Urban Size: {DisplayUrbanSize()}
     - roll <= 48: You stop to listen to a talented storyteller relate a story about a famous adventurer and his beast companion. Part of the story is unresolved, however, and gets you thinking...
     - roll <= 49: You feel a thwack in the side of your head, and turn to see that a bunch of drunk young nobles are pelting passers by with rotten vegetables, laughing as they do so!
     - roll <= 55: Monster: Level appropriate medium encounter.
+        ~ encounter_difficulty = medium
+        -> create_encounter ->
     - roll <= 56: Your sharp eye spots a pickpocket deftly relieve a noblewoman of an expensive
     - roll <= 28: necklace.
     - roll <= 57: A wizard is carrying a bagful of potions when suddenly the bag rips (perhaps it catches on a nail sticking out of a building, or it catches on a passing cart) and several potions drop out and smash on the ground, exploding with various dramatic effects.
@@ -309,6 +314,8 @@ Current Urban Size: {DisplayUrbanSize()}
     - roll <= 65: Something occurs, or you find something, that requires a (roll d10), 1: animal handling check, 2: insight check, 3: survival check, 4: medicine check 5: perception check, 6: persuasion check, 7: performance check, 8: deception check, 9: inimidation check, 10: charisma check. Use Q/A roll or Story Element Interaction tables (chapter 14) to find out what.
     - roll <= 69: NPC met, who gives PC information about possible quest. Go to Chapter 7 and generate a quest, which you may or may not accept.
     - roll <= 75: Monster: Level-appropriate hard encounter. Monster on the loose, marauding through the streets.
+        ~ encounter_difficulty = hard
+        -> create_encounter ->
     - roll <= 76: You are stopped by the local guard who want to congratulate you on your recent successful quest. How do they know?
     - roll <= 77: PC hears a rumour about a job that a local priest might have. Apparently, or so the rumour goes, something is going on in the sacred catacombs beneath the streets.
     - roll <= 78: You pass a house which is all boarded up, the gates locked. A passerby informs you that this is the house of a local nobleman who hasn’t been seen in years.
@@ -332,6 +339,8 @@ Current Urban Size: {DisplayUrbanSize()}
         -> create_npc ->
         -> create_quest ->
     - roll <= 100: Monster: Level appropriate deadly encounter.
+        ~ encounter_difficulty = deadly
+        -> create_encounter ->
 }
 
 ->->

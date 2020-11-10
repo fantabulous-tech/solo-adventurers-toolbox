@@ -2,26 +2,43 @@
 
 === edit_settings ===
 <b> Edit Settings </b> #CLEAR
++ [Wilderness Settings] -> edit_wilderness_settings ->
++ [Dungeon Settings] -> edit_dungeon_settings ->
++ [Town/City Settings] -> edit_urban_settings ->
 + [Party Size ({stat_party_size})] -> edit_party_size ->
 + [Level ({stat_level})] -> edit_level ->
-+ [Terrain ({DisplayTerrain()})] -> edit_terrain ->
-+ [Season ({DisplaySeason()})] -> edit_season ->
-+ [Time ({DisplayTime()})] -> edit_time ->
-+ [Population Density ({DisplayPopulation()})] -> edit_population ->
-+ [Urban Size ({DisplayUrbanSize()})] -> edit_urban_size ->
-+ [Roll {urban_size == ():Shops|{DisplayUrbanSize()} Shops<br>} {urban_shops:({urban_shops})}]
-    {urban_size == (): -> edit_urban_size ->}
-    ~ RollShops()
-+ [Dungeon Size ({DisplayDungeonSize()})] -> edit_dungeon_size ->
-+ [Dungeon Type ({DisplayDungeonType()})] -> edit_dungeon_type ->
 + [Survival Bonus ({DisplayBonus(stat_survival_bonus)})] -> edit_survival ->
 + [Back] ->->
 
 - -> edit_settings
 
+= edit_wilderness_settings
++ [Terrain ({DisplayTerrain()})] -> edit_terrain ->
++ [Season ({DisplaySeason()})] -> edit_season ->
++ [Time ({DisplayTime()})] -> edit_time ->
++ [Population Density ({DisplayPopulation()})] -> edit_population ->
++ [Back] ->->
+- -> edit_wilderness_settings
+
+= edit_urban_settings
++ [Urban Size ({DisplayUrbanSize()})] -> edit_urban_size ->
++ [Roll {urban_size == ():Shops|{DisplayUrbanSize()} Shops<br>} {urban_shops:({urban_shops})}]
+    {urban_size == (): -> edit_urban_size ->}
+    ~ RollShops()
++ [Season ({DisplaySeason()})] -> edit_season ->
++ [Time ({DisplayTime()})] -> edit_time ->
++ [Population Density ({DisplayPopulation()})] -> edit_population ->
++ [Back] ->->
+- -> edit_urban_settings
+
+= edit_dungeon_settings
++ [Dungeon Size ({DisplayDungeonSize()})] -> edit_dungeon_size ->
++ [Dungeon Type ({DisplayDungeonType()})] -> edit_dungeon_type ->
++ [Back] ->->
+- -> edit_dungeon_settings
 
 === edit_time ===
-Current Time: {DisplayTime()}
+{time:Current Time: {DisplayTime()}}
 What time is it?
 
 + [Random]
@@ -29,9 +46,9 @@ What time is it?
         - ~ time = day
         - ~ time = night
     }
-+ [Day]
++ {time == night}[Switch to Day]
     ~ time = day
-+ [Night]
++ {time == day}[Switch to Night]
     ~ time = night
 + [Back] ->->
 

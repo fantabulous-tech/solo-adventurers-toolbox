@@ -24,10 +24,9 @@ Rumours: {rumours}
 - (next)
 ~ count++
 
-+ [Hear Next Rumour]
++ {count <= rumours}[Hear Next Rumour]
     Rumour \#{count}: 
-    -> create_rumour ->
-    {count < rumours: -> next}
+    -> create_rumour -> next
 
 + [Leave Tavern]
 
@@ -38,7 +37,6 @@ Who/What: <>
 {shuffle:
     - -> create_npc ->
     - -> create_creature ->
-    - -> create_place ->
 }
 
 Situations: 

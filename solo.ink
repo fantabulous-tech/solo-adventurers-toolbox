@@ -75,49 +75,53 @@ LIST time = (day), night
     ~log("Exiting ink debug.")
 }
 
-
 ~ season = LIST_RANDOM(LIST_ALL(season))
+~ terrain = LIST_RANDOM(LIST_ALL(terrain))
 
-
+-> roll_weather ->
 -> main_menu
 
 
+=== settings_menu ===
+
++ [Settings]
+    -> edit_settings -> back_menu
+
+
 === main_menu ===
-<b>Main Menu</b> #CLEAR
+<- menu
+<- settings_menu
+-> DONE
 
-~ back_menu = main_menu
+= menu
+<b>Main Menu</b> ({DisplaySummary()})#CLEAR
+~ back_menu = -> main_menu
 
-<- base_menu
-
-+ [Enter Wilderness] -> wilderness_menu -> main_menu
-+ [Enter New Dungeon]
++ [Enter Wilderness]
+    ~ terrain = ()
+    -> wilderness_menu -> main_menu
++ [Enter {dungeon_size:New }Dungeon]
     ~ ResetDungeon()
     -> dungeon_menu -> main_menu
 + {dungeon_size}[Enter Previous Dungeon]
     -> dungeon_menu -> main_menu
-+ [Enter Town/City] -> urban_menu -> main_menu
++ [Enter Town/City]
+    ~ urban_size = ()
+    -> urban_menu -> main_menu
 
-
-=== base_menu ===
-
-+ <b>[Settings]</b>
-    -> edit_settings -> main_menu
-
-+ <b>Roll Dice</b>
++ [Roll Dice]
     -> roll_dice_menu -> main_menu
 
-+ <b>Create</b>
++ [Create]
     -> create_menu -> main_menu
 
-+ Skill Check
++ [Skill Check]
     -> skill_check ->
     ~again = -> skill_check
 
-+ Yes/No Question
++ [Yes/No Question]
     -> yes_no_question ->
     ~again = -> yes_no_question
-
-
 
 - (sub_menu)
 + [Again] -> again -> sub_menu
@@ -127,22 +131,31 @@ LIST time = (day), night
 
 
 === create_menu ===
+<- menu
+<- settings_menu
+-> DONE
+
+= menu
 <b>Create Menu</b> #CLEAR
 ~ back_menu = -> create_menu
 
-+ Create Encounter 
-    -> create_encounter ->
-    ~ again = -> create_encounter
-    
-+ Create Monster
-    -> create_single_monster ->
-    ~ again = -> create_single_monster
-    
++ Create Town Stuff
+    ~ location = urban
+    -> create_town_menu -> create_menu
+
++ Create Wilderness Stuff
+    ~ location = wilderness
+    -> create_wilderness_menu -> create_menu
+
++ Create Dungeon Stuff
+    ~ location = dungeon
+    -> create_dungeon_menu -> create_menu
+
 + Create NPC
     -> create_npc ->
     ~ again = -> create_npc
     
-+ Create Adventurer
++ Create Adventurer NPC
     -> create_adventurer ->
     ~ again = -> create_adventurer
 
@@ -156,15 +169,6 @@ LIST time = (day), night
     -> roll_encounter ->
     ~ again = -> create_hoard
 
-+ Create Town Stuff
-    -> create_town_menu -> create_menu
-
-+ Create Wilderness Stuff
-    -> create_wilderness_menu -> create_menu
-
-+ Create Dungeon Stuff
-    -> create_dungeon_menu -> create_menu
-
 + [Back] -> back_menu
 
 - (sub_menu)
@@ -173,6 +177,19 @@ LIST time = (day), night
 
 
 === create_town_menu ===
+<- menu
+<- settings_menu
+-> DONE
+
+= menu
+
++ Create Encounter
+    -> create_encounter ->
+    ~ again = -> create_encounter
+    
++ Create Monster
+    -> create_single_monster ->
+    ~ again = -> create_single_monster
 
 + Create Tavern
     -> create_tavern ->
@@ -186,6 +203,19 @@ LIST time = (day), night
 
 
 === create_wilderness_menu ===
+<- menu
+<- settings_menu
+-> DONE
+
+= menu
+
++ Create Encounter
+    -> create_encounter ->
+    ~ again = -> create_encounter
+    
++ Create Monster
+    -> create_single_monster ->
+    ~ again = -> create_single_monster
 
 + Create Clue
     -> create_wilderness_clue ->
@@ -198,10 +228,6 @@ LIST time = (day), night
 + Create Creature
     -> create_creature ->
     ~ again = -> create_creature
-
-+ Create Monster
-    -> monster_by_terrain_table ->
-    ~ again = -> monster_by_terrain_table
 
 + Create Structure
     -> create_structure ->
@@ -224,3 +250,59 @@ LIST time = (day), night
 - (sub_menu)
 + [Again] -> again -> sub_menu
 + [Back] -> back_menu
+
+
+
+
+=== create_dungeon_menu ===
+<- menu
+<- settings_menu
+-> DONE
+
+= menu
+
++ Create Encounter
+    -> create_encounter ->
+    ~ again = -> create_encounter
+    
++ Create Monster
+    -> create_single_monster ->
+    ~ again = -> create_single_monster
+
++ Create Room
+    -> create_dungeon_room ->
+    ~ again = -> create_dungeon_room
+
++ Create Passage
+    -> create_dungeon_passage ->
+    ~ again = -> create_dungeon_passage
+
++ Create Stairs
+    -> create_dungeon_stairs ->
+    ~ again = -> create_dungeon_stairs
+
++ Create Door
+    -> create_dungeon_door ->
+    ~ again = -> create_dungeon_door
+
++ Create Secret Door
+    -> create_secret_door ->
+    ~ again = -> create_secret_door
+
++ Create Trap
+    -> create_trap ->
+    ~ again = -> create_trap
+
++ Create Clue
+    -> create_dungeon_clue ->
+    ~ again = -> create_dungeon_clue
+
++ [Back] -> back_menu
+
+- (sub_menu)
++ [Again] -> again -> sub_menu
++ [Back] -> back_menu
+
+
+
+

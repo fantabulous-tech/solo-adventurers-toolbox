@@ -7,7 +7,7 @@
     -> roll_encounter ->
 }
 
-Creating look for monster level {monster_level}:
+Creating loot for monster level {monster_level}:
 
 -> create_loot_by_cr(monster_level) ->->
 

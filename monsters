@@ -48,7 +48,7 @@
 {location == (): -> edit_location ->}
 {location == wilderness && terrain == (): -> edit_terrain ->}
 
-Creating {encounter_difficulty} encounter for {stat_party_size} lvl {stat_level} PCs in {DisplayLocation()}.
+// Creating {encounter_difficulty} encounter for {stat_party_size} lvl {stat_level} PCs in {DisplayLocation()}.
 -> roll_encounter -> display_enocunter ->->
 
 

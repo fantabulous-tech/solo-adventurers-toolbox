@@ -1,21 +1,4 @@
 
-
-== base_travel_menu ===
-
-+ [Change Terrain ({DisplayTerrain()})] -> edit_terrain ->
-    ~ population = ()
-    -> back_menu
-+ {time == day}[Change Time to Night]
-    ~ time = night
-    -> back_menu
-+ {time == night}[Change Time to Day]
-    ~ time = day
-    -> back_menu
-+ [Change Population Density ({DisplayPopulation()})] -> edit_population -> back_menu
-+ [Change Season ({DisplaySeason()})] -> edit_season -> back_menu
-
-
-
 === find_campsite_check ===
 
 {location == dungeon:

@@ -79,43 +79,6 @@ You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target
 
 
 
-=== create_dungeon_menu ===
-
-+ Create Room
-    -> create_dungeon_room ->
-    ~ again = -> create_dungeon_room
-
-+ Create Passage
-    -> create_dungeon_passage ->
-    ~ again = -> create_dungeon_passage
-
-+ Create Stairs
-    -> create_dungeon_stairs ->
-    ~ again = -> create_dungeon_stairs
-
-+ Create Door
-    -> create_dungeon_door ->
-    ~ again = -> create_dungeon_door
-
-+ Create Secret Door
-    -> create_secret_door ->
-    ~ again = -> create_secret_door
-
-+ Create Trap
-    -> create_trap ->
-    ~ again = -> create_trap
-
-+ Create Clue
-    -> create_dungeon_clue ->
-    ~ again = -> create_dungeon_clue
-
-+ [Back] -> back_menu
-
-- (sub_menu)
-+ [Again] -> again -> sub_menu
-+ [Back] -> back_menu
-
-
 === create_dungeon_passage ===
 ~ dungeon_passages_found++
 {DisplayDungeonSummary()} - Passage \#{dungeon_passages_found}
@@ -289,17 +252,32 @@ Room Contents: ({DisplayResult()}):<br><>
 // SD = Secret Door
 {
     - result <= 4 : Level appropriate Deadly Encounter (see Chapter 16). Loot 45%, Clue 75%. Roll DMG Loot table appropriate to encounter.
+        ~ encounter_difficulty = deadly
+        -> create_encounter ->
     - result <= 8 : Remnants / proof of the boss or BBEG. It looks as though they have been up to mischief in this room.
     - result <= 12: Low level minions of the BBEG in this room. Level appropriate easy encounter.
+        ~ encounter_difficulty = easy
+        -> create_encounter ->
     - result <= 20: Dungeon Hazard. 1: sinkhole, 2: fungus, 3: trap, 4: collapsing masonry or other natural hazard, 5: wandering monster, medium difficulty, 6: Player’s choice.
     - result <= 32: Level appropriate Hard Encounter (see Chapter 16). Clue, Loot, Random, SD all 30%.
+        ~ encounter_difficulty = hard
+        -> create_encounter ->
     - result <= 36: NPC in room investigating. Roll again to find out what they are investigating.
     - result <= 40: A previously triggered trap is in this room, with a level appropriate Hard Encounter enemy {P(30):caught in it and still alive|caught and killed by it}. {P(10):Loot.}
     - result <= 52: Level appropriate Easy Encounter (see Chapter 16) Loot 20%, SD 10%, Clue 30%
+        ~ encounter_difficulty = easy
+        -> create_encounter ->
     - result <= 56: Obstacle of some sort (e.g. rubble, crevasse, sinkhole, underground stream, wild magic field). Athletics or acrobatics check might be required to pass it, or it might be impassable. (Alterntively, roll on Obstacles Table, DMG p.297)
     - result <= 67: Level appropriate Medium Encounter (see Chapter 16) Loot 30%, SD 20%, Clue 30%
+        ~ encounter_difficulty = medium
+        -> create_encounter ->
     - result <= 71: NPC (enemy or ally of the PC) near death (1d4 levels less than you, minimum Level 1), unconscious, Level appropriate Hard Encounter. Enemy or enemies reduced to 50% hp. Loot 50%. A battle has obviously gone on here - the NPC has fought a powerful creature, and lost, but has damaged it somewhat.
     - result <= 74: Two level appropriate ([d4] 1-2: Easy, 3-4: Medium) creatures are engaged in battle with each other. You stumble in just as battle starts. How do you react? Hide and wait until a victor emerges? What are they fighting over? Since they are otherwise engaged, you have advantage on stealth checks to creep up. (DC is the creature’s passive perception)
+        ~ encounter_difficulty = medium
+        -> create_single_monster ->
+        vs.
+        -> create_single_monster ->
+
     - result <= 76: Deserted but for some strange runes and symbols on the floor. Magical? Perhaps.
     - result <= 80: Strong NPC (2d4 levels higher than your PC) has just defeated a Level Appropriate Deadly Encounter. Roll d4 to determine attitude. 1-2: They tell you to begone, they stake claim to this dungeon and all within it. Will fight if challenged. However, also will agree to split zup and going seperate ways, perhaps 3-4: Will team up with you for the remainder of this dungeon, and split the loot, and then will depart. (CR of all encounters from here on increases by 1d4). Random, SD, Trap all 30% Roll on NPC table, skipping professions and going straight to classes. NPC level is determined above.
     - result <= 84: Empty. Mission relevant loot chance 30%.

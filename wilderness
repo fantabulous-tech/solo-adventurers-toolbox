@@ -1,6 +1,11 @@
 
 
 === wilderness_menu ===
+<- menu
+<- settings_menu
+-> DONE
+
+= menu
 
 {terrain == (): -> edit_terrain ->}
 
@@ -8,9 +13,8 @@
 ~ back_menu = -> wilderness_menu
 
 
-<b>{DisplayTerrain()} Menu</b> ({DisplayWeatherSummary()}) #CLEAR
+<b>{DisplayTerrain()} Menu</b> ({DisplaySummary()}) #CLEAR
 
-<- base_travel_menu
 
 + [Continue On]
     -> travel_next -> wilderness_menu
@@ -28,6 +32,7 @@
 + [Camp for the Night]
     ~ time = night
     -> camping_menu -> wilderness_menu
+
 
 + [Back] -> main_menu
 
@@ -58,6 +63,8 @@
     - roll <= 90: Unmarked Settlement
     - roll <= 95: {~Structure|Monument|Interesting landscape feature}
     - else: Monster Lair
+        ~ encounter_difficulty = hard
+        -> create_single_monster ->
 }
 
 ->->
@@ -68,7 +75,7 @@
 
 ~ back_menu = -> camping_menu
 
-<b> {DisplayTerrain()} Camping Menu</b> ({DisplayWeatherSummary()})
+<b> {DisplayTerrain()} Camping Menu</b> ({DisplaySummary()})
     
 + Find Campsite Check
     -> find_campsite_check -> camping_menu
@@ -114,7 +121,7 @@ The weather in {DisplayTerrain()} is now "{current_weather}".
         }
     - autumn:
         {
-            - result <= 1: ~ current_weather = "Sleet/Blizzard"
+            - result <= 1: ~ current_weather = "Sleeting/Blizzard"
             - result <= 4: ~ current_weather = "Rainy"
             - result <= 8: ~ current_weather = "Light Rain"
             - result <= 11: ~ current_weather = "Overcast"
@@ -132,7 +139,7 @@ The weather in {DisplayTerrain()} is now "{current_weather}".
         }
     - spring:
         {
-            - result <= 1: ~ current_weather = "Sleet/Blizzard"
+            - result <= 1: ~ current_weather = "Sleeting/Blizzard"
             - result <= 4: ~ current_weather = "Rainy"
             - result <= 8: ~ current_weather = "Overcast"
             - result <= 11: ~ current_weather = "Clear"
@@ -314,15 +321,15 @@ Encounters: {encounterTotal}
 
 Encounter \#{encounterCount}/{encounterTotal}
 
-+ [Determine on Wilderness Table]
-    -> wilderness_encounter_table ->
-+ [Determine on Story Event Table]
-    -> story_element_interaction_table ->
-+ [Surprise Me]
++ [Random]
     {shuffle:
         - -> wilderness_encounter_table ->
         - -> story_element_interaction_table ->
     }
++ [Determine on Wilderness Table]
+    -> wilderness_encounter_table ->
++ [Determine on Story Event Table]
+    -> story_element_interaction_table ->
 
 - {encounterCount >= encounterTotal: -> complete}
 + [Next] -> next_encounter
@@ -453,7 +460,7 @@ Terrain is now {DisplayTerrain()}
 
 
 === edit_season ===
-Current Season: {DisplaySeason()}
+{season: Current Season: {DisplaySeason()}}
 What season is it?
 
 + [Random]
@@ -486,7 +493,7 @@ Current Season: {DisplaySeason()}
 
 
 === edit_population ===
-Current Population Density: {DisplayPopulation()}
+{population:Current Population Density: {DisplayPopulation()}}
 How dense is the population in {DisplayTerrain()}?
 
 + [Random]
@@ -552,12 +559,24 @@ How dense is the population in {DisplayTerrain()}?
     - Come across <> -> create_structure ->
     - Battle in progress
     - Carcass of a {~ -> create_creature ->|->create_single_monster ->}
-    - Monster - easy encounter
-    - Monster - easy encounter
-    - Monster - medium encounter
-    - Monster - medium encounter
-    - Monster - hard encounter
-    - Monster - deadly encounter
+    - Monster!
+        ~ encounter_difficulty = easy
+        -> create_encounter ->
+    - Monster!
+        ~ encounter_difficulty = easy
+        -> create_encounter ->
+    - Monster!
+        ~ encounter_difficulty = medium
+        -> create_encounter ->
+    - Monster!
+        ~ encounter_difficulty = medium
+        -> create_encounter ->
+    - Monster!
+        ~ encounter_difficulty = hard
+        -> create_encounter ->
+    - Monster!
+        ~ encounter_difficulty = deadly
+        -> create_encounter ->
     - Volcanic eruption
     - Plague (insect / vermin)
     - Interdimensional Rift
@@ -566,10 +585,12 @@ How dense is the population in {DisplayTerrain()}?
     - Appearance of Tyrant in the area
     - Savage raiding party
     - Marauding monster attacking village
+        ~ encounter_difficulty = deadly
+        -> create_single_monster ->
     - Undead awakening
-    - -> unmarked_settlement_table ->
-    - -> unmarked_settlement_table ->
-    - -> unmarked_settlement_table ->
+    - Unmarked settlement. -> unmarked_settlement_table ->
+    - Unmarked settlement. -> unmarked_settlement_table ->
+    - Unmarked settlement. -> unmarked_settlement_table ->
 }
 ->->
 
@@ -623,7 +644,9 @@ How dense is the population in {DisplayTerrain()}?
     - roll <= 57: A creepy and unsettling token/sign.
     - roll <= 58: Traveling merchant
     - roll <= 59: A traveling adventurer who is impressed and wants to join your party.
-    - roll <= 65: Monster Encounter: Level-appropriate medium encounter. Go to Chapter 16.
+    - roll <= 65: Monster Encounter!
+        ~ encounter_difficulty = medium
+        -> create_encounter ->
     - roll <= 66: A traveller, resting by the side of the road, begins pointing and laughing uproariously at you. Are they mad?
         -> create_npc ->
     - roll <= 67: Heavily-guarded transport passes.
@@ -647,7 +670,16 @@ How dense is the population in {DisplayTerrain()}?
     - roll <= 94: NPC appears with quest. (Use Chapter 7).
         -> create_npc ->
         -> create_quest ->
-    - roll <= 100: Monster! Level-appropriate {~hard|hard|hard|<i>deadly</i>} encounter.
+    - roll <= 100: Monster! Level-appropriate
+        ~ roll = d4()
+        {
+            - roll <= 3:
+                <> hard encounter.
+                ~ encounter_difficulty = hard
+            - else:
+                <> <i>deadly</i> encounter.
+        }
+        -> create_encounter ->
 }
 
 ->->
