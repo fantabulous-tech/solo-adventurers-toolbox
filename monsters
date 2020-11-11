@@ -44,7 +44,7 @@
 
 
 === create_encounter ===
-{encounter_difficulty == (): -> edit_monster_difficulty ->}
+{encounter_difficulty == (): -> edit_encounter_difficulty ->}
 {location == (): -> edit_location ->}
 {location == wilderness && terrain == (): -> edit_terrain ->}
 
@@ -78,7 +78,7 @@
 -> roll_encounter -> roll_monster(monster_level, 1) ->->
 
 
-=== edit_monster_difficulty ===
+=== edit_encounter_difficulty ===
 What difficulty is this encounter?
 
 + [Easy]

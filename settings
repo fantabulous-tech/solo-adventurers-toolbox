@@ -7,6 +7,7 @@
 + [Town/City Settings] -> edit_urban_settings ->
 + [Party Size ({stat_party_size})] -> edit_party_size ->
 + [Level ({stat_level})] -> edit_level ->
++ [Encounter Difficulty ({encounter_difficulty:{encounter_difficulty}|unset})] -> edit_encounter_difficulty ->
 + [Survival Bonus ({DisplayBonus(stat_survival_bonus)})] -> edit_survival ->
 + [Back] ->->
 
@@ -25,9 +26,7 @@
 + [Roll {urban_size == ():Shops|{DisplayUrbanSize()} Shops<br>} {urban_shops:({urban_shops})}]
     {urban_size == (): -> edit_urban_size ->}
     ~ RollShops()
-+ [Season ({DisplaySeason()})] -> edit_season ->
 + [Time ({DisplayTime()})] -> edit_time ->
-+ [Population Density ({DisplayPopulation()})] -> edit_population ->
 + [Back] ->->
 - -> edit_urban_settings
 

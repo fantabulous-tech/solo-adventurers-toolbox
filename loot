@@ -3,7 +3,7 @@
 
 === create_loot ===
 {monster_level == ():
-    -> edit_monster_difficulty ->
+    -> edit_encounter_difficulty ->
     -> roll_encounter ->
 }
 
@@ -14,7 +14,7 @@ Creating loot for monster level {monster_level}:
 
 === create_hoard ===
 {monster_level == ():
-    -> edit_monster_difficulty ->
+    -> edit_encounter_difficulty ->
     -> roll_encounter ->
 }
 

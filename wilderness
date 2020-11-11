@@ -18,6 +18,10 @@
 
 + [Continue On]
     -> travel_next -> wilderness_menu
+    
++ [Camp for the Night]
+    ~ time = night
+    -> camping_menu -> wilderness_menu
 
 + [Roll Weather (Currently {DisplayWeather()})]
     -> weather -> wilderness_menu
@@ -28,10 +32,6 @@
 + [Roll for Unmarked Settlement]
     -> unmarked_settlement_check ->
     ~again = -> unmarked_settlement_check
-    
-+ [Camp for the Night]
-    ~ time = night
-    -> camping_menu -> wilderness_menu
 
 
 + [Back] -> main_menu
@@ -43,9 +43,16 @@
 
 === travel_next ===
 
-// {terrain:
-//     - arctic: 
-// }
+{terrain:
+    - coastal: -> travel_coastal ->
+    - desert: -> travel_desert ->
+    - forest: -> travel_forest ->
+    - grass: -> travel_grass ->
+    - hill: -> travel_hills ->
+    - mountain: -> travel_mountains ->
+    - swamp: -> travel_swamp ->
+    - else: ~logError("Unsupported 'travel' terrain type: {terrain}")
+}
 
 ->->
 
@@ -54,15 +61,201 @@
 ~ roll = d100()
 
 {
-    - roll <= 60: Continuing arctic terrain 5 miles
-    - roll <= 65: Icy hills (roll hills and interpret… arctically). {d4()} m.
-    - roll <= 70: Small mountain range / foothills {d4()} m.
-    - roll <= 75: Waterway (probably frozen) {d4()} m.
-    - roll <= 80: Small Wood {d4()} m.
-    - roll <= 85: Rocky outcrop {d4()} m.
-    - roll <= 90: Unmarked Settlement
-    - roll <= 95: {~Structure|Monument|Interesting landscape feature}
+    - roll <= 60: Continuing aquatic terrain (5 m.)
+    - roll <= 65: Icy hills (roll hills and interpret… arctically). ({d4()} m.) -> create_hills ->
+    - roll <= 70: Small mountain range / foothills ({d4()} m.) -> create_mountains ->
+    - roll <= 75: Waterway (probably frozen) ({d4()} m.) -> create_waterway ->
+    - roll <= 80: Small Wood ({d4()} m.) -> create_woods ->
+    - roll <= 85: Rocky outcrop ({d4()} m.) -> create_outcrop ->
+    - roll <= 90: Unmarked Settlement: -> create_unmarked_settlement ->
+    - roll <= 95:
+        {shuffle:
+            - -> create_structure ->
+            - -> create_monument ->
+            - -> create_landscape_feature ->
+        }
     - else: Monster Lair
+        ~ encounter_difficulty = hard
+        -> create_single_monster ->
+}
+
+->->
+
+= travel_coastal
+
+~ roll = d100()
+
+{
+    - roll <= 60: Continuing coastal terrain (5 m.)
+    - roll <= 65: Hills / (with cliffs perhaps). ({d4()} m.) -> create_hills ->
+    - roll <= 70: Gully ({d4()} m.) -> create_gully ->
+    - roll <= 75: Waterway ({d4()} m.) -> create_waterway ->
+    - roll <= 80: Small Wood ({d4()} m.) -> create_woods ->
+    - roll <= 85: Rocky outcrop ({d4()} m.) -> create_outcrop ->
+    - roll <= 90: Unmarked Settlement: -> create_unmarked_settlement ->
+    - roll <= 95:
+        {shuffle:
+            - -> create_structure ->
+            - -> create_monument ->
+            - -> create_landscape_feature ->
+        }
+    - else: Monster Lair
+        ~ encounter_difficulty = hard
+        -> create_single_monster ->
+}
+
+->->
+
+= travel_desert
+
+~ roll = d100()
+
+{
+    - roll <= 70: Continuing desert (5 m.)
+    - roll <= 75: Oasis ({d4()} m.): -> create_oasis ->
+    - roll <= 80: Small mountain range (dry, no snow) ({d4()} m.) -> create_mountains ->
+    - roll <= 85: Rocky outcrop ({d4()} m.) -> create_outcrop ->
+    - roll <= 90: Unmarked Settlement: -> create_unmarked_settlement ->
+    - roll <= 95:
+        {shuffle:
+            - Structure: -> create_structure ->
+            - Monument: -> create_monument ->
+            - Interesting Feature: -> create_landscape_feature ->
+        }
+    - else: Monster Lair
+        ~ encounter_difficulty = hard
+        -> create_single_monster ->
+}
+
+->->
+
+= travel_forest
+
+~ roll = d100()
+
+{
+    - roll <= 52: Continuing forest 5 miles
+    - roll <= 56: Small clearing: -> create_clearing ->
+    - roll <= 60: Large clearing: -> create_clearing ->
+    - roll <= 64: Small wooded gully ({d4()} m.) -> create_gully ->
+    - roll <= 68: Large wooded gully ({d4()} m.) -> create_gully ->
+    - roll <= 72: Waterway ({d4()} m.) -> create_waterway ->
+    - roll <= 76: Lake ({d4()} m.) -> create_lake ->
+    - roll <= 80: Clearfelled area ({d4()} m.) -> create_clearfelled_area ->
+    - roll <= 84: Rocky outcrop ({d4()} m.) -> create_outcrop ->
+    - roll <= 88: Swamp ({d4()} m.) -> create_swamp ->
+    - roll <= 92: Unmarked Forest Settlement: -> create_unmarked_settlement ->
+    - roll <= 96:   
+        {shuffle:
+            - Structure: -> create_structure ->
+            - Monument: -> create_monument -> 
+            - Monster Lair:
+                ~ encounter_difficulty = hard
+                -> create_single_monster ->
+        }
+    - else: Interesting landscape feature: -> create_landscape_feature ->
+}
+
+->->
+
+= travel_grass
+
+~ roll = d100()
+
+{
+    - roll <= 56: Continuing grassland 5 miles
+    - roll <= 60: Hills ({d4()} m.) -> create_hills ->
+    - roll <= 64: Swamp ({d4()} m.) -> create_swamp ->
+    - roll <= 68: Gully ({d4()} m.) -> create_gully ->
+    - roll <= 72: Waterway ({d4()} m.) -> create_waterway ->
+    - roll <= 76: Lake ({d4()} m.) -> create_lake ->
+    - roll <= 80: Small Wood ({d4()} m.) -> create_woods ->
+    - roll <= 84: Rocky outcrop ({d4()} m.) -> create_outcrop ->
+    - roll <= 88: Small mountain range / Foothills ({d4()} m.) -> create_mountains ->
+    - roll <= 92: Unmarked Settlement: -> create_unmarked_settlement ->
+    - roll <= 96:
+        {shuffle:
+            - Structure: -> create_structure ->
+            - Monument: -> create_monument ->
+            - Interesting Feature: -> create_landscape_feature ->
+        }
+    - else: Monster Lair:
+        ~ encounter_difficulty = hard
+        -> create_single_monster ->
+}
+
+->->
+
+= travel_hills
+
+~ roll = d100()
+
+{
+    - roll <= 55: Continuing hills 5 miles
+    - roll <= 60: Gully ({d4()} m.) -> create_gully ->
+    - roll <= 65: Waterway ({d4()} m.) -> create_waterway ->
+    - roll <= 70: Lake ({d4()} m.) -> create_lake ->
+    - roll <= 75: Small Wood ({d4()} m.) -> create_woods ->
+    - roll <= 80: Rocky outcrop ({d4()} m.) -> create_outcrop ->
+    - roll <= 85: Small mountain range / Foothills ({d4()} m.) -> create_mountains ->
+    - roll <= 90: Unmarked Settlement: -> create_unmarked_settlement ->
+    - roll <= 95:
+        {shuffle:
+            - Structure: -> create_structure ->
+            - Monument: -> create_monument ->
+            - Interesting Feature: -> create_landscape_feature ->
+        }
+    - else: Monster Lair:
+        ~ encounter_difficulty = hard
+        -> create_single_monster ->
+}
+
+->->
+
+= travel_mountains
+
+~ roll = d100()
+
+{
+    - roll <= 55: Continuing mountains 5 m.
+    - roll <= 60: Gully ({d4()} m.) -> create_gully ->
+    - roll <= 65: Waterway ({d4()} m.) -> create_waterway ->
+    - roll <= 70: Lake ({d4()} m.) -> create_lake ->
+    - roll <= 75: Small Wood ({d4()} m.) -> create_woods ->
+    - roll <= 80: Rocky outcrop ({d4()} m.) -> create_outcrop ->
+    - roll <= 85: Small mountain range / Foothills ({d4()} m.) -> create_mountains ->
+    - roll <= 90: Unmarked Settlement: -> create_unmarked_settlement ->
+    - roll <= 95:
+        {shuffle:
+            - Structure: -> create_structure ->
+            - Monument: -> create_monument ->
+            - Interesting Feature: -> create_landscape_feature ->
+        }
+    - else: Monster Lair:
+        ~ encounter_difficulty = hard
+        -> create_single_monster ->
+}
+
+->->
+
+= travel_swamp
+
+~ roll = d100()
+
+{
+    - roll <= 51: Continuing swamp 5 m.
+    - roll <= 58: Waterway ({d4()} m.) -> create_waterway ->
+    - roll <= 65: Lake ({d4()} m.) -> create_lake ->
+    - roll <= 72: Small Wood ({d4()} m.) -> create_woods ->
+    - roll <= 79: Rocky outcrop ({d4()} m.) -> create_outcrop ->
+    - roll <= 86: Unmarked Settlement: -> create_unmarked_settlement ->
+    - roll <= 93:
+        {shuffle:
+            - Structure: -> create_structure ->
+            - Monument: -> create_monument ->
+            - Interesting Feature: -> create_landscape_feature ->
+        }
+    - else: Monster Lair:
         ~ encounter_difficulty = hard
         -> create_single_monster ->
 }
@@ -132,6 +325,229 @@ The weather in {DisplayTerrain()} is now "{current_weather}".
 
 
 
+=== create_clearfelled_area ===
+~ roll = d100()
+
+{
+    - roll <= 50: Clearfelled area Large section of forest removed for local industry
+    - roll <= 60: Army cutting down trees to build siege weapons. 40% human 50% army still there
+    - roll <= 70: This clear area is the result of a forest fire, not active clearfelling. DC 12 nature check to discern cause. Q/A rolls to determine cause.
+    - roll <= 80: Clearfelled area contains an unmarked settlement Roll on Unmarked Settlement Table.
+    - roll <= 90: Area being clearfelled presently. Workers are 70% human. Contracted by nearby large settlement. Q/A to find out more.
+    - roll <= 100: Area being clearfelled presently. Workers are 70% human. Timber will go to building new Unmarked Settlement Roll on Unmarked Settlement table. Workers camp nearby
+}
+
+->->
+
+
+
+=== create_clearing ===
+~ roll = d100()
+
+{
+    - roll <= 52: Natural clearing, devoid of trees Is something watching you from the trees? Q/A roll. Do you notice it?
+    - roll <= 58: Druid circle containing standing stones Q/A roll to see what you can discern. Clue 20%
+    - roll <= 65: Totems and other sinister symbols, possibly dark rituals take place here. Q/A rolls, medium encounter 10%. Clue 40%
+    - roll <= 71: Clearing contains a pond, watering hole for local wildlife Easy encounter(beast) 20%. If left alone it will probably just take a drink and leave.
+    - roll <= 77: Abandoned campsite. Q/A rolls, investigation rolls to find out more. Clue 50%
+    - roll <= 83: Active campsite Perception check, DC 8, to determine whether you hear the inhabitants before seeing them. 50% friendly.
+    - roll <= 89: Magic at work here - some sort of dimensional rift? Q/A rolls to see what’s happening here!
+    - roll <= 95: Structure present in the clearing. Roll on Structures table.
+    - roll <= 98: Treant meeting currently in progress Q/A / Charisma rolls to interact?
+    - else: Magical glade. A mage or some other magic user (or fey creatures) has a residence here. 50% friendly. Q/A rolls to determine interaction. Perhaps they have a quest for you!
+}
+
+->->
+
+
+=== create_gully ===
+~ roll = d100()
+
+{
+    - roll <= 50: Standard gully Characteristic of the overarching terrain
+    - roll <= 57: Gully with a waterway Roll on waterways table
+    - roll <= 64: Rocky gully containing caves 25% easy encounter. Q/A & investigation rolls to investigate caves. 15% chance they lead to tunnels. 10% NPC.
+    - roll <= 71: Gully that looks as if recently caused, Q/A / nature rolls to discern cause perhaps by an earthquake or other natural disaster… or by a huge creature perhaps!
+    - roll <= 78: Dry gully containing the bones of many animals. A graveyard of sorts Q/A nature rolls to find out more
+    - roll <= 85: Heavily wooded gully, an oasis for a particular colony of creatures Q/A nature rolls to find out more. Are they still here? 25% Easy encounter, 25% clue
+    - roll <= 92: Gully with evidence of mining - an abandoned mining operation Mines may lead quite far underground. Go to Random Dungeon Generator
+    - else: Magical wooded gully. A druid, or wizard, or Fey creatures lives here! Friendly 50%, Clue 50%
+}
+
+->->
+
+
+=== create_hills ===
+~ roll = d100()
+
+{
+    - roll <= 50: Low, rolling hills Covered with overarching terrain. In a forest, wooded hills. In grassland, grassy hills.
+    - roll <= 57: Rocky hills abundant with caves, may also possess a network of natural tunnels Q/A rolls to see whether tunnels are present and whether they are inhabited. Clue 25%
+    - roll <= 64: Slightly higher hills, giving a good view of the surrounding area Q/A roll to see whether you can see anything of interest. 10% NPC.
+    - roll <= 71: Sharply jutting, rocky hills, practically unscalable Athletics check to scale, DC 16. Fall damage if fail?
+    - roll <= 78: Dry, low plateau. Monument 25%
+    - roll <= 85: Slightly wooded hills, small patches of forest. Easy encounter 25%. Roll on Small wood minor feature table.
+    - roll <= 92: Not hills but barrows of some kind, possibly burial mounds! Q/A to determine nature of these mounds. May lead to tunnels.
+    - else: Hills are home to some sort of colony. 50% humanoid, otherwise some sort of burrowing beast. Q/A rolls to determine what lurks here.
+}
+
+->->
+
+
+=== create_landscape_feature ===
+~ roll = d100()
+
+{
+    - roll <= 1: Sinkhole
+    - roll <= 2: Crevasse caused by earthquake
+    - roll <= 3: Geiser / Hot Springs
+    - roll <= 4: Landslide
+    - roll <= 5: Waterfall
+    - roll <= 6: Cave Forest
+    - roll <= 7: Blowhole (if not coastal, roll again)
+    - roll <= 8: Volcano
+    - roll <= 9: Interesting rock formations (caused by lava flow?)
+    - roll <= 10: Madmade tunnel
+    - roll <= 11: Crater (meteor?)
+    - roll <= 12: Tar Pit
+    - roll <= 13: River source / spring / river going underground
+    - roll <= 14: Quicksand (Perception check to notice?)
+    - roll <= 15: Skull / facelike formation of rocks.
+    - roll <= 16: Creature-shaped rocks. Basilisk victim?
+    - roll <= 17: Petrified forest
+    - roll <= 18: A lone pillar with runes
+    - roll <= 19: Hanging tree, with noose
+    - roll <= 20: 1d4 cairns of stone, arranged symetrically
+}
+
+->->
+
+
+=== create_lake ===
+~ roll = d100()
+
+{
+    - roll <= 50 : Medium-sized lake, unmarked on map. Situated in {DisplayTerrain()}.
+    - roll <= 55 : Medium sized lake, small settlement somewhere on its shores.
+    - roll <= 60 : Smallish lake/pond/watering hole.
+    - roll <= 65 : Large, unmapped lake, with a waterway running out of it. Could be rideable in a canoe
+    - roll <= 70 : Medium sized lake, small settlement somewhere on its shores.
+    - roll <= 75 : Large, unmapped lake, with small mountain range by its shores
+    - roll <= 80 : Large lake with small woods on its shores
+    - roll <= 85 : Medium-sized lakes with many boats
+    - roll <= 90 : Small lake or pond, serves as a lair for some aquatic creature
+    - roll <= 95 : Medium-sized lake, fish jumping DC 15 Survival check to catch a fish.
+    - else: Sacred pool of some sort. Magical in nature.
+}
+
+->->
+
+=== create_monument ===
+
+~ roll = d100()
+
+{
+    - roll <= 1: Standing stones / Obelisks / Large stone carvings Q/A to discern more. Might have runes inscribed. 10% NPC.
+    - roll <= 2: Charcoal burning mound Q/A rolls to determine what is being burnt here? Orcs?
+    - roll <= 3: Tribal totem pole 25% easy encounter. Q/A to determine who is nearby, if anyone.
+    - roll <= 4: Small Shrine Q/A to determine god it is dedicated to, and also whether it is currently attended
+    - roll <= 5: Sign to show nearby settlements 50% chance at least one of them isn’t on the map. Clue 10%
+    - roll <= 6: Cliff face with carved faces of gods Q/A to determine god it is dedicated to, and also whether it is currently attended
+    - roll <= 7: Statue of ancient leader Q/A / History rolls to discern more
+    - roll <= 8: Statue of famous adventurer Anything hidden here?
+    - roll <= 9: Significant / tribally important tree or other natural feature. 70% guarded by tribespeople / barbarians
+    - roll <= 10: Ancient Stone Pillars Part of ruins? Q/A / History rolls to discern more
+    - roll <= 11: Ruined stone walls Q/A / History rolls to discern more
+    - roll <= 12: Altar / Pedestal Sacrificial? 50% stained with blood.
+    - roll <= 13: Large, scattered boulders of interesting shapes Q/A / Nature rolls to discern more
+    - roll <= 14: Single tomb of notable identity 25% already looted
+    - roll <= 15: Mountain of bones Q/A / Nature rolls to discern more. Clue 25%
+    - roll <= 16: Ancient battlefield, with monument in remembrance of the dead Q/A / History rolls to discern more. Clue 25%
+    - roll <= 17: Burnt down building Clue 50%
+    - roll <= 18: Termite or other insect mound Nature check to discern more. 50% easy encounter (with some insect like being perhaps?)
+    - roll <= 19: Ley lines Q/A to discern more, like who drew them here and how long ago?
+    - roll <= 20: A lone archway in the middle of nowhere! Portal?
+}
+
+->->
+
+
+=== create_oasis ===
+~ roll = d100()
+
+{
+    - roll <= 46 : Oasis with pool of refreshing water at its centre. Ideal campsite Good place for a long rest, especially in a desert
+    - roll <= 52 : On reaching it, you discover it is a mirage. Just deserts.
+    - roll <= 58 : Oasis with pool but water is… not quite right. 30% poisoned, or something else. 50% favourable effect. Q/A rolls / Nature check to discern more
+    - roll <= 64 : Oasis contains a travelling caravan of desert merchants 90% friendly. Are you able to approach with stealth so they don’t notice you?
+    - roll <= 70 : Oasis contains a large camp of desert nomads. 50% friendly. Are you able to approach with stealth so they don’t notice you?
+    - roll <= 76 : Oasis contains a shrine or temple of some sort Q/A / Investigation roll to find out more.
+    - roll <= 82 : Oasis contains a ruin of some sort Q/A / Investigation roll to find out more.
+    - roll <= 88 : Oasis with bandits / raiders / other adventurers using it as a stopoff point 50% friendly. Are you able to approach with stealth so they don’t notice you?
+    - roll <= 94 : Oasis with a waypoint / fresh horses / supplies Restock on some basics! Q/A roll to discern more.
+    - roll <= 100: Some sort of magical barrier here... it could only be described as a Wonderwall. Q/A rolls / Arcana check to discern nature of barrier.
+}
+
+->->
+
+
+=== create_outcrop ===
+~ roll = d100()
+
+{
+    - roll <= 52: Rocky outcrop Protruding above overarching terrain.
+    - roll <= 58: Outcrop serves as a vantage point for humanoid scouts DC 14 perception roll to see if your PC notices. Q/A to discern more.
+    - roll <= 65: Small wood atop this outrcrop Roll on Small Wood table
+    - roll <= 71: If scaled, PC might find a structure or monument on top of this feature 50% structure, 50% monument
+    - roll <= 77: Rocky outcrop is actually an island in the middle of a lake Roll on Lake Table
+    - roll <= 83: Rocky outcrop is actually an assortment of large boulders scattered around. Q/A to determine more. How did they get here? 50% medium encounter (possibly with surprise vs you)
+    - roll <= 89: Interesting formation of standing stones atop the outcrop. DC 12 Survival check to scale this feature and investigate further
+    - roll <= 95: An NPC stands atop this outcrop and is calling out to you, beckoning you to join them up there Q/A to discern more.
+    - else: Outcrop has been fashioned into the face or form of a well-known god. 50% worshippers present. Shrine atop the outcrop? Q/A to discern more.
+}
+
+->->
+
+
+=== create_mountains ===
+~ roll = d100()
+
+{
+    - roll <= 55: Standard small mountain range, mostly uniform size, no huge peaks Will have snow if it is winter or near to winter. DC 16 Survival roll to scale (climbing gear also required)
+    - roll <= 60: Small mountain range with some large peaks As above
+    - roll <= 65: Small mountain range that appears to possess a large amount of caves Caves might lead to tunnels / dungeons
+    - roll <= 70: Mountain range appears to be home to a colony / settlement of some kind. Dwarven? Some kind of mountain dwelling creature. Roll on Unmarked Settlement table.
+    - roll <= 75: Small mountain range covered by forest. Roll on Small Wood Table.
+    - roll <= 80: Small mountain range, rugged and dangerous, partially wooded. Giant eagles and the like. Hard encounter 50%
+    - roll <= 85: Bandits / Raiders using these mountains as a hideout. But does your PC know? Perception DC 18 to discern. Hard encounter 70%
+    - roll <= 90: Small mountain range by lake. Roll on Lake Table.
+    - roll <= 95: Small mountain range with colony of Giants (or Q/A rolls to find out more perhaps other humanoids)!
+    - else: Small mountain range containing a (Roll d8) 1: monastery, 2: wizard tower, 3: hidden town, 4: community of druids, 5: secret dwarven kingdom, 6: secret gnomish kingdom, 7: citadel for an assassin’s order, 8: Whatever takes your fancy! Q/A rolls to determine more
+}
+
+->->
+
+
+=== create_woods ===
+~ roll = d100()
+
+{
+    - roll <= 55: Standard type of wood for this area
+    - roll <= 60: Trees dead, as if by some mysterious disease. Use Q/A rolls to see if you can determine the nature of the affliction
+    - roll <= 65: Ancient wood, twisted, gnarled trees. Clue 25%
+    - roll <= 70: Serene, Sylvan wood Q/A rolls to check for signs of life
+    - roll <= 75: Dark, thick wood, full of menace Hard encounter 20%
+    - roll <= 80: Wood which is in the process of being clearfelled for timber Q/A rolls to determine who is clearfelling and why
+    - roll <= 85: Wood which has been ravaged by forest fire Q/A rolls to determine cause of fire
+    - roll <= 90: Wood in which a band of raiding humanoids is currently hiding Clue 50%. Medium encounter 35%
+    - roll <= 95: Wood containing a clearing containing totem / standing stones Medium encounter 25%, Clue 10%
+    - else: Wood inhabited by humanoid settlement such as elves, gnomes, halflings Q/A rolls to determine whether you meet them
+}
+
+->->
+
+
+
 === create_structure ===
 ~ roll = d100()
 
@@ -146,19 +562,45 @@ The weather in {DisplayTerrain()} is now "{current_weather}".
     - roll <= 32: Farm House ({P(80):inhabited{P(5): and under attack!}|deserted}) 
     - roll <= 36: Fence (Q/A roll/nature roll to determine purpose)
     - roll <= 40: Windmill
-    - roll <= 44: Watermill ({GetWaterway()})
+    - roll <= 44: Watermill (<>
+        -> create_waterway ->
+        <>)
     - roll <= 48: Old Well {P(50):({~hidden cave|tunnel at bottom}{P(30): with clue})|{P(30):(clue)}}
     - roll <= 52: Hermit {~Hut|Cave} ({P(70):inhabited|deserted}{P(40): with clue})
     - roll <= 56: Lone {~Tavern|Inn} ({P(90):inhabited|abandoned}, Q/A to discern more)
-    - roll <= 60: {~Hunting Cabin|Fishing Hut on {{GetWaterway()}|{GetLake()}}} ({P(25):inhabited|empty}, Q/A to determine if it has supplies)
+    - roll <= 60:
+    
+        {shuffle:
+            - Hunting Cabin
+            - Fishing Hug on {~-> create_lake ->|-> create_waterway ->}
+        }
+        <> ({P(25):inhabited|empty}, Q/A to determine if it has supplies)
     - roll <= 64: {Hideout|Bunker} (DC 16 to notice, advantage if in familiar terrain)
     - roll <= 68: Waypoint ({P(75):friendly|neutral}, stopoff for couriers/horse trader, Q/A to discern more)
     - roll <= 72: Training Camp (Q/A to discern more)
-    - roll <= 76: {~Small|Small|Medium|Large} Bridge (over {GetWaterway()})
-    - roll <= 80: Medium Bridge (over {GetWaterway()})
-    - roll <= 84: Large Bridge (over {GetWaterway()})
+    - roll <= 76: {~Small|Small|Medium|Large} Bridge (over <>
+        -> create_waterway ->
+        <>)
+    - roll <= 80: Medium Bridge (over <>
+        -> create_waterway ->
+        <>)
+    - roll <= 84: Large Bridge (over <>
+        -> create_waterway ->
+        <>)
     - roll <= 88: Large {~Castle|Keep} ({P(20):monster-}inhabited)
-    - roll <= 92: Ruins ({P(10):deadly encounter|{P(50):hard encounter|normalencounter}}{P(60): with clue})
+    - roll <= 92:
+        Ruins (<>
+        {
+            - P(10): deadly encounter
+                ~ encounter_difficulty = deadly
+            - P(50): hard encounter
+                ~ encounter_difficulty = hard
+            - else: normal encounter
+                ~ encounter_difficulty = medium
+        }
+        {P(60):<> with clue}
+        <>)
+        -> create_encounter ->
     - roll <= 96: {~Burial Mounds|Barrows} (What lies beneath? Q/A to discern more.)
     - else: Wizard Tower (inhabited, {P(60):friendly|hostile})
 }
@@ -166,39 +608,80 @@ The weather in {DisplayTerrain()} is now "{current_weather}".
 ->->
 
 
-=== function GetWaterway() ===
+=== create_swamp ===
 ~ roll = d100()
 
 {
-    - roll <= 50: ~ return "Stream /river running through {P(15):with waterfall nearby}."
-    - roll <= 55: ~ return "Slightly larger river, might be difficult to ford."
-    - roll <= 60: ~ return "A man-made waterway of some sort, irrigation channel perhaps?"
-    - roll <= 65: ~ return "Deep but narrow stream. You see something float by! Dex check to grab it."
-    - roll <= 70: ~ return "Large, unmapped river. Could be rideable in canoe."
-    - roll <= 75: ~ return "Sizable river with pond areas. Probably quite good for fishing or swimming."
-    - roll <= 80: ~ return "Sizable, unmapped river, spanned by bridge."
-    - roll <= 85: ~ return "Meandering river with pier where small boats are tied up. Ferryman?"
-    - roll <= 90: ~ return "This appears to be a drainage channel for a nearby settlement."
-    - roll <= 95: ~ return "Humanoids or fey (elves? dryads?) frolicking in the water."
-    - else: ~ return "Shallow brook... what’s that you see there amongst the pebbles?"
+    - roll <= 50: Standard swamp Difficult terrain (half movement) 25% easy encounter
+    - roll <= 57: Thick, dense swamp, almost impossible to traverse, extending in all directions forward. Extremely difficult terrain, movement slowed to quarter of normal.
+    - roll <= 64: Patchy swamp with dry areas. Perfect area for bandits or raiders to have a camp. Hard encounter 50%. Clue 30%
+    - roll <= 71: Wetland containing many ponds and a network of waterways. May need a small boat to traverse. Survival check, DC 19, to craft a small kayak. Otherwise, might need to go around, adding travel time.
+    - roll <= 78: Dark, eerie swamp, with an eldritch aura Something evil hides in here… Q/A rolls to determine what! Clue 10%
+    - roll <= 85: A land forgotten by time! Ancient swamp, small part of a more primeval wilderness that was here before Hard encounter 50%
+    - roll <= 92: Fey Oasis 50% encounter with fey. Wisdom check (DC 16) or you get totally turned around, lost.
+    - else: Swamp inhabited by humanoids who wish to remain hidden from the world. Q/A rolls to determine whether you meet them.
 }
 
-=== function GetLake() ===
+->->
+
+
+=== create_unmarked_settlement ===
+{shuffle:
+    - {~Large Camp|Caravan} ({P(25):abandoned|pop:{d20()}})
+    - Cottage (pop:{d10()})
+    - Large Encampment (pop:{RANDOM(50,100)})
+    - Hamlet (pop:{RANDOM(50,150)})
+    - Work Crew (pop:{RANDOM(50,200)})
+    - Stationed Garrison (pop:{RANDOM(100,300)})
+    - Fort (pop:{RANDOM(200,400)})
+    - Village (pop:{RANDOM(300,1000)})
+    - Encamped Army (pop:{RANDOM(1000,3000)})
+    - Refugee Encampment (pop:{RANDOM(500,5000)})
+}
+
+- ->->
+
+
+=== create_waterway ===
 ~ roll = d100()
 
 {
-    - roll <= 50 : ~ return "Medium-sized lake, unmarked on map. Situated in {DisplayTerrain()}."
-    - roll <= 55 : ~ return "Medium sized lake, small settlement somewhere on its shores."
-    - roll <= 60 : ~ return "Smallish lake/pond/watering hole."
-    - roll <= 65 : ~ return "Large, unmapped lake, with a waterway running out of it. Could be rideable in a canoe"
-    - roll <= 70 : ~ return "Medium sized lake, small settlement somewhere on its shores."
-    - roll <= 75 : ~ return "Large, unmapped lake, with small mountain range by its shores"
-    - roll <= 80 : ~ return "Large lake with small woods on its shores"
-    - roll <= 85 : ~ return "Medium-sized lakes with many boats"
-    - roll <= 90 : ~ return "Small lake or pond, serves as a lair for some aquatic creature"
-    - roll <= 95 : ~ return "Medium-sized lake, fish jumping DC 15 Survival check to catch a fish."
-    - else: ~ return "Sacred pool of some sort. Magical in nature."
+    - roll <= 50: Stream/river running through{P(15): with waterfall nearby}.
+    - roll <= 55: Slightly larger river, might be difficult to ford.
+    - roll <= 60: A man-made waterway of some sort, irrigation channel perhaps?
+    - roll <= 65: Deep but narrow stream. You see something float by! Dex check to grab it.
+    - roll <= 70: Large, unmapped river. Could be rideable in canoe.
+    - roll <= 75: Sizable river with pond areas. Probably quite good for fishing or swimming.
+    - roll <= 80: Sizable, unmapped river, spanned by bridge.
+    - roll <= 85: Meandering river with pier where small boats are tied up. Ferryman?
+    - roll <= 90: This appears to be a drainage channel for a nearby settlement.
+    - roll <= 95: Humanoids or fey (elves? dryads?) frolicking in the water.
+    - else: Shallow brook... what’s that you see there amongst the pebbles?
 }
+
+->->
+
+=== create_discovery ===
+~ roll = d100()
+
+{
+    - roll <= 26: This area contains more proof of the rumours / leads you are investigating. Roll once on Clue Table (this chapter), or on Chapter 14 tables, then roll again on this table.
+    - roll <= 53: You find the beast / monster / cause of the problem you have been looking for. Roll d6. 1-3: Medium Encounter. 4-5: Hard Encounter. 6: Deadly Encounter. (Use Chapter 16). 50% chance you haven’t been noticed. On a successful stealth roll (DC=Creature’s passive perception), attack with surprise.
+    - roll <= 80: You find the beast / monster / cause of the problem you have been looking for, and an associated structure or dwelling, such as a lair or ruins that they inhabit. (You could go to Chapter 8: Dungeon Generation from here) When you find them, roll d6. 1-3: Medium Encounter. 4-5: Hard Encounter. 6: Deadly Encounter. (Use Chapter 16).
+    - roll <= 82: You find a lair or dwelling, but it appears currently uninhabited. Perhaps the creature you seek is away causing mischief right now!
+    - roll <= 84: Stealth check from all your PCs. If one check is lower than 14, then the creature has noticed your PCs’ arrival and is stalking them, preparing an attack. They will probably be surprised!
+    - roll <= 86: This area is not what it was rumoured to be. Make a d100 rolls. If it is 25 or below, roll on the Wilderness Encounter Table. After resolving the encounter, continue exploring the area and make an investigation check, DC 15. If successful, roll again on this table. If unsuccessful, make another d100 roll (as above)
+    - roll <= 88: You find another party of adventurers investigating the same rumours / leads you are investigating. They are (d4) 1: Hostile, 2-4: Friendly. There are 1d4 members in the party. Roll on NPC tables (skip professions and roll on class tables instead) to determine who they are, then roll again on this table.
+    - roll <= 90: You find a dead party of 1d4 adventurers (use NPC tables if you wish). They have been hacked / maimed savagely, and it appears all their weapons and belongings have been stolen.
+    - roll <= 92: You find a dead party of 1d4 adventurers (use NPC tables if you wish).
+    - roll <= 94: You meet an NPC, who gives you details of another, far more important quest related to this one. Go to Chapter 7: Quest Generation to find out what it is.
+    - roll <= 96: You discover that the creature or target you seek has discovered that something is tracking them, and has departed the area. You could pursue (further rolls on Wilderness generation tables, above), or you could declare the matter solved (10% chance they return once you are gone).
+    - roll <= 98: A mysterious NPC, a lone adventurer, is present here, and has resolved the issue. They give proof too (carcass / spoils of completed quest). They tell you that you may claim the fame of completing this, as long as you accompany them.
+    - roll <= 99: The target or creature you already seek is dead (possibly by another party of adventurers, who you may meet nearby), but on investigation you discover that the creature did not deserve to die and were probably innocent or were just minding their own business. Whoever gave you these rumours or set you on this quest is either deluded, or else deliberately deceiving you for some reason.
+    - else: The rumour turns out to be some sort of devious trap to lure your PCs into an ambush! Level appropriate deadly encounter.
+}
+
+->->
 
 === unmarked_settlement_check ===
 {population == (): -> edit_population ->}
@@ -254,7 +737,7 @@ Based on {DisplayPopulation()} Population Density, each d100 check has a {diffic
 
 - (add_settlement)
 ~ count++
--> unmarked_settlement_table ->
+-> create_unmarked_settlement ->
 
 {count < total:
     -> add_settlement
@@ -262,23 +745,6 @@ Based on {DisplayPopulation()} Population Density, each d100 check has a {diffic
 
 - 
 ->->
-
-
-=== unmarked_settlement_table ===
-{shuffle:
-    - {~Large Camp|Caravan} ({P(25):abandoned|pop:{d20()}})
-    - Cottage (pop:{d10()})
-    - Large Encampment (pop:{RANDOM(50,100)})
-    - Hamlet (pop:{RANDOM(50,150)})
-    - Work Crew (pop:{RANDOM(50,200)})
-    - Stationed Garrison (pop:{RANDOM(100,300)})
-    - Fort (pop:{RANDOM(200,400)})
-    - Village (pop:{RANDOM(300,1000)})
-    - Encamped Army (pop:{RANDOM(1000,3000)})
-    - Refugee Encampment (pop:{RANDOM(500,5000)})
-}
-
-- ->->
 
 
 === wilderness_encounter_check ===
@@ -535,7 +1001,7 @@ How dense is the population in {DisplayTerrain()}?
     - Massed Animals -> create_creature ->
     - Toll demanded
     - Distressed -> create_npc ->
-    - Besieged settlement -> unmarked_settlement_table ->
+    - Besieged settlement -> create_unmarked_settlement ->
     - Come across <> -> create_structure ->
     - Battle in progress
     - Carcass of a {~ -> create_creature ->|->create_single_monster ->}
@@ -568,9 +1034,9 @@ How dense is the population in {DisplayTerrain()}?
         ~ encounter_difficulty = deadly
         -> create_single_monster ->
     - Undead awakening
-    - Unmarked settlement. -> unmarked_settlement_table ->
-    - Unmarked settlement. -> unmarked_settlement_table ->
-    - Unmarked settlement. -> unmarked_settlement_table ->
+    - Unmarked settlement. -> create_unmarked_settlement ->
+    - Unmarked settlement. -> create_unmarked_settlement ->
+    - Unmarked settlement. -> create_unmarked_settlement ->
 }
 ->->
 

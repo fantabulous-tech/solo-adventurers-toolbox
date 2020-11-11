@@ -85,7 +85,7 @@ LIST time = (day), night
 === settings_menu ===
 
 + [Settings]
-    -> edit_settings -> back_menu
+    -> edit_settings ->->
 
 
 === main_menu ===
@@ -169,11 +169,11 @@ LIST time = (day), night
     -> roll_encounter ->
     ~ again = -> create_hoard
 
-+ [Back] -> back_menu
++ [Back] ->->
 
 - (sub_menu)
 + [Again] -> again -> sub_menu
-+ [Back] -> back_menu
++ [Back] -> create_menu
 
 
 === create_town_menu ===
@@ -234,8 +234,8 @@ LIST time = (day), night
     ~ again = -> create_structure
 
 + Create Unmarked Settlement
-    -> unmarked_settlement_table ->
-    ~ again = -> unmarked_settlement_table
+    -> create_unmarked_settlement ->
+    ~ again = -> create_unmarked_settlement
 
 + Create Wilderness Encounter
     -> wilderness_encounter_table ->
@@ -244,6 +244,10 @@ LIST time = (day), night
 + Create Story Event
     -> story_element_interaction_table ->
     ~ again = -> story_element_interaction_table
+    
++ Create Oasis
+    -> create_oasis ->
+    ~ again = -> create_oasis
 
 + [Back] -> back_menu
 
