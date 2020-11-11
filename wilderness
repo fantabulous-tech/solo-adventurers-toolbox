@@ -15,9 +15,10 @@
 
 <b>{DisplayTerrain()} Menu</b> ({DisplaySummary()}) #CLEAR
 
+- (continue)
 
 + [Continue On]
-    -> travel_next -> wilderness_menu
+    -> travel_next -> wilderness_menu.continue
     
 + [Camp for the Night]
     ~ time = night
