@@ -260,6 +260,7 @@ LIST time = (day), night
 -> DONE
 
 = menu
+<b>Dungeon Create Menu</b>
 
 + Create Encounter
     -> create_encounter ->

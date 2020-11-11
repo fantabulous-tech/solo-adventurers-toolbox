@@ -5,12 +5,11 @@
 ~ back_menu = -> urban_menu
 
 {urban_size == (): -> edit_urban_size ->}
-{population == (): -> edit_population ->}
 
 <b>{DisplayUrbanSize()} Menu</b> ({DisplaySummary()}) #CLEAR
 
 Shops: {urban_shops}
-+ [Continue On]
++ [Explore {DisplayUrbanSize()}]
     -> urban_encounter_check -> urban_menu
 
 + {urban_shops ? tavern}[Enter Tavern]
@@ -27,7 +26,7 @@ Shops: {urban_shops}
 
 ~ total = GetUrbanEncounterCheckCount()
 
-Based on {DisplayPopulation()} population and traveling through the {DisplayUrbanSize()} during the {DisplayTime()}, we will check {total} times.
+Since you are exploring a {DisplayUrbanSize()} during the {DisplayTime()}, we will check {total} times.
 
 -> RollD100Checks(total,25,0) ->
 
@@ -72,7 +71,7 @@ Encounter \#{encounterCount}/{encounterTotal}
     - urb_city: ~ checkCount = 3
     - urb_metropolis: ~ checkCount = 3
     - else:
-        ~logError("Unrecognized population. Assuming 'medium'.")
+        ~logError("Unrecognized urban area. Assuming 'village'.")
         ~ checkCount = 2
 }
 

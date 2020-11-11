@@ -69,26 +69,6 @@
 
 ->->
 
-=== camping_menu ===
-
-{terrain == (): -> edit_terrain ->}
-
-~ back_menu = -> camping_menu
-
-<b> {DisplayTerrain()} Camping Menu</b> ({DisplaySummary()})
-    
-+ Find Campsite Check
-    -> find_campsite_check -> camping_menu
-    ~again = -> find_campsite_check
-
-+ Disturbances While Camping Check
-    -> disturbance_while_camping_check -> camping_menu
-    ~again = -> disturbance_while_camping_check
-
-+ [Back]
-
-- ->->
-
 === weather ===
 -> roll_weather ->
 The weather in {DisplayTerrain()} is now "{current_weather}".

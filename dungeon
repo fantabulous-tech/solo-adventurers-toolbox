@@ -37,45 +37,53 @@ You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target
     - ~ dungeon_rooms++
 }
 
--> menu
+~ back_menu = -> explore_menu
+-> explore_menu
 
+= explore_menu
+
+<- menu
+<- settings_menu
+-> DONE
 
 = menu
 
+<b>Dungeon Menu</b> ({DisplaySummary()})
+
 + {dungeon_clues}[Look at Dungeon Clue (x{dungeon_clues})]
     ~ dungeon_clues--
-    -> create_dungeon_clue -> menu
+    -> create_dungeon_clue ->
 + {dungeon_traps}[Look at Trap (x{dungeon_traps})]
     ~ dungeon_traps--
-    -> create_trap -> menu
+    -> create_trap ->
 + {dungeon_doors}[Look at Door (x{dungeon_doors})]
     ~ dungeon_doors--
-    -> create_dungeon_door -> menu
+    -> create_dungeon_door ->
 + {dungeon_secret_doors}[Look at Secret Door (x{dungeon_secret_doors})]
     ~ dungeon_secret_doors--
-    -> create_secret_door -> menu
+    -> create_secret_door ->
 + {dungeon_stairs}[Take Stairs (x{dungeon_stairs})]
     ~ dungeon_stairs--
-    -> create_dungeon_stairs -> menu
+    -> create_dungeon_stairs ->
 + {dungeon_passages}[Take Passage (x{dungeon_passages})]
     ~ dungeon_passages--
-    -> create_dungeon_passage -> menu
+    -> create_dungeon_passage ->
 + {dungeon_room_found < dungeon_room_total && dungeon_rooms}[Enter Room (x{dungeon_rooms})]
     ~ dungeon_rooms--
-    -> create_dungeon_room -> menu
+    -> create_dungeon_room ->
 
-+ Find Place to Camp
-    -> camping_menu -> menu
++ [Find Place to Camp]
+    -> camping_menu ->
 
-+ Yes/No Question
-    -> yes_no_question -> menu
++ [Yes/No Question]
+    -> yes_no_question ->
 
-+ Create Other
-    -> create_dungeon_menu -> menu
++ [Create Other]
+    -> create_dungeon_menu ->
 
-+ [Exit Dungeon]
++ [Exit Dungeon] ->->
 
-- ->->
+- -> explore_menu
 
 
 

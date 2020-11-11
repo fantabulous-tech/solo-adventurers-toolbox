@@ -19,7 +19,7 @@ Roll Dice Menu
 
 {location:
     - wilderness: ~ return DisplayTerrain()
-    - dungeon: ~ return DisplayDungeonType()
+    - dungeon: ~ return DisplayDungeonSummary()
     - urban: ~ return DisplayUrbanSize()
     - else: ~ return "Unknown Location"
 }
@@ -32,8 +32,9 @@ Roll Dice Menu
     ~ summary += ", {DisplayLocation()}"
 }
 
-~ summary += ", {DisplayWeatherSummary()}"
-
+{location != dungeon:
+    ~ summary += ", {DisplayWeatherSummary()}"
+}
 ~ return summary
 
 === edit_location ===
@@ -115,8 +116,8 @@ There is some other condition that needs to be fulfilled for the thing to happen
 + A Certainty (+6)
     ~ bonus = 6
     
-- 
-+ [Roll 1d20]
+// - 
+// + [Roll 1d20]
 
 - Rolling 1d20...
 ~ roll = d20()
