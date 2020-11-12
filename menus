@@ -19,7 +19,7 @@
 + [Enter {dungeon_size:New }Dungeon]
     ~ ResetDungeon()
     -> dungeon_menu -> main_menu
-+ {dungeon_size}[Enter Previous Dungeon]
++ {dungeon_size}[Enter Current Dungeon]
     -> dungeon_menu -> main_menu
 + [Enter Town/City]
     ~ urban_size = ()

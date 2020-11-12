@@ -28,7 +28,7 @@
 
 
 === function DisplaySummary() ===
-~ temp summary = "{stat_party_size} lvl{stat_level} PCs"
+~ temp summary = "{stat_party_size} lvl{stat_level} PC{stat_party_size > 1:s}"
 
 {location:
     ~ summary += ", {DisplayLocation()}"
