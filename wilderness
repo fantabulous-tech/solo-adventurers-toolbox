@@ -1098,6 +1098,7 @@ How populated is the {DisplayTerrain()} area?
         ~ encounter_difficulty = easy
         -> create_encounter ->
     - roll <= 51: An animal wanders across your path. It glances up at you but doesn’t seem particularly bothered by your presence.
+        -> create_creature ->
     - roll <= 52: Trapped creature (humanoid? monster? What type of trap?)
     - roll <= 55: An abandoned/ruined structure of some kind, which may or may not have a subterranean component.
     - roll <= 56: An old hermit. What’s he babbling about?
@@ -1125,7 +1126,7 @@ How populated is the {DisplayTerrain()} area?
     - roll <= 85: A long-forgotten battlefield. How many died here?
     - roll <= 86: A tower, visible off the road some distance.
     - roll <= 87: Patrol from the nearest settlement
-    - roll <= 88: Unmarked settlement
+    - roll <= 88: Unmarked settlement:<br><>-> create_unmarked_settlement ->
     - roll <= 89: The road disappears and the place looks nothing like on the map.
     - roll <= 94: NPC appears with quest. (Use Chapter 7).
         -> create_npc ->
