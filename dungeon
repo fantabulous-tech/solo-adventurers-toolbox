@@ -830,7 +830,7 @@ Dungeon Type: {DisplayDungeonType()}
 === dungeon_encounter_table ===
 ~ roll = d100()
 {
-    - roll <= 1: You witness a crime and they have a chance to stop the criminal. If you do, you win the favor of the local constabulary. If you try to but fail, the guard gives you an opportunity to help track down the criminal. If you do nothing, you must convince the guard you are not an accomplice.
+    - roll <= 1: You witness a crime and have a chance to stop the criminal. If you do, you win the favor of the local constabulary. If you try to but fail, the guard gives you an opportunity to help track down the criminal. If you do nothing, you must convince the guard you are not an accomplice.
     - roll <= 5: Something occurs, or you find something, that requires a {~acrobatics/dex check or save|strength or athletics check|stealth check|con check or save|int check|investigation check|arcana check|history check|nature check|religion check}. Use Q/A rolls or Story Element Interaction Tables to find out what.
     - roll <= 10: Something occurs, or you find something, that requires {~an animal handling check|an insight check|a survival check|a medicine check|a perception check|a persuasion check|a performance check|a deception check|an inimidation check|a charisma check}. Use Q/A rolls or Story Element Interaction Tables to find out what.
     - roll <= 15: -> create_npc ->
