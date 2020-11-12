@@ -142,9 +142,8 @@ LIST time = (day), night
 - -> back
 
 === create_menu ===
-<b>Create Menu</b> #CLEAR
-
 {location == ():-> edit_location ->}
+{location == ():->->}
 
 {location:
     - urban: -> create_urban_menu ->
@@ -305,8 +304,6 @@ LIST time = (day), night
     
 + [Terrain Feature Menu]
     -> create_terrain_feature -> menu
-
-+ [Back] ->->
 
 - (sub_menu)
 + [Again] -> again -> sub_menu
