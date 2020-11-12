@@ -20,7 +20,7 @@
 = menu
 
 + [Continue On]
-    -> travel_next -> wilderness_menu
+    -> travel_next ->
 
 + [Change Terrain]
     -> edit_terrain -> wilderness_menu
