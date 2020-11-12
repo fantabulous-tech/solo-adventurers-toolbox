@@ -88,9 +88,6 @@ LIST time = (day), night
 <- add_settings_menu(-> main_menu)
 -> DONE
 
-- (back)
-->->
-
 = menu
 <b>Main Menu</b> ({DisplaySummary()})#CLEAR
 
