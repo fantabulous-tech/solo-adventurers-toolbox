@@ -1139,6 +1139,7 @@ How populated is the {DisplayTerrain()} area?
                 ~ encounter_difficulty = hard
             - else:
                 <> <i>deadly</i> encounter.
+                ~ encounter_difficulty = deadly
         }
         -> create_encounter ->
 }
