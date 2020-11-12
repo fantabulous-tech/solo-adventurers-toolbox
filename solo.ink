@@ -84,9 +84,8 @@ LIST time = (day), night
 === main_menu ===
 
 <- menu
-<- add_quick_menu
+<- add_quick_menu(-> main_menu)
 <- add_settings_menu(-> main_menu)
-<- add_back_menu(-> back)
 -> DONE
 
 - (back)
@@ -97,6 +96,8 @@ LIST time = (day), night
 
 + [Enter Wilderness]
     ~ terrain = ()
+    ~ population = ()
+    ~ time = day
     -> wilderness_menu -> main_menu
 + [Enter {dungeon_size:New }Dungeon]
     ~ ResetDungeon()
@@ -105,7 +106,20 @@ LIST time = (day), night
     -> dungeon_menu -> main_menu
 + [Enter Town/City]
     ~ urban_size = ()
+    ~ time = day
     -> urban_menu -> main_menu
+
+
+
+
+=== quick_menu ===
+<- add_quick_menu(-> quick_menu)
+<- add_settings_menu(-> quick_menu)
+<- add_back_menu(-> back)
+-> DONE
+
+- (back)
+->->
 
 
 === add_settings_menu(-> back) ===
@@ -114,7 +128,7 @@ LIST time = (day), night
 === add_back_menu(-> back) ===
 + [Back] -> back
 
-=== add_quick_menu ===
+=== add_quick_menu(-> back) ===
 
 + [Create Menu]
     -> create_menu ->
@@ -128,17 +142,7 @@ LIST time = (day), night
 + [Skill Check]
     -> skill_check ->
 
-- ->->
-
-
-=== quick_menu ===
-<- add_quick_menu 
-<- add_settings_menu(-> quick_menu)
-<- add_back_menu(-> back)
--> DONE
-
-- (back)
-->->
+- -> back
 
 === create_menu ===
 <b>Create Menu</b> #CLEAR

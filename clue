@@ -56,8 +56,7 @@
     - Large quantity of blood spattered over the ground / leaves in this area
     - The remnants of a naturally-constructed bivouac
     - From far off, an eerie howling noise.
-    - Scrawled on a rock in red paint, crudely written in Common: “Stop! Go no further
-    - you value your life!!”
+    - Scrawled on a rock in red paint, crudely written in Common: “Stop! Go no further if you value your life!!”
     - Several empty wineskins and discarded goblets
     - 1d10 arrows, high quality, all sticking out of the ground in this area
     - Invitation to an event in a nearby town

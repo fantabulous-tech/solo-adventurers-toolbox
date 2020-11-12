@@ -1,5 +1,12 @@
 
 === camping_menu ===
+
+{location == wilderness && terrain == (): -> edit_terrain ->}
+
+<b> {DisplayLocation()} Camping Menu</b> ({DisplaySummary()}) #CLEAR
+
+- (continue)
+
 <- menu
 <- add_settings_menu(-> camping_menu)
 <- add_back_menu(-> back)
@@ -9,21 +16,15 @@
 ->->
 
 = menu
-
-{location == wilderness && terrain == (): -> edit_terrain ->}
-
-<b> {DisplayLocation()} Camping Menu</b> ({DisplaySummary()})
     
 + Find Campsite Check
-    -> find_campsite_check -> camping_menu
+    -> find_campsite_check -> camping_menu.continue
 
 + Disturbances While Camping Check
-    -> disturbance_while_camping_check -> camping_menu
+    -> disturbance_while_camping_check -> camping_menu.continue
 
-+ [Back]
-
-- ->->
-
++ Quick Menu
+    -> quick_menu -> camping_menu
 
 === find_campsite_check ===
 <- menu
@@ -57,7 +58,7 @@
 + [Roll Survival ({DisplayBonus(stat_survival_bonus)}) vs. {DisplayLocation()} (DC {difficulty})]
 
 + [Edit Survival ({DisplayBonus(stat_survival_bonus)})] -> edit_survival -> find_campsite_check
-- 
+- Rolling a d20...
 ~ roll = d20()
 ~ bonus = stat_survival_bonus
 ~ result = roll + bonus
@@ -96,6 +97,11 @@ You are disturbed by <>
     - roll <= 85: a bandit/thief.
     - roll <= 90: a wandering monster!
         // Roll for 'monster by terrain'.
+        {shuffle:
+            - ~ encounter_difficulty = easy
+            - ~ encounter_difficulty = medium 
+            - ~ encounter_difficulty = hard
+        }
         -> create_encounter ->
     - roll == 91: a natural distaster.
     - else: storm/weather change.

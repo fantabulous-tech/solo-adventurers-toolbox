@@ -602,9 +602,12 @@ The weather in {DisplayTerrain()} is now "{current_weather}".
             - else: normal encounter
                 ~ encounter_difficulty = medium
         }
-        {P(60):<> with clue}
         <>)
         -> create_encounter ->
+        {P(60):
+            You find a clue:<br><> 
+            -> create_wilderness_clue ->
+        }
     - roll <= 96: {~Burial Mounds|Barrows} (What lies beneath? Q/A to discern more.)
     - else: Wizard Tower (inhabited, {P(60):friendly|hostile})
 }
@@ -763,7 +766,11 @@ Based on {DisplayPopulation()} population and traveling during the {DisplayTime(
 ~ temp encounterCount = 0
 ~ temp encounterTotal = total
 
-Encounters: {encounterTotal}
+{total:
+    Encounters: {encounterTotal}
+- else:
+    No encounters.
+}
 
 - (next_encounter)
 {encounterCount >= encounterTotal: -> complete}
@@ -944,7 +951,7 @@ Current Season: {DisplaySeason()}
 
 === edit_population ===
 {population:Current Population Density: {DisplayPopulation()}}
-How dense is the population in {DisplayTerrain()}?
+How populated is the {DisplayTerrain()} area?
 
 + [Random]
     {shuffle:
@@ -1008,7 +1015,7 @@ How dense is the population in {DisplayTerrain()}?
     - Besieged settlement -> create_unmarked_settlement ->
     - Come across <> -> create_structure ->
     - Battle in progress
-    - Carcass of a {~ -> create_creature ->|->create_single_monster ->}
+    - Carcass of {~ a <>-> create_creature ->|<>->create_single_monster ->}
     - Monster!
         ~ encounter_difficulty = easy
         -> create_encounter ->
@@ -1038,9 +1045,9 @@ How dense is the population in {DisplayTerrain()}?
         ~ encounter_difficulty = deadly
         -> create_single_monster ->
     - Undead awakening
-    - Unmarked settlement. -> create_unmarked_settlement ->
-    - Unmarked settlement. -> create_unmarked_settlement ->
-    - Unmarked settlement. -> create_unmarked_settlement ->
+    - Unmarked settlement:<br><> -> create_unmarked_settlement ->
+    - Unmarked settlement:<br><> -> create_unmarked_settlement ->
+    - Unmarked settlement:<br><> -> create_unmarked_settlement ->
 }
 ->->
 

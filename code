@@ -1,7 +1,9 @@
 
 
 === roll_dice_menu ===
-Roll Dice Menu
+<b>Roll Dice Menu</b> #CLEAR
+
+- (continue)
 
 + 1d4[] Result: {d4()}🎲
 + 1d6[] Result: {d6()}🎲
@@ -12,7 +14,7 @@ Roll Dice Menu
 + 1d100[] Result: {d100()}🎲
 + [Back] ->->
 
-- -> roll_dice_menu
+- -> continue
 
 
 === function DisplayLocation() ===
@@ -163,6 +165,7 @@ Skill:
     ~ bonus = 4
 + \+5
     ~ bonus = 5
++ Cancel ->->
 
 - 
 Difficulty:
@@ -179,6 +182,7 @@ Difficulty:
     ~ difficulty = 25
 + Nearly Impossible (30)
     ~ difficulty = 30
++ Cancel ->->
 
 -
 

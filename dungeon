@@ -42,7 +42,7 @@ You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target
 = explore_menu
 
 <- menu
-<- add_quick_menu
+<- add_quick_menu(-> explore_menu)
 <- add_settings_menu(-> explore_menu)
 <- add_back_menu(-> back)
 -> DONE
@@ -99,10 +99,14 @@ Since you are exploring a {DisplayDungeonSize()} Dungeon, we will check {total} 
 
 -> RollD100Checks(total,25,0) ->
 
+{total:
+    Encounters: {encounterTotal}
+- else:
+    No encounters.
+}
+
 ~ temp encounterCount = 0
 ~ temp encounterTotal = total
-
-Encounters: {encounterTotal}
 
 - (next_encounter)
 {encounterCount >= encounterTotal: -> complete}

@@ -1,7 +1,7 @@
 
 === story_element_interaction_table ===
 ~ count = 0
-~ total = 4
+~ total = 2 + d4()
 
 Story Event:
 
