@@ -1,3 +1,6 @@
+# title: Solo Adventurer's Toolbox
+# theme: dark
+
 INCLUDE debug
 INCLUDE code
 INCLUDE settings
