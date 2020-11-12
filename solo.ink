@@ -16,7 +16,7 @@ INCLUDE urban
 INCLUDE wilderness
 
 
-VAR debug = true
+VAR debug = false
 
 VAR difficulty = 15
 VAR roll = 1
