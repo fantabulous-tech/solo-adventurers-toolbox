@@ -3,6 +3,7 @@
 === wilderness_menu ===
 ~ location = wilderness
 {terrain == (): -> edit_terrain ->}
+{terrain == (): ->->}
 
 <b>{DisplayTerrain()} Menu</b> ({DisplaySummary()}) #CLEAR
 
@@ -874,7 +875,7 @@ What terrain are you entering?
     ~ terrain = swamp
 
 
-+ [Back]
++ [Back] ->->
 
 -
 -> roll_weather ->

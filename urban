@@ -6,6 +6,12 @@
 {urban_size == (): -> edit_urban_size ->}
 {urban_size == (): -> main_menu}
 
+<b>{DisplayUrbanSize()} Menu</b> ({DisplaySummary()}) #CLEAR
+
+Shops: {urban_shops}
+
+- (continue)
+
 <- menu
 <- add_settings_menu(-> urban_menu)
 <- add_back_menu(-> back)
@@ -16,12 +22,14 @@
 
 = menu
 
-<b>{DisplayUrbanSize()} Menu</b> ({DisplaySummary()}) #CLEAR
++ [Explore {DisplayUrbanSize()}] 
+    -> urban_encounter_check -> urban_menu
 
-Shops: {urban_shops}
-+ [Explore {DisplayUrbanSize()}] -> urban_encounter_check -> urban_menu
-+ {urban_shops ? tavern}[Enter Tavern] -> create_tavern -> urban_menu
-+ [Quick Menu] -> quick_menu -> urban_menu
++ {urban_shops ? tavern}[Enter Tavern] 
+    -> create_tavern -> urban_menu
+
++ [Quick Menu] 
+    -> quick_menu -> urban_menu
 
 
 === urban_encounter_check ===
@@ -37,17 +45,17 @@ Since you are exploring a {DisplayUrbanSize()} during the {DisplayTime()}, we wi
 ~ temp encounterCount = 0
 ~ temp encounterTotal = total
 
-Encounters: {encounterTotal}
-
-- (next_encounter)
-{encounterCount >= encounterTotal: -> complete}
-~ encounterCount++
-
 {total:
     Encounters: {encounterTotal}
 - else:
     No encounters.
 }
+
+- (next_encounter)
+{encounterCount >= encounterTotal: -> complete}
+~ encounterCount++
+
+Encounter \#{encounterCount}/{encounterTotal}
 
 + [Random]
     {shuffle:

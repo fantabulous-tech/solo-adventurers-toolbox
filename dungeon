@@ -22,14 +22,14 @@
 
 === dungeon_menu ===
 
-<b>Entering Dungeon</b> #CLEAR
-
-You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target="_blank">One Page Dungeon Generator</a>
+<b>Dungeon Menu</b> {dungeon_size:({DisplayDungeonSummary()})} #CLEAR
 
 ~ location = dungeon
 
 {dungeon_size == (): -> edit_dungeon_size ->}
+{dungeon_size == (): ->->}
 {dungeon_type == (): -> edit_dungeon_type ->}
+{dungeon_type == (): ->->}
 
 {shuffle:
     - ~ dungeon_passages++
@@ -37,13 +37,10 @@ You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target
 }
 
 
--> explore_menu
-
-= explore_menu
+- (continue)
 
 <- menu
-<- add_quick_menu(-> explore_menu)
-<- add_settings_menu(-> explore_menu)
+<- add_settings_menu(-> continue)
 <- add_back_menu(-> back)
 -> DONE
 
@@ -51,10 +48,6 @@ You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target
 ->->
 
 = menu
-
-<b>Dungeon Menu</b> ({DisplaySummary()}) #CLEAR
-
-- (continue)
 
 + [Continue On]
     -> dungeon_encounter_check ->
@@ -82,6 +75,10 @@ You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target
 
 + [Find Place to Camp]
     -> camping_menu ->
+
++ [Dungeon Generation Map]
+    Generate a dungeon map here: <a href="https:\/\/watabou.itch.io/one-page-dungeon" target="_blank">One Page Dungeon Generator</a>
+    -> continue
     
 + [Quick Menu]
     -> quick_menu ->
@@ -99,14 +96,14 @@ Since you are exploring a {DisplayDungeonSize()} Dungeon, we will check {total} 
 
 -> RollD100Checks(total,25,0) ->
 
+~ temp encounterCount = 0
+~ temp encounterTotal = total
+
 {total:
     Encounters: {encounterTotal}
 - else:
     No encounters.
 }
-
-~ temp encounterCount = 0
-~ temp encounterTotal = total
 
 - (next_encounter)
 {encounterCount >= encounterTotal: -> complete}
