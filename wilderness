@@ -29,7 +29,7 @@
     ~ time = night
     -> camping_menu -> wilderness_menu
 
-+ [Roll Weather (Currently {DisplayWeather()})]
++ [Roll Weather]
     -> weather ->
     
 + [Quick Menu]

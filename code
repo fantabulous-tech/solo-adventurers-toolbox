@@ -43,6 +43,13 @@
 
 Where are you located?
 
++ [Random]
+    {shuffle:
+        - ~ location = urban
+        - ~ location = dungeon 
+        - ~ location = wilderness 
+    }
+
 + [City/Town]
     ~ location = urban
     

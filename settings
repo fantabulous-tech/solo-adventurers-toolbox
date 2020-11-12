@@ -2,6 +2,7 @@
 
 === edit_settings ===
 <b> Edit Settings </b> #CLEAR
++ [Location ({DisplayLocation()})] -> edit_location -> location_menu ->->
 + [Wilderness Settings] -> edit_wilderness_settings ->
 + [Dungeon Settings] -> edit_dungeon_settings ->
 + [Town/City Settings] -> edit_urban_settings ->
