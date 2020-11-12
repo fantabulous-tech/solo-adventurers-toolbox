@@ -1,5 +1,10 @@
 === Debug ===
-
 ~ SEED_RANDOM(65)
+
+// - (roll_again)
+// ~ location = dungeon
+// -> dungeon_encounter_table ->
+
+// + [Again] -> roll_again
 
 ->->

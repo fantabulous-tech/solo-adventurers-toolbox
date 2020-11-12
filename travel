@@ -1,14 +1,16 @@
 
 === camping_menu ===
 <- menu
-<- settings_menu
+<- add_settings_menu(-> camping_menu)
+<- add_back_menu(-> back)
 -> DONE
+
+- (back)
+->->
 
 = menu
 
 {location == wilderness && terrain == (): -> edit_terrain ->}
-
-~ back_menu = -> camping_menu
 
 <b> {DisplayLocation()} Camping Menu</b> ({DisplaySummary()})
     
@@ -25,8 +27,12 @@
 
 === find_campsite_check ===
 <- menu
-<- settings_menu
+<- add_settings_menu(-> find_campsite_check)
+<- add_back_menu(-> back)
 -> DONE
+
+- (back)
+->->
 
 = menu
 

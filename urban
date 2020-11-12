@@ -2,22 +2,26 @@
 
 === urban_menu ===
 ~ location = urban
-~ back_menu = -> urban_menu
 
 {urban_size == (): -> edit_urban_size ->}
+{urban_size == (): -> main_menu}
+
+<- menu
+<- add_settings_menu(-> urban_menu)
+<- add_back_menu(-> back)
+-> DONE
+
+- (back)
+->->
+
+= menu
 
 <b>{DisplayUrbanSize()} Menu</b> ({DisplaySummary()}) #CLEAR
 
 Shops: {urban_shops}
-+ [Explore {DisplayUrbanSize()}]
-    -> urban_encounter_check -> urban_menu
-
-+ {urban_shops ? tavern}[Enter Tavern]
-    -> create_tavern -> urban_menu
- 
-+ [Leave {DisplayLocation()}]
-
-- -> main_menu
++ [Explore {DisplayUrbanSize()}] -> urban_encounter_check -> urban_menu
++ {urban_shops ? tavern}[Enter Tavern] -> create_tavern -> urban_menu
++ [Quick Menu] -> quick_menu -> urban_menu
 
 
 === urban_encounter_check ===
@@ -53,11 +57,11 @@ Encounter \#{encounterCount}/{encounterTotal}
 
 - {encounterCount >= encounterTotal: -> complete}
 + [Next] -> next_encounter
-+ [Cancel] -> back_menu
++ [Cancel] ->->
 
 - (complete)
 
-+ [Encounters Complete] -> back_menu
++ [Encounters Complete] ->->
 
 
 === function GetUrbanEncounterCheckCount() ===

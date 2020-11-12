@@ -3,6 +3,11 @@
 {GetRace()} {GetClassOrProfession()} ({~Male|Female}, {GetDisposition()}, {GetAlignment()}, {GetEcoStatus()})
 - ->->
 
+=== create_adventurer_at_level(lvl) ===
+{GetRace()} {GetClass()} {lvl} ({~Male|Female}, {GetDisposition()}, {GetAlignment()}, {GetEcoStatus()})
+- ->->
+
+
 === create_adventurer ===
 {GetRace()} {GetClassAndLevel()} ({~Male|Female}, {GetDisposition()}, {GetAlignment()}, {GetEcoStatus()})
 - ->->

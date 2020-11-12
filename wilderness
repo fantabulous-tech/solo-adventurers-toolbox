@@ -1,45 +1,40 @@
 
 
 === wilderness_menu ===
-<- menu
-<- settings_menu
--> DONE
-
-= menu
-
-{terrain == (): -> edit_terrain ->}
-
 ~ location = wilderness
-~ back_menu = -> wilderness_menu
-
+{terrain == (): -> edit_terrain ->}
 
 <b>{DisplayTerrain()} Menu</b> ({DisplaySummary()}) #CLEAR
 
 - (continue)
 
+<- menu
+<- add_settings_menu(-> wilderness_menu)
+<- add_back_menu(-> back)
+-> DONE
+
+- (back)
+->->
+
+= menu
+
 + [Continue On]
-    -> travel_next -> wilderness_menu.continue
-    
+    -> travel_next -> wilderness_menu
+
++ [Change Terrain]
+    -> edit_terrain -> wilderness_menu
+
 + [Camp for the Night]
     ~ time = night
     -> camping_menu -> wilderness_menu
 
 + [Roll Weather (Currently {DisplayWeather()})]
-    -> weather -> wilderness_menu
+    -> weather ->
+    
++ [Quick Menu]
+    -> quick_menu -> wilderness_menu
 
-+ [Roll for Encounter ({DisplayTerrain()})]
-    -> wilderness_encounter_check ->->
-
-+ [Roll for Unmarked Settlement]
-    -> unmarked_settlement_check ->
-    ~again = -> unmarked_settlement_check
-
-
-+ [Back] -> main_menu
-
-- (sub_menu)
-+ [Again] -> again -> sub_menu
-+ [Back] -> wilderness_menu
+- -> wilderness_menu.continue
 
 
 === travel_next ===
@@ -63,6 +58,7 @@
 
 {
     - roll <= 60: Continuing aquatic terrain (5 m.)
+        -> wilderness_encounter_check ->
     - roll <= 65: Icy hills (roll hills and interpret… arctically). ({d4()} m.) -> create_hills ->
     - roll <= 70: Small mountain range / foothills ({d4()} m.) -> create_mountains ->
     - roll <= 75: Waterway (probably frozen) ({d4()} m.) -> create_waterway ->
@@ -88,6 +84,7 @@
 
 {
     - roll <= 60: Continuing coastal terrain (5 m.)
+        -> wilderness_encounter_check ->
     - roll <= 65: Hills / (with cliffs perhaps). ({d4()} m.) -> create_hills ->
     - roll <= 70: Gully ({d4()} m.) -> create_gully ->
     - roll <= 75: Waterway ({d4()} m.) -> create_waterway ->
@@ -113,6 +110,7 @@
 
 {
     - roll <= 70: Continuing desert (5 m.)
+        -> wilderness_encounter_check ->
     - roll <= 75: Oasis ({d4()} m.): -> create_oasis ->
     - roll <= 80: Small mountain range (dry, no snow) ({d4()} m.) -> create_mountains ->
     - roll <= 85: Rocky outcrop ({d4()} m.) -> create_outcrop ->
@@ -135,7 +133,8 @@
 ~ roll = d100()
 
 {
-    - roll <= 52: Continuing forest 5 miles
+    - roll <= 52: Continuing forest (5 m.)
+        -> wilderness_encounter_check ->
     - roll <= 56: Small clearing: -> create_clearing ->
     - roll <= 60: Large clearing: -> create_clearing ->
     - roll <= 64: Small wooded gully ({d4()} m.) -> create_gully ->
@@ -164,7 +163,8 @@
 ~ roll = d100()
 
 {
-    - roll <= 56: Continuing grassland 5 miles
+    - roll <= 56: Continuing grassland (5 m.)
+        -> wilderness_encounter_check ->
     - roll <= 60: Hills ({d4()} m.) -> create_hills ->
     - roll <= 64: Swamp ({d4()} m.) -> create_swamp ->
     - roll <= 68: Gully ({d4()} m.) -> create_gully ->
@@ -192,7 +192,8 @@
 ~ roll = d100()
 
 {
-    - roll <= 55: Continuing hills 5 miles
+    - roll <= 55: Continuing hills (5 m.)
+        -> wilderness_encounter_check ->
     - roll <= 60: Gully ({d4()} m.) -> create_gully ->
     - roll <= 65: Waterway ({d4()} m.) -> create_waterway ->
     - roll <= 70: Lake ({d4()} m.) -> create_lake ->
@@ -218,7 +219,8 @@
 ~ roll = d100()
 
 {
-    - roll <= 55: Continuing mountains 5 m.
+    - roll <= 55: Continuing mountains (5 m.)
+        -> wilderness_encounter_check ->
     - roll <= 60: Gully ({d4()} m.) -> create_gully ->
     - roll <= 65: Waterway ({d4()} m.) -> create_waterway ->
     - roll <= 70: Lake ({d4()} m.) -> create_lake ->
@@ -244,7 +246,8 @@
 ~ roll = d100()
 
 {
-    - roll <= 51: Continuing swamp 5 m.
+    - roll <= 51: Continuing swamp (5 m.)
+        -> wilderness_encounter_check ->
     - roll <= 58: Waterway ({d4()} m.) -> create_waterway ->
     - roll <= 65: Lake ({d4()} m.) -> create_lake ->
     - roll <= 72: Small Wood ({d4()} m.) -> create_woods ->
@@ -780,11 +783,11 @@ Encounter \#{encounterCount}/{encounterTotal}
 
 - {encounterCount >= encounterTotal: -> complete}
 + [Next] -> next_encounter
-+ [Cancel] -> back_menu
++ [Cancel] ->->
 
 - (complete)
 
-+ [Encounters Complete] -> back_menu
++ [Encounters Complete] ->->
 
 
 = no_encounter
@@ -1072,18 +1075,20 @@ How dense is the population in {DisplayTerrain()}?
     - roll <= 31: Abandoned mine, dwarven or otherwise.
     - roll <= 32: You hear howling in the distance. It could be wolves, but the sound is strange somehow...
     - roll <= 33: Debris from a recent, large battle. Who fought here, and who won? How recent was this?
-    - roll <= 34: Humanoid corpse. {P(25): You find a clue. (see Clue table in Chapter 9).}
+    - roll <= 34: Humanoid corpse. {P(25): You find a clue. -> create_wilderness_clue ->}
     - roll <= 35: A bird (or some other creature – roll Creature Table Chapter 14) begins talking to you, in fluent Common! And not just mindless parroting...
     - roll <= 36: A royal/noble personage and their entourage passes in an opulent carriage.
     - roll <= 37: A flock of birds (vultures? ravens?) circles over a point somewhere overhead
     - roll <= 38: You find an old, ruined monument. Is it to a god, a famous local figure, or something else?
     - roll <= 39: A traveller with information/warning about a situation in the next settlement.
-    - roll <= 40: Unmarked settlement: town/village/hamlet. Human?
+    - roll <= 40: Unmarked ~{town|village|hamlet}. {P(50):Human|Non-human}
     - roll <= 41: You reach a bridge over a small river. The bridge is washed out. Travellers are waiting here, unsure what to do.
     - roll <= 42: You find an injured beast
     - roll <= 43: A farmer invites you into his house for a meal, and possibly some of his home brew ale/mead as well
     - roll <= 44: Overturned/broken-down cart. Is it attended?
-    - roll <= 50: Monster ambush. Level-appropriate easy encounter. Go to Chapter 16.
+    - roll <= 50: Monster ambush.
+        ~ encounter_difficulty = easy
+        -> create_encounter ->
     - roll <= 51: An animal wanders across your path. It glances up at you but doesn’t seem particularly bothered by your presence.
     - roll <= 52: Trapped creature (humanoid? monster? What type of trap?)
     - roll <= 55: An abandoned/ruined structure of some kind, which may or may not have a subterranean component.

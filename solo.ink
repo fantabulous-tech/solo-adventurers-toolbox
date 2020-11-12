@@ -16,7 +16,7 @@ INCLUDE urban
 INCLUDE wilderness
 
 
-VAR debug = false
+VAR debug = true
 
 VAR difficulty = 15
 VAR roll = 1
@@ -27,7 +27,6 @@ VAR total = 0
 VAR count = 0
 VAR test = false
 VAR again = -> main_menu
-VAR back_menu = -> main_menu
 VAR current_weather = "Unknown Weather"
 
 VAR dungeon_room_total = 0
@@ -82,20 +81,19 @@ LIST time = (day), night
 -> main_menu
 
 
-=== settings_menu ===
-
-+ [Settings]
-    -> edit_settings ->->
-
-
 === main_menu ===
+
 <- menu
-<- settings_menu
+<- add_quick_menu
+<- add_settings_menu(-> main_menu)
+<- add_back_menu(-> back)
 -> DONE
+
+- (back)
+->->
 
 = menu
 <b>Main Menu</b> ({DisplaySummary()})#CLEAR
-~ back_menu = -> main_menu
 
 + [Enter Wilderness]
     ~ terrain = ()
@@ -109,80 +107,89 @@ LIST time = (day), night
     ~ urban_size = ()
     -> urban_menu -> main_menu
 
-+ [Roll Dice]
-    -> roll_dice_menu -> main_menu
 
-+ [Create]
-    -> create_menu -> main_menu
+=== add_settings_menu(-> back) ===
++ [Settings] -> edit_settings -> back
 
-+ [Skill Check]
-    -> skill_check ->
-    ~again = -> skill_check
+=== add_back_menu(-> back) ===
++ [Back] -> back
+
+=== add_quick_menu ===
+
++ [Create Menu]
+    -> create_menu ->
+
++ [Roll Dice Menu]
+    -> roll_dice_menu ->
 
 + [Yes/No Question]
     -> yes_no_question ->
-    ~again = -> yes_no_question
 
-- (sub_menu)
-+ [Again] -> again -> sub_menu
-+ [Back] -> main_menu
++ [Skill Check]
+    -> skill_check ->
 
-
+- ->->
 
 
-=== create_menu ===
-<- menu
-<- settings_menu
+=== quick_menu ===
+<- add_quick_menu 
+<- add_settings_menu(-> quick_menu)
+<- add_back_menu(-> back)
 -> DONE
 
-= menu
+- (back)
+->->
+
+=== create_menu ===
 <b>Create Menu</b> #CLEAR
-~ back_menu = -> create_menu
 
-+ Create Town Stuff
-    ~ location = urban
-    -> create_town_menu -> create_menu
+{location == ():-> edit_location ->}
 
-+ Create Wilderness Stuff
-    ~ location = wilderness
-    -> create_wilderness_menu -> create_menu
+{location:
+    - urban: -> create_urban_menu ->
+    - wilderness: -> create_wilderness_menu ->
+    - dungeon: -> create_dungeon_menu ->
+    - else:
+        ~ logError("Unknown Location {location}.")
+}
 
-+ Create Dungeon Stuff
-    ~ location = dungeon
-    -> create_dungeon_menu -> create_menu
+- ->->
+
+=== add_create_generic_menu(-> back) ===
 
 + Create NPC
     -> create_npc ->
-    ~ again = -> create_npc
     
 + Create Adventurer NPC
     -> create_adventurer ->
-    ~ again = -> create_adventurer
 
 + Create Loot
     -> create_loot ->
     -> roll_encounter ->
-    ~ again = -> create_loot
 
 + Create Hoard
     -> create_hoard ->
     -> roll_encounter ->
-    ~ again = -> create_hoard
-
-+ [Back] ->->
 
 - (sub_menu)
 + [Again] -> again -> sub_menu
-+ [Back] -> create_menu
++ [Back] -> back
 
 
-=== create_town_menu ===
+
+=== create_urban_menu ===
 <- menu
-<- settings_menu
+<- add_create_generic_menu(-> create_urban_menu)
+<- add_settings_menu(-> create_urban_menu)
+<- add_back_menu(-> back)
 -> DONE
 
-= menu
+- (back)
+->->
 
+= menu
+<b>Create Town Stuff Menu</b> #CLEAR
+ 
 + Create Encounter
     -> create_encounter ->
     ~ again = -> create_encounter
@@ -195,76 +202,23 @@ LIST time = (day), night
     -> create_tavern ->
     ~ again = -> create_tavern
 
-+ [Back] -> back_menu
-
 - (sub_menu)
 + [Again] -> again -> sub_menu
-+ [Back] -> back_menu
-
-
-=== create_wilderness_menu ===
-<- menu
-<- settings_menu
--> DONE
-
-= menu
-
-+ Create Encounter
-    -> create_encounter ->
-    ~ again = -> create_encounter
-    
-+ Create Monster
-    -> create_single_monster ->
-    ~ again = -> create_single_monster
-
-+ Create Clue
-    -> create_wilderness_clue ->
-    ~ again = -> create_dungeon_clue
-
-+ Create Quest
-    -> create_quest ->
-    ~ again = -> create_quest
-
-+ Create Creature
-    -> create_creature ->
-    ~ again = -> create_creature
-
-+ Create Structure
-    -> create_structure ->
-    ~ again = -> create_structure
-
-+ Create Unmarked Settlement
-    -> create_unmarked_settlement ->
-    ~ again = -> create_unmarked_settlement
-
-+ Create Wilderness Encounter
-    -> wilderness_encounter_table ->
-    ~ again = -> wilderness_encounter_table
-
-+ Create Story Event
-    -> story_element_interaction_table ->
-    ~ again = -> story_element_interaction_table
-    
-+ Create Oasis
-    -> create_oasis ->
-    ~ again = -> create_oasis
-
-+ [Back] -> back_menu
-
-- (sub_menu)
-+ [Again] -> again -> sub_menu
-+ [Back] -> back_menu
-
-
++ [Back] -> create_urban_menu
 
 
 === create_dungeon_menu ===
 <- menu
-<- settings_menu
+<- add_create_generic_menu(-> create_dungeon_menu)
+<- add_settings_menu(-> create_dungeon_menu)
+<- add_back_menu(-> back)
 -> DONE
 
+- (back)
+->->
+
 = menu
-<b>Dungeon Create Menu</b>
+<b>Dungeon Create Menu</b> #CLEAR
 
 + Create Encounter
     -> create_encounter ->
@@ -302,11 +256,145 @@ LIST time = (day), night
     -> create_dungeon_clue ->
     ~ again = -> create_dungeon_clue
 
-+ [Back] -> back_menu
+- (sub_menu)
++ [Again] -> again -> sub_menu
++ [Back] -> create_dungeon_menu
+
+
+=== create_wilderness_menu ===
+<- menu
+<- add_create_generic_menu(-> create_wilderness_menu)
+<- add_settings_menu(-> create_wilderness_menu)
+<- add_back_menu(-> back)
+-> DONE
+
+- (back)
+->->
+
+= menu
+<b>Create Wilderness Stuff Menu</b> #CLEAR
+
++ Create Encounter
+    -> create_encounter ->
+    ~ again = -> create_encounter
+    
++ Create Monster
+    -> create_single_monster ->
+    ~ again = -> create_single_monster
+
++ Create Clue
+    -> create_wilderness_clue ->
+    ~ again = -> create_dungeon_clue
+
++ Create Quest
+    -> create_quest ->
+    ~ again = -> create_quest
+
++ Create Creature
+    -> create_creature ->
+    ~ again = -> create_creature
+
++ Create Wilderness Encounter
+    -> wilderness_encounter_table ->
+    ~ again = -> wilderness_encounter_table
+
++ Create Story Event
+    -> story_element_interaction_table ->
+    ~ again = -> story_element_interaction_table
+    
++ [Terrain Feature Menu]
+    -> create_terrain_feature -> menu
+
++ [Back] ->->
 
 - (sub_menu)
 + [Again] -> again -> sub_menu
-+ [Back] -> back_menu
++ [Back] -> create_wilderness_menu
+
+
+=== create_terrain_feature ===
+<- menu
+<- add_create_generic_menu(-> create_terrain_feature)
+<- add_settings_menu(-> create_terrain_feature)
+<- add_back_menu(-> back)
+-> DONE
+
+- (back)
+->->
+
+= menu
+<b>Create Terrain Feature Menu</b> #CLEAR
+    
++ Create Clearfelled Area
+    -> create_clearfelled_area ->
+    ~ again = -> create_clearing
+    
++ Create Clearing
+    -> create_clearing ->
+    ~ again = -> create_clearing
+    
++ Create Gully
+    -> create_gully ->
+    ~ again = -> create_gully
+    
++ Create Hills
+    -> create_hills ->
+    ~ again = -> create_hills
+    
++ Create Landscape Feature
+    -> create_landscape_feature ->
+    ~ again = -> create_landscape_feature
+    
++ Create Landscape Feature
+    -> create_lake ->
+    ~ again = -> create_lake
+    
++ Create Monument
+    -> create_monument ->
+    ~ again = -> create_monument
+    
++ Create Oasis
+    -> create_oasis ->
+    ~ again = -> create_oasis
+    
++ Create Rocky Outcrop
+    -> create_outcrop ->
+    ~ again = -> create_outcrop
+    
++ Create Small Mountain Range / Foothills
+    -> create_mountains ->
+    ~ again = -> create_mountains
+    
++ Create Small Woods
+    -> create_woods ->
+    ~ again = -> create_mountains
+
++ Create Structure
+    -> create_structure ->
+    ~ again = -> create_structure
+
++ Create Swamp
+    -> create_swamp ->
+    ~ again = -> create_swamp
+
++ Create Unmarked Settlement
+    -> create_unmarked_settlement ->
+    ~ again = -> create_unmarked_settlement
+
++ Create Waterway
+    -> create_waterway ->
+    ~ again = -> create_waterway
+
++ Create Active Area Discovery
+    -> create_discovery ->
+    ~ again = -> create_discovery
+
++ [Back] ->->
+
+- (sub_menu)
++ [Again] -> again -> sub_menu
++ [Back] -> create_terrain_feature
+
 
 
 

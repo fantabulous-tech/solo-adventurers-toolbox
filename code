@@ -10,7 +10,7 @@ Roll Dice Menu
 + 1d12[] Result: {d12()}🎲
 + 1d20[] Result: {d20()}🎲
 + 1d100[] Result: {d100()}🎲
-+ [Back] -> main_menu
++ [Back] ->->
 
 - -> roll_dice_menu
 
@@ -55,6 +55,7 @@ Where are you located?
 
 === RollD100Checks(checkCount, checkTarget, checkBonus) ===
 ~ total = 0
+~ count = 0
 
 - (check_again)
 ~ count++
@@ -83,7 +84,10 @@ Where are you located?
 
 
 === yes_no_question ===
--> yes_no_test("Given all circumstances, how likely is the occurrence?", -> yes, -> no, -> maybe)
+-> yes_no_test("Given all circumstances, how likely is the occurrence?", -> yes, -> no, -> maybe) ->
+
++ [Done] ->->
+
 
 = yes
 ->->
@@ -93,7 +97,7 @@ Where are you located?
 
 = maybe
 
-There is some other condition that needs to be fulfilled for the thing to happen (or not happen, as the case may be), perhaps an appropriate ability check to overcome a relevant obstacle or achieve a stated goal. Or, it could be that other yes/no/maybe questions need to be asked in order to determine what the condition is. Another way of getting answers to a maybe is to make a roll or two on the Situations table in Chapter 15. That might add the necessary detail. Or, if you get a maybe roll, you can just decide whether it’s yes or no yourself.
+There is some other condition that needs to be fulfilled for the thing to happen (or not happen, as the case may be), perhaps an appropriate ability check to overcome a relevant obstacle or achieve a stated goal. Or, it could be that other yes/no/maybe questions need to be asked in order to determine what the condition is. Another way of getting answers to a maybe is to make a roll or two on the Situations table. That might add the necessary detail. Or, if you get a maybe roll, you can just decide whether it’s yes or no yourself.
 
 ->->
 
@@ -182,7 +186,8 @@ Difficulty:
 ~ result = roll + bonus
 
 {DisplayD20Result(difficulty)}
-->->
+
++ [Done] ->->
 
 
 === function DisplayResult() ===

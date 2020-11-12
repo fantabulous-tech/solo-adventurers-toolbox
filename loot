@@ -7,10 +7,16 @@
     -> roll_encounter ->
 }
 
-Creating loot for monster level {monster_level}:
+// Creating loot for monster level {monster_level}:
 
 -> create_loot_by_cr(monster_level) ->->
 
+
+=== create_loot_x(c) ===
+- (roll_again)
+{c <= 0: ->->}
+~ c--
+-> create_loot -> roll_again
 
 === create_hoard ===
 {monster_level == ():

@@ -27,7 +27,6 @@
 You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target="_blank">One Page Dungeon Generator</a>
 
 ~ location = dungeon
-~ back_menu = -> dungeon_menu
 
 {dungeon_size == (): -> edit_dungeon_size ->}
 {dungeon_type == (): -> edit_dungeon_type ->}
@@ -37,19 +36,28 @@ You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target
     - ~ dungeon_rooms++
 }
 
-~ back_menu = -> explore_menu
+
 -> explore_menu
 
 = explore_menu
 
 <- menu
-<- settings_menu
+<- add_quick_menu
+<- add_settings_menu(-> explore_menu)
+<- add_back_menu(-> back)
 -> DONE
+
+- (back)
+->->
 
 = menu
 
-<b>Dungeon Menu</b> ({DisplaySummary()})
+<b>Dungeon Menu</b> ({DisplaySummary()}) #CLEAR
 
+- (continue)
+
++ [Continue On]
+    -> dungeon_encounter_check ->
 + {dungeon_clues}[Look at Dungeon Clue (x{dungeon_clues})]
     ~ dungeon_clues--
     -> create_dungeon_clue ->
@@ -74,17 +82,65 @@ You can also use the <a href="https:\/\/watabou.itch.io/one-page-dungeon" target
 
 + [Find Place to Camp]
     -> camping_menu ->
+    
++ [Quick Menu]
+    -> quick_menu ->
 
-+ [Yes/No Question]
-    -> yes_no_question ->
+- -> continue
 
-+ [Create Other]
-    -> create_dungeon_menu ->
 
-+ [Exit Dungeon] ->->
+=== dungeon_encounter_check ===
 
-- -> explore_menu
+{dungeon_size == (): -> edit_dungeon_size ->}
 
+~ total = GetDungeonEncounterCheckCount()
+
+Since you are exploring a {DisplayDungeonSize()} Dungeon, we will check {total} times.
+
+-> RollD100Checks(total,25,0) ->
+
+~ temp encounterCount = 0
+~ temp encounterTotal = total
+
+Encounters: {encounterTotal}
+
+- (next_encounter)
+{encounterCount >= encounterTotal: -> complete}
+~ encounterCount++
+
+Encounter \#{encounterCount}/{encounterTotal}
+
++ [Random]
+    {shuffle:
+        - -> dungeon_encounter_table ->
+        - -> story_element_interaction_table ->
+    }
++ [Determine on Urban Encounter Table]
+    -> urban_encounter_table ->
++ [Determine on Story Event Table]
+    -> story_element_interaction_table ->
+
+- {encounterCount >= encounterTotal: -> complete}
++ [Next] -> next_encounter
++ [Cancel] ->->
+
+- (complete)
+
++ [Encounters Complete] ->->
+
+
+=== function GetDungeonEncounterCheckCount() ===
+{dungeon_size:
+    - dng_tiny: ~ return 2
+    - dng_small: ~ return 2
+    - dng_medium: ~ return 3
+    - dng_large: ~ return 4
+    - dng_huge: ~ return 5
+    - dng_limitless: ~ return 5
+    - else:
+        ~logError("Unrecognized dungeon size. Assuming 'medium'.")
+        ~ return 3
+}
 
 
 === create_dungeon_passage ===
@@ -152,11 +208,12 @@ Passage Description:<br><>
 ~ roll = d100()
 ~ bonus = dungeon_content_bonus
 ~ result = roll + bonus
+~ dungeon_content_bonus = 0
 
 Passage Contents ({DisplayResult()}):<br><>
 
 {
-    - result <= 69: Empty
+    - result <= 69: Empty.
     - result <= 80: Empty apart from rubble. <>
         ~ test = P(10)
         {test:
@@ -175,15 +232,54 @@ Passage Contents ({DisplayResult()}):<br><>
             Clue on a body.
             ~ dungeon_clues++
         }
-    - result <= 90: Empty apart from enemies. 1 level-appropriate easy encounter. Loot 15%, Clue 15%
-    - result <= 92: Empty apart from enemies. 1 level-appropriate medium encounter. Loot 25%, Clue 25%
-    - result <= 94: Empty apart from enemies. 1 level-appropriate hard encounter. Loot 50%, clue 50%
-    - result <= 98: Trap! Use 'Look at Trap'
+    - result <= 90:
+        Empty apart from enemies (easy):
+        ~ encounter_difficulty = easy
+        -> create_encounter ->
+        {P(15):
+            Loot:<br><>
+            -> create_loot ->
+        }
+        {P(15):
+            There is a clue here.
+            ~ dungeon_clues++
+        }
+    - result <= 92: Empty apart from enemies (medium).
+        ~ encounter_difficulty = medium
+        -> create_encounter ->
+        {P(25):
+            Loot:<br><>
+            -> create_loot ->
+        }
+        {P(25):
+            There is a clue here.
+            ~ dungeon_clues++
+        }
+    - result <= 94: Empty apart from enemies (hard).
+        ~ encounter_difficulty = hard
+        -> create_encounter ->
+        {P(50):
+            Loot:<br><>
+            -> create_loot ->
+        }
+        {P(50):
+            There is a clue here.
+            ~ dungeon_clues++
+        }
+    - result <= 98: Trap!
+        -> create_trap ->
         ~ dungeon_traps++
-    - else: Loot 60%. Roll DMG individual treasure: Challenge 0-4 table. Add 30 to roll. How did this loot get here?
+    - else:
+        {P(60):
+            Loot is here:<br><>
+            ~ encounter_difficulty = deadly
+            -> create_loot ->
+            How did this loot get here?
+        - else:
+            Empty.
+        }
 }
 
-~ dungeon_content_bonus = 0
 
 ->->
 
@@ -252,50 +348,120 @@ Room Description:<br><>
 }
 
 
+Room Contents: ({DisplayResult()}):<br><>
+
+- (roll_again)
 ~ roll = d100()
 ~ bonus = dungeon_content_bonus
 ~ result = roll + bonus
+~ dungeon_content_bonus = 0
 
-Room Contents: ({DisplayResult()}):<br><>
 // SD = Secret Door
 {
-    - result <= 4 : Level appropriate Deadly Encounter (see Chapter 16). Loot 45%, Clue 75%. Roll DMG Loot table appropriate to encounter.
+    - result <= 4 : Deadly Encounter:<br><>
         ~ encounter_difficulty = deadly
         -> create_encounter ->
+        {P(45):Loot:<br><>-> create_loot ->}
+        {P(75):Clue:<br><>-> create_dungeon_clue ->}
     - result <= 8 : Remnants / proof of the boss or BBEG. It looks as though they have been up to mischief in this room.
     - result <= 12: Low level minions of the BBEG in this room. Level appropriate easy encounter.
         ~ encounter_difficulty = easy
         -> create_encounter ->
-    - result <= 20: Dungeon Hazard. 1: sinkhole, 2: fungus, 3: trap, 4: collapsing masonry or other natural hazard, 5: wandering monster, medium difficulty, 6: Player’s choice.
-    - result <= 32: Level appropriate Hard Encounter (see Chapter 16). Clue, Loot, Random, SD all 30%.
+    - result <= 20: Dungeon Hazard: <>
+        {shuffle:
+            - sinkhole.
+            - fungus.
+            - trap: -> create_trap ->
+            - collapsing masonry or other natural hazard.
+            - wandering monster (medium):<br><>
+                ~ encounter_difficulty = medium
+                -> create_encounter ->
+        }
+    - result <= 32: Hard Encounter:<br><>
         ~ encounter_difficulty = hard
         -> create_encounter ->
-    - result <= 36: NPC in room investigating. Roll again to find out what they are investigating.
-    - result <= 40: A previously triggered trap is in this room, with a level appropriate Hard Encounter enemy {P(30):caught in it and still alive|caught and killed by it}. {P(10):Loot.}
-    - result <= 52: Level appropriate Easy Encounter (see Chapter 16) Loot 20%, SD 10%, Clue 30%
+        {P(30):Loot:<br><>-> create_loot ->}
+        {P(30):Clue:<br><>-> create_dungeon_clue ->}
+        {P(30):Secret Door:<br><>-> create_secret_door ->}
+    - result <= 36: NPC in room investigating:<br><>
+        -> create_npc ->
+        They are investigating:<br><>
+        -> roll_again
+        
+    - result <= 40: A previously triggered trap is in this room, with a level appropriate Hard Encounter enemy {P(30):caught in it and still alive|caught and killed by it}. {P(10):Loot. -> create_loot ->}
+    - result <= 52: Easy Encounter:<br><>
         ~ encounter_difficulty = easy
         -> create_encounter ->
+        {P(20):Loot:<br><>-> create_loot ->}
+        {P(30):Clue:<br><>-> create_dungeon_clue ->}
+        {P(10):Secret Door:<br><>-> create_secret_door ->}
     - result <= 56: Obstacle of some sort (e.g. rubble, crevasse, sinkhole, underground stream, wild magic field). Athletics or acrobatics check might be required to pass it, or it might be impassable. (Alterntively, roll on Obstacles Table, DMG p.297)
-    - result <= 67: Level appropriate Medium Encounter (see Chapter 16) Loot 30%, SD 20%, Clue 30%
+    - result <= 67: Medium Encounter:<br><>
         ~ encounter_difficulty = medium
         -> create_encounter ->
-    - result <= 71: NPC (enemy or ally of the PC) near death (1d4 levels less than you, minimum Level 1), unconscious, Level appropriate Hard Encounter. Enemy or enemies reduced to 50% hp. Loot 50%. A battle has obviously gone on here - the NPC has fought a powerful creature, and lost, but has damaged it somewhat.
-    - result <= 74: Two level appropriate ([d4] 1-2: Easy, 3-4: Medium) creatures are engaged in battle with each other. You stumble in just as battle starts. How do you react? Hide and wait until a victor emerges? What are they fighting over? Since they are otherwise engaged, you have advantage on stealth checks to creep up. (DC is the creature’s passive perception)
-        ~ encounter_difficulty = medium
+        {P(30):Loot:<br><>-> create_loot ->}
+        {P(30):Clue:<br><>-> create_dungeon_clue ->}
+        {P(20):Secret Door:<br><>-> create_secret_door ->}
+    - result <= 71:
+        ~ temp npcLevel = stat_level - d4()
+
+        {npcLevel <= 0:
+            ~npcLevel = 1
+        }
+        
+        A battle has obviously gone on here - the NPC has fought a powerful creature, and lost, but has damaged it somewhat.
+        NPC (enemy or ally of the PC) near death, unconscious:<br><>
+        -> create_adventurer_at_level(npcLevel) ->
+        Hard Encounter (enemy or enemies reduced to 50% hp):<br><>
+        ~ encounter_difficulty = hard
+        -> create_encounter ->
+        {P(50): Loot:<br><> -> create_loot ->}
+    - result <= 74:
+        Two creatures are engaged in battle with each other. You stumble in just as battle starts. How do you react? Hide and wait until a victor emerges? What are they fighting over? Since they are otherwise engaged, you have advantage on stealth checks to creep up. (DC is the creature’s passive perception)
+        {P(50):
+            ~ encounter_difficulty = easy
+        - else:
+            ~ encounter_difficulty = medium
+        }
         -> create_single_monster ->
-        vs.
+        <br><>vs.<br><>
         -> create_single_monster ->
 
     - result <= 76: Deserted but for some strange runes and symbols on the floor. Magical? Perhaps.
-    - result <= 80: Strong NPC (2d4 levels higher than your PC) has just defeated a Level Appropriate Deadly Encounter. Roll d4 to determine attitude. 1-2: They tell you to begone, they stake claim to this dungeon and all within it. Will fight if challenged. However, also will agree to split zup and going seperate ways, perhaps 3-4: Will team up with you for the remainder of this dungeon, and split the loot, and then will depart. (CR of all encounters from here on increases by 1d4). Random, SD, Trap all 30% Roll on NPC table, skipping professions and going straight to classes. NPC level is determined above.
-    - result <= 84: Empty. Mission relevant loot chance 30%.
-    - result <= 88: Level appropriate Easy Encounter (see Chapter 16). Clue, NPC, Boon all 30%
+    - result <= 80:
+        Strong NPC:<br><>
+        -> create_adventurer_at_level(stat_level + d4x(2)) ->
+        Has just defeated a Deadly Encounter:<br><>
+        ~ encounter_difficulty = deadly
+        -> create_encounter ->
+        {shuffle:
+            - They tell you to begone, they stake claim to this dungeon and all within it. Will fight if challenged. However, also will agree to split up and go seperate ways, perhaps
+            - They will team up with you for the remainder of this dungeon, and split the loot, and then will depart. (CR of all encounters from here on increases by 1d4). Random, SD, Trap all 30% Roll on NPC table, skipping professions and going straight to classes. NPC level is determined above.
+        }
+    - result <= 84: {P(30):You find mission relevant loot.|Empty.}
+    - result <= 88: Easy Encounter:<br><>
+        ~ encounter_difficulty = easy
+        -> create_encounter ->
+        {P(30):Clue:<br><>-> create_dungeon_clue ->}
+        {P(30):There is also an NPC here:<br><>-> create_npc ->}
+        {P(30):This room/encounter gives you a boon of some sort.}
     - result <= 92: Accursed or blessed relic, guarded by level appropriate deadly encounter. Q/A rolls to determine nature of relic.
-    - else: BOSS / BBEG / Significant NPC Encounter! (Use the details of your story so far, Q/A tables, or Story Element Interaction Tables to determine what). Loot 90%. Roll d20. 1-14: Roll 1d4 times on Individual Treasure Table. 15-20: Roll once on Hoard Table. (DMG pp. 136-139.)
+        ~ encounter_difficulty = deadly
+        -> create_encounter ->
+    - else: BOSS / BBEG / Significant NPC Encounter! (Use the details of your story so far, Q/A tables, or Story Element Interaction Tables to determine what).
+        {P(90):
+            BOSS/BBEG Loot!
+            ~ roll = d20
+            {
+                - roll <= 14:
+                    -> create_loot_x(d4()) ->
+                - else:
+                    -> create_hoard ->
+            }
+        }
 }
 
 ~ dungeon_passages += exits - 1
-~ dungeon_content_bonus = 0
 
 ->->
 
@@ -368,7 +534,9 @@ Room Contents: ({DisplayResult()}):<br><>
         ~ dungeon_content_bonus = 40
         ~ dungeon_passages++
     - ~ test = P(50)
-    Trapped secret door. Roll on trap table, then on {test:Passage|Room} (+50 to Content roll)
+    Trapped secret door:<br><>
+    -> create_trap ->
+    Leads to a {test:Passage|Room} (+50 to Content roll)
         ~ dungeon_content_bonus = 50
         { test:
             ~ dungeon_passages++
@@ -662,16 +830,27 @@ Dungeon Type: {DisplayDungeonType()}
 ~ roll = d100()
 {
     - roll <= 1: You witness a crime and they have a chance to stop the criminal. If you do, you win the favor of the local constabulary. If you try to but fail, the guard gives you an opportunity to help track down the criminal. If you do nothing, you must convince the guard you are not an accomplice.
-    - roll <= 5: Something occurs, or you find something, that requires a {~acrobatics/dex check or save|strength or athletics check|stealth check|con check or save|int check|investigation check|arcana check|history check|nature check|religion check}. Use Q/A rolls or Story Element Interaction tables (chapter 14) to find out what.
-    - roll <= 10: Something occurs, or you find something, that requires {~an animal handling check|an insight check|a survival check|a medicine check|a perception check|a persuasion check|a performance check|a deception check|an inimidation check|a charisma check}. Use Q/A rolls or Story Element Interaction Tables (chapter 14) to find out what.
+    - roll <= 5: Something occurs, or you find something, that requires a {~acrobatics/dex check or save|strength or athletics check|stealth check|con check or save|int check|investigation check|arcana check|history check|nature check|religion check}. Use Q/A rolls or Story Element Interaction Tables to find out what.
+    - roll <= 10: Something occurs, or you find something, that requires {~an animal handling check|an insight check|a survival check|a medicine check|a perception check|a persuasion check|a performance check|a deception check|an inimidation check|a charisma check}. Use Q/A rolls or Story Element Interaction Tables to find out what.
     - roll <= 15: -> create_npc ->
-        <> gives you information about possible quest. Go to Chapter 7 and generate a quest, which you may or may not accept.
-
-    - roll <= 20: Monster: Level-appropriate easy encounter. Go to Chapter 16.
-    - roll <= 25: Monster: Level-appropriate medium encounter. Go to Chapter 16.
-    - roll <= 30: Level appropriate hard encounter. Go to Chapter 16.
-    - roll <= 35: Level appropriate deadly encounter. Go to Chapter 16. Your PC might want to flee!
-    - roll <= 36: Dead beast or monster carcass. What happened here?
+        <> gives you information about possible quest which you may or may not accept.
+        Quest:<br><>
+        -> create_quest ->
+    - roll <= 20: Easy Encounter:<br><>
+        ~ encounter_difficulty = easy
+        -> create_encounter ->
+    - roll <= 25: Medium Encounter:<br><>
+        ~ encounter_difficulty = medium
+        -> create_encounter ->
+    - roll <= 30: Hard Encounter:<br><>
+        ~ encounter_difficulty = hard
+        -> create_encounter ->
+    - roll <= 35: Deadly Encounter. Your PC might want to flee!:<br><>
+        ~ encounter_difficulty = deadly
+        -> create_encounter ->
+    - roll <= 36: Dead beast or monster carcass:<br><>
+        -> create_creature ->
+        What happened here?
     - roll <= 37: You find a strange growth in this area, on the dungeon walls. Is it a moss of some kind?
     - roll <= 38: Part of the floor has crumbled away, revealing a black, empty space below.
     - roll <= 39: A door covered in moss, with a large knocker. Looks like it’s been transplanted here from someone’s garden.
@@ -680,7 +859,8 @@ Dungeon Type: {DisplayDungeonType()}
     - roll <= 42: You see a statue of a wizard in the middle of this area. The plaque beneath reads “I am Fennishaw Eldsight. Speak my name and bring me to life, if you dare!”
     - roll <= 43: You hear voices ahead, and turn the corner to see a barbarian parleying with an ogre! Apparently they are discussing what the ogre’s price is for releasing the half-orc he is currently holding hostage.
     - roll <= 44: A voice repeatedly whispers, “What do you seek?” No matter how you respond, it repeats the same question. (Perhaps until you give the true answer, at which point, you may get what you seek, but not as you expected!) Who does this voice belong to, if anyone?
-    - roll <= 45: The ceiling above you opens, and an unexpected NPC falls through screaming, hitting the ground in front of you! Roll NPC Tables to find out who it is.
+    - roll <= 45: The ceiling above you opens, and an unexpected NPC falls through screaming, hitting the ground in front of you!
+        NPC:<br><>-> create_npc ->
     - roll <= 46: This area is home to a mining operation. Enslaved humanoid children are toiling away, loading rocks into mine carts for ore processing. Their masters whip and force them to continue on, despite their obvious fatigue.
     - roll <= 47: A middle-aged woman is slumped against the wall, sobbing. She is dressed in rags.
     - roll <= 48: From nowhere, you hear a booming voice: “Take up your weapon, adventurer! You dare to trespass here, now you will face me in battle!” But no one appears. At least not yet… You hear laughing...
