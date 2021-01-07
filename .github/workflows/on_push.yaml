@@ -1,0 +1,32 @@
+# Run code on every push to Ink Scripts directory only
+on:
+    push:
+        paths:
+            - 'Ink Scripts/**'
+
+name: Build out story into doc
+
+jobs:
+    build_story:
+        name: build out solo story
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: install mono dependences
+              run: sudo apt -y install mono-complete
+
+            - name: compile json
+              run: mono Inky/resources/app.asar.unpacked/main-process/ink/inklecate_win.exe "Ink Scripts/solo.ink"
+
+            - name: build solo.js file
+              run: cd "Ink Scripts"; echo "var storyContent = $(cat solo.ink.json)" > ../docs/solo.js
+
+            - name: remove solo.ink.json
+              run: rm "Ink Scripts/solo.ink.json"
+              
+            - uses: stefanzweifel/git-auto-commit-action@v4
+              with:
+                  commit_message: Updated docs/solo.js
+
