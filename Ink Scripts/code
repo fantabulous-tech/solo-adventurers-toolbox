@@ -239,83 +239,59 @@ Difficulty:
 === function P(target) ===
 ~ return d100() <= target
 
+=== function d(s) ===
+~ return RANDOM(1, s)
+
+=== function dx(s, c) ===
+{c <= 0:
+    ~ return 0
+- else:
+    ~ c--
+    ~ return d(s) + dx(s, c)
+}
+
 === function d4 ===
-~ return RANDOM(1,4)
+~ return d(4)
 
 === function d6 ===
-~ return RANDOM(1,6)
+~ return d(6)
 
 === function d8 ===
-~ return RANDOM(1,8)
+~ return d(8)
 
 === function d10 ===
-~ return RANDOM(1,10)
+~ return d(10)
 
 === function d12 ===
-~ return RANDOM(1,12)
+~ return d(12)
 
 === function d20 ===
-~ return RANDOM(1,20)
+~ return d(20)
 
 === function d100 ===
-~ return RANDOM(1,100)
+~ return d(100)
 
 
 === function d4x(c) ===
-{c <= 0:
-    ~ return 0
-- else:
-    ~ c--
-    ~ return d4() + d4x(c)
-}
+~ return dx(4, c)
 
 === function d6x(c) ===
-{c <= 0:
-    ~ return 0
-- else:
-    ~ c--
-    ~ return d6() + d6x(c)
-}
+~ return dx(6, c)
 
 === function d8x(c) ===
-{c <= 0:
-    ~ return 0
-- else:
-    ~ c--
-    ~ return d8() + d8x(c)
-}
+~ return dx(8, c)
 
 === function d10x(c) ===
-{c <= 0:
-    ~ return 0
-- else:
-    ~ c--
-    ~ return d10() + d10x(c)
-}
+~ return dx(10, c)
 
 === function d12x(c) ===
-{c <= 0:
-    ~ return 0
-- else:
-    ~ c--
-    ~ return d12() + d12x(c)
-}
+~ return dx(12, c)
 
 === function d20x(c) ===
-{c <= 0:
-    ~ return 0
-- else:
-    ~ c--
-    ~ return d20() + d20x(c)
-}
+~ return dx(20, c)
 
 === function d100x(c) ===
-{c <= 0:
-    ~ return 0
-- else:
-    ~ c--
-    ~ return d100() + d100x(c)
-}
+~ return dx(100, c)
 
 
 
