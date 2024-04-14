@@ -4,6 +4,7 @@
     var story = new inkjs.Story(storyContent);
 
     var savePoint = "";
+    var delayIncrease = 20.0;
 
     let savedTheme;
     let globalTagTheme;
@@ -101,7 +102,7 @@
                     storyContainer.appendChild(imageElement);
 
                     showAfter(delay, imageElement);
-                    delay += 200.0;
+                    delay += delayIncrease;
                 }
 
                 // LINK: url
@@ -151,7 +152,7 @@
 
             // Fade in paragraph after a short delay
             showAfter(delay, paragraphElement);
-            delay += 200.0;
+            delay += delayIncrease;
         }
 
         // Create HTML choices from ink choices
@@ -165,7 +166,7 @@
 
             // Fade choice in after a short delay
             showAfter(delay, choiceParagraphElement);
-            delay += 200.0;
+            delay += delayIncrease;
 
             // Click on choice
             var choiceAnchorEl = choiceParagraphElement.querySelectorAll("a")[0];
