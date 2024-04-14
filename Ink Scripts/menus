@@ -98,26 +98,28 @@
 + Create Loot
     {not is_encounter_supported():
         ~logError("Can only create loot for parties of 1 up to level 3 and parties of 2 up to level 2. You are currently a party of {stat_party_size} at level {stat_level}.")
-        -> back
+        ~ again = back
+    - else:
+        -> create_loot ->
+        -> roll_encounter ->
+        ~ again = -> create_loot
     }
-    -> create_loot ->
-    -> roll_encounter ->
-    ~ again = -> create_loot
 
 + Create Hoard
     {not is_encounter_supported():
         ~logError("Can only create hoards for parties of 1 up to level 3 and parties of 2 up to level 2. You are currently a party of {stat_party_size} at level {stat_level}.")
-        -> back
+        ~ again = back
+    -else:
+        -> create_hoard ->
+        -> roll_encounter ->
+        ~ again = -> create_hoard
     }
-    -> create_hoard ->
-    -> roll_encounter ->
-    ~ again = -> create_hoard
 
 + [Change Location]
     -> edit_location -> back
 
 - (sub_menu)
-+ [Again] -> again -> sub_menu
++ {again != back}[Again] -> again -> sub_menu
 + [Back] -> back
 
 
@@ -136,19 +138,29 @@
 <b>Create Town Stuff Menu</b> #CLEAR
  
 + Create Encounter
-    -> create_encounter ->
-    ~ again = -> create_encounter
+    {not is_encounter_supported():
+        ~logError("Can only create encounters for parties of 1 up to level 3 and parties of 2 up to level 2. You are currently a party of {stat_party_size} at level {stat_level}.")
+        ~ again = -> create_urban_menu
+    -else:
+        -> create_encounter ->
+        ~ again = -> create_encounter
+    }
     
 + Create Monster
-    -> create_single_monster ->
-    ~ again = -> create_single_monster
+    {not is_encounter_supported():
+        ~logError("Can only create monsters for parties of 1 up to level 3 and parties of 2 up to level 2. You are currently a party of {stat_party_size} at level {stat_level}.")
+        ~ again = -> create_urban_menu
+    -else:
+        -> create_single_monster ->
+        ~ again = -> create_single_monster
+    }
 
 + Create Tavern
     -> create_tavern ->
     ~ again = -> create_tavern
 
 - (sub_menu)
-+ [Again] -> again -> sub_menu
++ {again != -> create_urban_menu}[Again] -> again -> sub_menu
 + [Back] -> create_urban_menu
 
 
@@ -166,12 +178,22 @@
 <b>Create Dungeon Stuff Menu</b> #CLEAR
 
 + Create Encounter
-    -> create_encounter ->
-    ~ again = -> create_encounter
+    {not is_encounter_supported():
+        ~logError("Can only create encounters for parties of 1 up to level 3 and parties of 2 up to level 2. You are currently a party of {stat_party_size} at level {stat_level}.")
+        ~ again = -> create_dungeon_menu
+    -else:
+        -> create_encounter ->
+        ~ again = -> create_encounter
+    }
     
 + Create Monster
-    -> create_single_monster ->
-    ~ again = -> create_single_monster
+    {not is_encounter_supported():
+        ~logError("Can only create monsters for parties of 1 up to level 3 and parties of 2 up to level 2. You are currently a party of {stat_party_size} at level {stat_level}.")
+        ~ again = -> create_dungeon_menu
+    -else:
+        -> create_single_monster ->
+        ~ again = -> create_single_monster
+    }
 
 + Create Room
     -> create_dungeon_room ->
@@ -202,7 +224,7 @@
     ~ again = -> create_dungeon_clue
 
 - (sub_menu)
-+ [Again] -> again -> sub_menu
++ {again != -> create_dungeon_menu}[Again] -> again -> sub_menu
 + [Back] -> create_dungeon_menu
 
 
@@ -220,12 +242,22 @@
 <b>Create Wilderness Stuff Menu</b> #CLEAR
 
 + Create Encounter
-    -> create_encounter ->
-    ~ again = -> create_encounter
+    {not is_encounter_supported():
+        ~logError("Can only create encounters for parties of 1 up to level 3 and parties of 2 up to level 2. You are currently a party of {stat_party_size} at level {stat_level}.")
+        ~ again = back
+    -else:
+        -> create_encounter ->
+        ~ again = -> create_encounter
+    }
     
 + Create Monster
-    -> create_single_monster ->
-    ~ again = -> create_single_monster
+    {not is_encounter_supported():
+        ~logError("Can only create monsters for parties of 1 up to level 3 and parties of 2 up to level 2. You are currently a party of {stat_party_size} at level {stat_level}.")
+        ~ again = back
+    -else:
+        -> create_single_monster ->
+        ~ again = -> create_single_monster
+    }
 
 + Create Clue
     -> create_wilderness_clue ->
@@ -251,7 +283,7 @@
     -> create_terrain_feature -> menu
 
 - (sub_menu)
-+ [Again] -> again -> sub_menu
++ {again != back}[Again] -> again -> sub_menu
 + [Back] -> create_wilderness_menu
 
 
