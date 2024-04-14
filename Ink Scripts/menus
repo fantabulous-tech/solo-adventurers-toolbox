@@ -89,17 +89,29 @@
 
 + Create NPC
     -> create_npc ->
+    ~ again = -> create_npc
     
 + Create Adventurer NPC
     -> create_adventurer ->
+    ~ again = -> create_adventurer
 
 + Create Loot
+    {not is_encounter_supported():
+        ~logError("Can only create loot for parties of 1 up to level 3 and parties of 2 up to level 2. You are currently a party of {stat_party_size} at level {stat_level}.")
+        -> back
+    }
     -> create_loot ->
     -> roll_encounter ->
+    ~ again = -> create_loot
 
 + Create Hoard
+    {not is_encounter_supported():
+        ~logError("Can only create hoards for parties of 1 up to level 3 and parties of 2 up to level 2. You are currently a party of {stat_party_size} at level {stat_level}.")
+        -> back
+    }
     -> create_hoard ->
     -> roll_encounter ->
+    ~ again = -> create_hoard
 
 + [Change Location]
     -> edit_location -> back
